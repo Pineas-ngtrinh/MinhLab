@@ -1,0 +1,15 @@
+{
+  "name": "MinhLab 3D Prototype",
+  "id": "1522346501040012345",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": [
+    "figma"
+  ],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}

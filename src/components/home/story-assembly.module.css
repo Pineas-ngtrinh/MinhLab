@@ -1,0 +1,319 @@
+.stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  background: #08090c;
+  perspective: 1600px;
+}
+
+/* Sân khấu lưới kỹ thuật Blueprint — tạo bối cảnh bàn lắp ráp tranh ảnh */
+.blueprintGrid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #08090c;
+  background-image:
+    radial-gradient(circle, rgba(200, 162, 97, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(39, 49, 60, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 49, 60, 0.3) 1px, transparent 1px);
+  background-size: 36px 36px, 72px 72px, 72px 72px;
+  background-position: center center;
+  opacity: 0.65;
+}
+
+.plates,
+.scenePlate,
+.baseImageWrap,
+.objectAssemblyLayer,
+.copyScrim,
+.vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.plates {
+  z-index: 1;
+  overflow: hidden;
+  background: transparent;
+}
+
+.scenePlate {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+  will-change: opacity;
+}
+
+.scenePlate[data-active='true'] {
+  z-index: 2;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Tấm phôi tranh nền xưởng: bắt đầu dạng bóng mờ tham chiếu (blueprint outline),
+   sau khi toàn bộ các mảnh ghép đáp xuống sẽ sáng tỏ 100% để bức tranh liền mạch hoàn hảo */
+.baseImageWrap {
+  opacity: 0.18;
+  transition: opacity 350ms ease;
+}
+
+[data-active='true'] .baseImageWrap {
+  animation: canvas-settle 450ms ease forwards;
+  animation-delay: 840ms;
+}
+
+@keyframes canvas-settle {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+[data-active='false'] .baseImageWrap {
+  opacity: 0;
+  animation: none;
+}
+
+.sceneImage {
+  object-fit: cover;
+  user-select: none;
+}
+
+/* Lớp lắp ráp các vật thể cơ học ngữ nghĩa — Bộ lắp ghép tranh ảnh */
+.objectAssemblyLayer {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.sceneObject {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  animation: puzzle-assemble var(--duration, 680ms) cubic-bezier(0.18, 0.89, 0.32, 1.05) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.objectClip {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--clip);
+  overflow: hidden;
+}
+
+/* Hiệu ứng mảnh ghép cơ học:
+   Từng vật thể trong tranh bay vào từ không gian 3D, mang bóng đổ vật lý đậm nét,
+   sau đó khớp nối (snap) vào vị trí với độ nảy xúc giác, tạo nên bức tranh hoàn chỉnh */
+@keyframes puzzle-assemble {
+  0% {
+    opacity: 0;
+    transform:
+      translate3d(var(--from-x, 0), var(--from-y, 0), var(--from-z, 0))
+      rotateX(var(--rot-x, 0))
+      rotateY(var(--rot-y, 0))
+      scale(var(--scale, 0.92));
+    filter: drop-shadow(0 26px 44px rgba(0, 0, 0, 0.95)) brightness(1.15);
+  }
+  58% {
+    opacity: 1;
+    transform:
+      translate3d(
+        calc(var(--from-x, 0) * -0.06),
+        calc(var(--from-y, 0) * -0.06),
+        calc(var(--from-z, 0) * 0.08)
+      )
+      scale(1.018);
+    filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.85)) brightness(1.06);
+  }
+  82% {
+    opacity: 1;
+    transform:
+      translate3d(
+        calc(var(--from-x, 0) * 0.015),
+        calc(var(--from-y, 0) * 0.015),
+        0
+      )
+      scale(0.998);
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.65));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+    filter: drop-shadow(0 0 0 transparent) brightness(1);
+  }
+}
+
+.copyScrim {
+  z-index: 5;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 9, 12, 0.99) 0%,
+      rgba(8, 9, 12, 0.95) 21%,
+      rgba(8, 9, 12, 0.78) 31%,
+      rgba(8, 9, 12, 0.22) 45%,
+      transparent 58%
+    );
+}
+
+.vignette {
+  z-index: 6;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 9, 12, 0.22) 0%, transparent 16%, transparent 77%, rgba(8, 9, 12, 0.62) 100%),
+    radial-gradient(ellipse at 70% 47%, transparent 38%, rgba(5, 6, 8, 0.14) 72%, rgba(5, 6, 8, 0.42) 100%);
+}
+
+.transitionSweep {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  bottom: 0;
+  left: 34%;
+  width: 20%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(200, 162, 97, 0.16), transparent);
+  filter: blur(18px);
+  transform: translate3d(-110%, 0, 0) skewX(-8deg);
+  animation: scene-sweep 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Huy hiệu bộ lắp ghép tranh ảnh (Assembly Kit Badge) */
+.assemblyBadge {
+  position: absolute;
+  z-index: 8;
+  right: clamp(20px, 3vw, 48px);
+  top: clamp(84px, 10vh, 114px);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  background: rgba(11, 15, 20, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 162, 97, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  font: 600 8.5px/1 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  color: #c8a261;
+  pointer-events: none;
+}
+
+.assemblyDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #eb4037;
+}
+
+.sceneMark {
+  position: absolute;
+  z-index: 8;
+  right: clamp(20px, 3vw, 48px);
+  top: clamp(118px, 14vh, 148px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(244, 241, 234, 0.7);
+  font: 600 9px/1 'IBM Plex Mono', monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.sceneMark span:first-child {
+  color: #eb4037;
+}
+
+@keyframes scene-sweep {
+  0% {
+    opacity: 0;
+    transform: translate3d(-120%, 0, 0) skewX(-8deg);
+  }
+  28% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(420%, 0, 0) skewX(-8deg);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) and (orientation: portrait) {
+  .copyScrim {
+    background: linear-gradient(
+      180deg,
+      rgba(8, 9, 12, 0.92) 0%,
+      rgba(8, 9, 12, 0.82) 28%,
+      rgba(8, 9, 12, 0.45) 45%,
+      rgba(8, 9, 12, 0.1) 62%,
+      transparent 80%
+    );
+  }
+
+  .assemblyBadge {
+    top: clamp(74px, 9vh, 96px);
+  }
+
+  .sceneMark {
+    top: clamp(104px, 12vh, 128px);
+  }
+}
+
+@media (max-width: 767px) {
+  .sceneImage {
+    object-position: 72% 35% !important;
+  }
+
+  .copyScrim {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(8, 9, 12, 0.2) 0%,
+        transparent 35%,
+        rgba(8, 9, 12, 0.7) 65%,
+        rgba(8, 9, 12, 0.95) 100%
+      );
+  }
+
+  .assemblyBadge {
+    top: 72px;
+    right: 14px;
+    font-size: 7.5px;
+    padding: 3px 8px;
+  }
+
+  .sceneMark {
+    display: none; /* Thu gọn trên mobile để tập trung vào badge và mô hình */
+  }
+
+  .transitionSweep {
+    left: 0;
+    width: 36%;
+  }
+}
+
+[data-reduced-motion='true'] .objectAssemblyLayer {
+  display: none;
+}
+
+[data-reduced-motion='true'] .baseImageWrap {
+  opacity: 1;
+  animation: none;
+}
+
+[data-reduced-motion='true'] .transitionSweep {
+  display: none;
+}

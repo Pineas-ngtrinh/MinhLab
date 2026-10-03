@@ -1,0 +1,30 @@
+{
+  "result": "PASS",
+  "checks": [
+    "GLB header/chunk alignment",
+    "buffer bounds",
+    "accessor values",
+    "triangle indices",
+    "non-degenerate triangles",
+    "normal length and winding",
+    "unique animation node names",
+    "node ownership",
+    "animation times and quaternion normalization",
+    "animation changes real geometry"
+  ],
+  "triangles": 20940,
+  "bounds": [
+    [
+      -5.25,
+      -0.41499999165534973,
+      -3.6500000953674316
+    ],
+    [
+      5.25,
+      4.489999771118164,
+      3.5999999046325684
+    ]
+  ],
+  "animation_max_world_displacement_at_1s": 0.3799999952316284,
+  "note": "Internal structural checks; not the official Khronos glTF Validator. Next.js/browser integration not executed in this environment."
+}

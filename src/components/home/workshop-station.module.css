@@ -1,0 +1,339 @@
+.console {
+  width: 100%;
+  background: #11161D;
+  border: 1px solid #27313C;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Tab Bar */
+.tabBar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: #0E131A;
+  border-bottom: 1px solid #27313C;
+  overflow-x: auto;
+}
+
+.tabItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 12px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid #27313C;
+  color: #858E9B;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: center;
+}
+
+.tabItem:last-child {
+  border-right: none;
+}
+
+.tabItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #F4F1EA;
+}
+
+.tabActive {
+  background: #151B22 !important;
+  color: #F4F1EA !important;
+}
+
+.tabNumber {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: #EB4037;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.tabName {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.activeIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #EB4037;
+}
+
+/* Display Area */
+.displayArea {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 32px;
+  padding: 28px;
+  background: #11161D;
+  align-items: center;
+}
+
+/* Left Column: Visual Container */
+.visualContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.4;
+  background: #0B0F14;
+  border: 1px solid #27313C;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stationImage {
+  object-fit: cover;
+  transition: opacity 0.25s ease-out;
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 15, 20, 0.2) 0%, rgba(11, 15, 20, 0.6) 100%);
+  pointer-events: none;
+}
+
+.imageTag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(11, 15, 20, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid #27313C;
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: #F4F1EA;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tagDot {
+  width: 5px;
+  height: 5px;
+  background: #EB4037;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Navigation control row under image */
+.controlRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 2px;
+}
+
+.stepCounter {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: #858E9B;
+}
+
+.stepCounter strong {
+  color: #F4F1EA;
+}
+
+.navButtons {
+  display: flex;
+  gap: 6px;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #151B22;
+  border: 1px solid #27313C;
+  border-radius: 2px;
+  color: #A5ADB8;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.navBtn:hover {
+  background: #27313C;
+  color: #F4F1EA;
+  border-color: #A5ADB8;
+}
+
+/* Right Column: Meta Container */
+.metaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stationBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #EB4037;
+  background: rgba(235, 64, 55, 0.08);
+  border: 1px solid rgba(235, 64, 55, 0.2);
+  padding: 4px 8px;
+  border-radius: 2px;
+  width: fit-content;
+}
+
+.badgeIcon {
+  color: #EB4037;
+}
+
+.stationTitle {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: #F4F1EA;
+  margin: 0;
+}
+
+.stationTagline {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #C8A261;
+  margin: 0;
+}
+
+.stationDescription {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #A5ADB8;
+  margin: 4px 0 8px;
+}
+
+/* Spec Grid */
+.specGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  border-top: 1px solid #27313C;
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.specBox {
+  background: #0E131A;
+  border: 1px solid #27313C;
+  padding: 8px 10px;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.specKey {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 9px;
+  color: #727B88;
+}
+
+.specVal {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: #F4F1EA;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Footer Tour Link */
+.actionFoot {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 14px;
+  margin-top: 6px;
+}
+
+.tourLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #C8A261;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.tourLink:hover {
+  color: #F4F1EA;
+}
+
+@media (max-width: 900px) {
+  .displayArea {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .specGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .tabBar {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabItem {
+    flex: 0 0 auto;
+    min-width: 95px;
+    padding: 10px 8px;
+  }
+
+  .tabName {
+    font-size: 10px;
+  }
+
+  .displayArea {
+    padding: 16px;
+  }
+
+  .stationTitle {
+    font-size: 18px;
+  }
+
+  .stationDescription {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stationImage,
+  .tabItem,
+  .navBtn {
+    transition: none !important;
+  }
+}
