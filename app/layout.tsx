@@ -1,21 +1,19 @@
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
+import 'bootstrap/dist/css/bootstrap-grid.min.css';
 import '../src/styles/index.css';
 import { AppLayout } from '../src/components/layout/AppLayout';
 
 export const metadata: Metadata = {
-  title: 'MinhLab — Xưởng Phục Dựng Đồ Sưu Tầm & In 3D Theo Yêu Cầu',
-  description: 'MinhLab phục dựng những mẫu đồ chơi, mô hình đã ngừng sản xuất và cung cấp dịch vụ in 3D FDM chính xác từ tệp thiết kế của bạn.',
-  icons: {
-    icon: '/images/logo.png',
-  },
+  title: 'MinhLab | In 3D',
+  description: 'MinhLab phục dựng những mẫu đồ chơi, mô hình đã ngừng sản xuất và cung cấp dịch vụ in 3D FDM và resin từ tệp thiết kế của bạn.',
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#0B0F14',
+  themeColor: '#101213',
 };
 
 export default function RootLayout({
@@ -24,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className="scroll-smooth bg-[#0B0F14]">
+    <html lang="vi" className="bg-background">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -33,7 +31,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#0B0F14] text-[#F4F1EA] font-sans antialiased selection:bg-[#EB4037]/25 selection:text-[#F4F1EA] overflow-x-clip min-h-screen">
+      <body className="bg-background text-[#F4F1EA] font-sans antialiased selection:bg-[#EB4037]/25 selection:text-[#F4F1EA] overflow-x-clip min-h-screen">
         <AppLayout>{children}</AppLayout>
       </body>
     </html>

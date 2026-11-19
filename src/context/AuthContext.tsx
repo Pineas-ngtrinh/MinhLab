@@ -5,64 +5,53 @@
  * MINHLAB 3D - AUTHENTICATION CONTEXT (QUẢN LÝ PHIÊN ĐĂNG NHẬP & PHÂN QUYỀN)
  * =====================================================================
  * Quản lý phiên đăng nhập cho 5 vai trò:
- *  - CUSTOMER, STAFF, FILE_REVIEWER, PRINT_OPERATOR, ADMIN
- * Hỗ trợ lưu trữ phiên vào localStorage và One-Click Role Switching để test nhanh.
+ *  - CUSTOMER, WORKSHOP_OPERATOR, FILE_REVIEWER, PRINT_OPERATOR, ADMIN
+ * Phiên dùng cookie HttpOnly và được kiểm chứng với database phía server.
  * =====================================================================
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { RoleCode, RoleInfo, ROLES } from '../services/auth.service';
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  fullName: string;
-  phone?: string;
-  role: RoleCode;
-}
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
+import { ROLES, type RoleCode, type RoleInfo } from '../lib/auth-roles';
+import type { AuthUser, RegisterAccountInput, RegistrationResult } from '../contracts/auth';
 
 interface AuthContextType {
   user: AuthUser | null;
   role: RoleCode | null;
   roleInfo: RoleInfo | null;
   isAuthenticated: boolean;
+  isAuthReady: boolean;
   login: (email: string, password: string) => Promise<AuthUser>;
-  register: (data: { email: string; fullName: string; phone?: string; password: string }) => Promise<AuthUser>;
-  logout: () => void;
-  switchRoleQuickly: (roleCode: RoleCode) => Promise<void>;
+  register: (data: RegisterAccountInput) => Promise<RegistrationResult>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const AUTH_STORAGE_KEY = 'minhlab_auth_session_v1';
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const identityRevision = useRef(0);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
-  // Đọc phiên từ localStorage khi load
+  // Lấy danh tính từ cookie HttpOnly do server xác thực, không tin phiên localStorage.
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(AUTH_STORAGE_KEY);
-      if (saved) {
-        setUser(JSON.parse(saved));
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
+    const controller = new AbortController();
+    const revision = identityRevision.current;
 
-  const saveUserSession = (userData: AuthUser | null) => {
-    setUser(userData);
-    try {
-      if (userData) {
-        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
-      } else {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-      }
-    } catch {
-      // ignore
-    }
-  };
+    fetch('/api/auth/session', { cache: 'no-store', signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Không thể xác thực phiên đăng nhập.');
+        const result: { data?: AuthUser | null } = await response.json();
+        if (!controller.signal.aborted && identityRevision.current===revision) setUser(result.data ?? null);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted && identityRevision.current===revision) setUser(null);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted && identityRevision.current===revision) setIsAuthReady(true);
+      });
+
+    return () => controller.abort();
+  }, []);
 
   const login = async (email: string, password: string): Promise<AuthUser> => {
     const res = await fetch('/api/auth/login', {
@@ -71,70 +60,43 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.error || 'Đăng nhập thất bại.');
+    const result: { success?: boolean; error?: string; data?: AuthUser } = await res.json();
+    if (!res.ok || !result.success || !result.data) {
+      throw new Error(result.error || 'Đăng nhập thất bại.');
     }
 
-    const authUser: AuthUser = {
-      id: data.data.id,
-      email: data.data.email,
-      fullName: data.data.fullName,
-      phone: data.data.phone,
-      role: data.data.role,
-    };
-
-    saveUserSession(authUser);
+    identityRevision.current += 1;
+    const authUser = result.data;
+    setUser(authUser);
+    setIsAuthReady(true);
     return authUser;
   };
 
-  const register = async (input: {
-    email: string;
-    fullName: string;
-    phone?: string;
-    password: string;
-  }): Promise<AuthUser> => {
+  const register = async (input: RegisterAccountInput): Promise<RegistrationResult> => {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
     });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.error || 'Đăng ký thất bại.');
+    const result: { success?: boolean; error?: string; data?: AuthUser; requiresEmailVerification?: boolean } = await res.json();
+    if (!res.ok || !result.success || !result.data) {
+      throw new Error(result.error || 'Đăng ký thất bại.');
     }
 
-    const authUser: AuthUser = {
-      id: data.data.id,
-      email: data.data.email,
-      fullName: data.data.fullName,
-      phone: data.data.phone,
-      role: data.data.role,
-    };
-
-    saveUserSession(authUser);
-    return authUser;
+    identityRevision.current += 1;
+    const authUser = result.data;
+    const requiresEmailVerification = result.requiresEmailVerification === true;
+    if (!requiresEmailVerification) setUser(authUser);
+    setIsAuthReady(true);
+    return { user: authUser, requiresEmailVerification };
   };
 
-  const logout = () => {
-    saveUserSession(null);
-  };
-
-  // Chuyển đổi vai trò nhanh (One-Click Role Switching) phục vụ trải nghiệm & test
-  const switchRoleQuickly = async (roleCode: RoleCode) => {
-    const demoCredentials: Record<RoleCode, { email: string; pass: string }> = {
-      ADMIN: { email: 'admin@minhlab.com', pass: 'admin123' },
-      STAFF: { email: 'staff@minhlab.com', pass: 'staff123' },
-      FILE_REVIEWER: { email: 'engineer@minhlab.com', pass: 'engineer123' },
-      PRINT_OPERATOR: { email: 'operator@minhlab.com', pass: 'operator123' },
-      CUSTOMER: { email: 'customer@minhlab.com', pass: 'customer123' },
-    };
-
-    const target = demoCredentials[roleCode];
-    if (target) {
-      await login(target.email, target.pass);
-    }
+  const logout = async () => {
+    const response = await fetch('/api/auth/logout', { method: 'POST' });
+    if (!response.ok) throw new Error('Chưa thể đăng xuất. Vui lòng thử lại khi có kết nối.');
+    identityRevision.current += 1;
+    setUser(null);
   };
 
   const role = user?.role || null;
@@ -147,10 +109,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         role,
         roleInfo,
         isAuthenticated: !!user,
+        isAuthReady,
         login,
         register,
         logout,
-        switchRoleQuickly,
       }}
     >
       {children}

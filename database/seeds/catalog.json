@@ -1,0 +1,233 @@
+{
+  "categories": [
+    {
+      "slug": "art-toys",
+      "name": "Art Toys & Mô hình",
+      "code": "TOY"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-bdaman-black",
+      "code": "№ 01 / BDM",
+      "title": "Black B-Daman (Gunma Special)",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Mẫu B-Daman cơ bản gắn liền với nhân vật Kama hay Gunma trong bộ phim kinh điển \"Super B-Daman\" (Tay Bắn Bi Cự Phách).",
+      "longDescription": "Black B-Daman - Mẫu B-Daman cơ bản gắn liền với nhân vật Kama hay Gunma trong bộ phim kinh điển \"Super B-Daman\" (Tay Bắn Bi Cự Phách). Đây không chỉ là một mô hình, mà còn là mảnh ghép ký ức tuổi thơ của biết bao anh em bi thủ. Sản phẩm do MinhLab remake tỉ mỉ dựa trên nguyên bản hoạt hình, với mong muốn đưa anh em sống lại những cảm xúc nguyên vẹn của ngày xưa.",
+      "price": 369000,
+      "originalPrice": 420000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284855/IMG_9381_dzspmd.jpg",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284855/IMG_9381_dzspmd.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284854/IMG_8355_vt2adn.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284856/IMG_8360_gpdab4.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284855/IMG_8359_uraqxv.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284856/IMG_8356_txb0xz.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284855/IMG_8357_al2t4b.jpg"
+      ],
+      "material": "RESIN 3D kết hợp PETG",
+      "dimensions": "5.0 × 4.0 × 6.0 cm",
+      "weight": "23 gram",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin) / 0.16 mm (PETG)",
+      "featured": true,
+      "badge": "TIÊU BIỂU",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Đen mờ & Cam năng lượng",
+          "hex": "#18181B"
+        }
+      ]
+    },
+    {
+      "id": "prod-bdaman-three-claws",
+      "code": "№ 02 / BDM",
+      "title": "Three Claws B-Daman (Ijuin Atsumasa Special)",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Mẫu B-Daman cơ bản gắn liền với nhân vật Ijuin trong bộ phim kinh điển \"Super B-Daman\" (Tay Bắn Bi Cự Phách).",
+      "longDescription": "Three claws B-Daman - Mẫu B-Daman cơ bản gắn liền với nhân vật Ijuin trong bộ phim kinh điển \"Super B-Daman\" (Tay Bắn Bi Cự Phách). Đây không chỉ là một mô hình, mà còn là mảnh ghép ký ức tuổi thơ của biết bao anh em bi thủ. Sản phẩm do MinhLab remake tỉ mỉ dựa trên nguyên bản hoạt hình, với mong muốn đưa anh em sống lại những cảm xúc nguyên vẹn của ngày xưa.",
+      "price": 399000,
+      "originalPrice": 450000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284900/IMG_8362_n6rroc.jpg",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284900/IMG_8362_n6rroc.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284899/IMG_8363_qd7sr6.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284900/IMG_8364_hxdfrv.jpg"
+      ],
+      "material": "RESIN 3D kết hợp PETG",
+      "dimensions": "5.0 × 4.0 × 6.0 cm",
+      "weight": "23 gram",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin) / 0.16 mm (PETG)",
+      "featured": true,
+      "badge": "ĐỘC BẢN",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Đen tuyền & Đỏ chiến binh",
+          "hex": "#09090B"
+        }
+      ]
+    },
+    {
+      "id": "prod-bdaman-white",
+      "code": "№ 03 / BDM",
+      "title": "White B-Daman (Tamago Special)",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Mẫu B-Daman cơ bản gắn liền với nhân vật chính Tamago trong bộ phim kinh điển \"Super B-Daman\" (Tay Bắn Bi Cự Phách).",
+      "longDescription": "White B-Daman - Mẫu B-Daman cơ bản gắn liền với nhân vật chính Tamago trong bộ phim kinh điển \"Super B-Daman\" (Tay Bắn Bi Cự Phách). Đây không chỉ là một mô hình, mà còn là mảnh ghép ký ức tuổi thơ của biết bao anh em bi thủ. Sản phẩm do MinhLab remake tỉ mỉ dựa trên nguyên bản hoạt hình, với mong muốn đưa anh em sống lại những cảm xúc nguyên vẹn của ngày xưa.",
+      "price": 369000,
+      "originalPrice": 420000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284930/IMG_8349_b5h62y.png",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284930/IMG_8349_b5h62y.png",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284930/IMG_8348_zh1gxk.png",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284931/IMG_8352_msqmof.png",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1789284929/IMG_8351_zqrbd6.png"
+      ],
+      "material": "RESIN 3D kết hợp PETG",
+      "dimensions": "5.0 × 4.0 × 6.0 cm",
+      "weight": "23 gram",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin) / 0.16 mm (PETG)",
+      "featured": true,
+      "badge": "MỚI",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Trắng sứ & Vàng vương miện",
+          "hex": "#F4F4F5"
+        }
+      ]
+    },
+    {
+      "id": "prod-bdaman-takeshi-combo",
+      "code": "№ 04 / BDM",
+      "title": "Takeshi Okura & Maga BIG TANK (Combo Full Option)",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Trọn bộ huyền thoại của Takeshi Okura (Đội Miền Tây) với phụ kiện Maga \"BIG TANK\" xả đạn liên tục. TẶNG KÈM 1 BASE ĐỨNG TRƯNG BÀY khi đặt trọn bộ Full Option.",
+      "longDescription": "Ae mê B-Daman vẫn còn nhớ chú robot sở hữu món phụ kiện Maga \"BIG TANK\" huyền thoại của nhân vật Takeshi Okura (Đội Miền Tây). Một món trang bị siêu khủng giúp chứa đạn cực nhiều và xả đạn liên tục, từng làm biết bao anh em đứng ngồi không yên trên phim.\n\nĐiểm đáng tiếc nhất là hãng chính thức chưa từng sản xuất phiên bản này ngoài đời thực. Để lấp đầy sự tiếc nuối đó và giúp ae sống trọn lại ký ức tuổi thơ, MINHLAB đã nghiên cứu và chính thức cho ra mắt phiên bản remake bám sát nguyên tác 100%!\n\n🎁 ĐẶC QUYỀN ĐẶT COMBO: TẶNG KÈM 1 BASE ĐỨNG TRƯNG BÀY CHUYÊN DỤNG KHI ĐẶT TRỌN BỘ FULL OPTION!\n\n📌 THÔNG TIN CHI TIẾT & BẢNG GIÁ:\n• Robot lẻ (Takeshi Okura): 379.000 VNĐ\n• Bộ Giáp: 220.000 VNĐ\n• Phụ kiện Maga BIG TANK: 250.000 VNĐ\n🔥 TRỌN BỘ COMBO FULL OPTION (Robot + Giáp + Maga + Tặng 1 Base đứng): 799.000 VNĐ (Tiết kiệm 50.000 VNĐ)",
+      "price": 799000,
+      "originalPrice": 849000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/NguyenPhucPhu_2424801030010_d0zcfx.jpg",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/NguyenPhucPhu_2424801030010_d0zcfx.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/790025314_122181891626852692_504769387170126836_n_jqwcx2.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/790269055_122181891614852692_3964219900743163146_n_k8ya8a.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789926547_122181786476852692_4924683153554919749_n_ao6h8w.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789178405_122181786440852692_7516432822826651604_n_xd8qzb.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789399201_122181786458852692_6666108911277204994_n_dsjuoj.jpg"
+      ],
+      "material": "RESIN 3D kết hợp PETG",
+      "dimensions": "8.5 × 6.5 × 16.5 cm",
+      "weight": "85 gram (Full Option)",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin) / 0.16 mm (PETG)",
+      "featured": true,
+      "badge": "ĐỘC BẢN",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Trọn bộ Full Option (Robot + Giáp + Maga + Tặng 1 Base đứng)",
+          "hex": "#EB4037"
+        }
+      ]
+    },
+    {
+      "id": "prod-bdaman-takeshi-robot",
+      "code": "№ 05 / BDM",
+      "title": "Robot B-Daman Takeshi Okura (Đội Miền Tây)",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Mẫu robot B-Daman cơ bản của Takeshi Okura với mũ bảo hộ ngôi sao cam, visor xanh ngọc và cơ chế kẹp bi chuẩn thi đấu.",
+      "longDescription": "Robot lẻ Takeshi Okura (Đội Miền Tây) trong Super B-Daman. Phiên bản remake bám sát nguyên tác anime từng đường nét, đúc Resin độ phân giải cao kết hợp cơ chế ngắm bắn nhạy bén.",
+      "price": 379000,
+      "originalPrice": 420000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/790269055_122181891614852692_3964219900743163146_n_k8ya8a.jpg",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/790269055_122181891614852692_3964219900743163146_n_k8ya8a.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/NguyenPhucPhu_2424801030010_d0zcfx.jpg"
+      ],
+      "material": "RESIN 3D kết hợp PETG",
+      "dimensions": "5.0 × 4.0 × 6.0 cm",
+      "weight": "23 gram",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin) / 0.16 mm (PETG)",
+      "featured": false,
+      "badge": "MỚI",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Trắng đen & Điểm nhấn cam",
+          "hex": "#F4F4F5"
+        }
+      ]
+    },
+    {
+      "id": "prod-bdaman-big-tank",
+      "code": "№ 06 / BDM",
+      "title": "Phụ Kiện Maga BIG TANK (Băng Đạn Siêu Khủng)",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Món phụ kiện Maga \"BIG TANK\" huyền thoại giúp chứa đạn cực nhiều và xả đạn liên tục, tương thích chuẩn cho các dòng B-Daman cơ bản.",
+      "longDescription": "Phụ kiện Maga BIG TANK huyền thoại của nhân vật Takeshi Okura. Giúp chứa đạn cực nhiều và xả đạn liên tục, giải tỏa cơn khát đạn trong mọi trận đấu bắn bi. Sản phẩm bao gồm thân bình chứa BIG TANK đỏ, cổ nạp đạn xanh và bộ decal dán thủ công chuẩn xác.",
+      "price": 250000,
+      "originalPrice": 280000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789926547_122181786476852692_4924683153554919749_n_ao6h8w.jpg",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789926547_122181786476852692_4924683153554919749_n_ao6h8w.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789399201_122181786458852692_6666108911277204994_n_dsjuoj.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/789178405_122181786440852692_7516432822826651604_n_xd8qzb.jpg"
+      ],
+      "material": "RESIN 3D kết hợp PETG & Decal thủ công",
+      "dimensions": "5.5 × 5.5 × 11.0 cm",
+      "weight": "45 gram",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin) / 0.16 mm (PETG)",
+      "featured": false,
+      "badge": "MỚI",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Đỏ thể thao & Xanh ngọc",
+          "hex": "#EF4444"
+        }
+      ]
+    },
+    {
+      "id": "prod-bdaman-takeshi-armor",
+      "code": "№ 07 / BDM",
+      "title": "Bộ Giáp Chiến Binh Takeshi Okura",
+      "category": "Art Toys & Mô hình",
+      "categorySlug": "art-toys",
+      "description": "Bộ giáp tăng cường bảo vệ vai, chân và nón kết nối với Maga BIG TANK, đúc Resin độ nét cao và hoàn thiện thủ công.",
+      "longDescription": "Bộ giáp chuyên dụng dành riêng cho robot Takeshi Okura để lắp ghép cùng Maga BIG TANK. Thiết kế khớp ngàm chuẩn xác, giữ vững thân robot khi xả đạn tốc độ cao.",
+      "price": 220000,
+      "originalPrice": 250000,
+      "image": "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/790025314_122181891626852692_504769387170126836_n_jqwcx2.jpg",
+      "gallery": [
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/790025314_122181891626852692_504769387170126836_n_jqwcx2.jpg",
+        "https://res.cloudinary.com/dpllx6qv4/image/upload/f_auto,q_auto/v1791293391/NguyenPhucPhu_2424801030010_d0zcfx.jpg"
+      ],
+      "material": "RESIN 3D đúc sắc nét",
+      "dimensions": "6.5 × 5.0 × 7.0 cm",
+      "weight": "18 gram",
+      "printTime": "7-12 ngày (Pre-order)",
+      "layerHeight": "0.05 mm (Resin)",
+      "featured": false,
+      "badge": "MỚI",
+      "inStock": true,
+      "colors": [
+        {
+          "name": "Đen nhám chiến binh",
+          "hex": "#18181B"
+        }
+      ]
+    }
+  ]
+}

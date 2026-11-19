@@ -1,0 +1,68 @@
+name: minhlab-staging
+services:
+  db:
+    image: postgres:18-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: minhlab
+      POSTGRES_USER: minhlab_owner
+      POSTGRES_PASSWORD: ${MINHLAB_DB_OWNER_PASSWORD:?Set owner password in deploy/.env.compose}
+      MINHLAB_DB_APP_PASSWORD: ${MINHLAB_DB_APP_PASSWORD:?Set app password in deploy/.env.compose}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    volumes:
+      - database:/var/lib/postgresql
+      - ./deploy/postgres-init.sh:/docker-entrypoint-initdb.d/10-minhlab.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U minhlab_owner -d minhlab']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [database]
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set HTTPS staging URL}
+    image: minhlab-web:${MINHLAB_RELEASE_TAG:-staging}
+    init: true
+    restart: unless-stopped
+    env_file: ./deploy/.env.runtime
+    environment:
+      DATABASE_URL: postgresql://minhlab_app:${MINHLAB_DB_APP_PASSWORD:?Set app password}@db:5432/minhlab
+      MIGRATION_DATABASE_URL: ''
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set HTTPS staging URL}
+      MINHLAB_PRIVATE_FILES_ROOT: /var/lib/minhlab/private-files
+      MINHLAB_PRIVATE_PURGE_JOURNAL_ROOT: /var/lib/minhlab/purge-journal
+      MINHLAB_PRIVATE_FILES_SCANNER: /usr/bin/clamscan
+    ports: [127.0.0.1:3000:3000]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - private-files:/var/lib/minhlab/private-files
+      - purge-journal:/var/lib/minhlab/purge-journal
+      - clamav:/var/lib/clamav
+    healthcheck:
+      test: [CMD, node, -e, 'fetch("http://127.0.0.1:3000/api/health").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))']
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    networks: [database, outbound]
+    logging: *logging
+volumes:
+  database:
+  private-files:
+  purge-journal:
+  clamav:
+networks:
+  database:
+    internal: true
+  outbound:

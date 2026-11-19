@@ -54,6 +54,7 @@ export default function ConsultantMascot(props: ConsultantMascotProps) {
   const [modelReady, setModelReady] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizes browser, WebGL or remote API state after mount; keep SSR hydration deterministic.
     setSupported(isWebGLAvailable());
   }, []);
 

@@ -27,6 +27,9 @@ import { createCustomizedLabScene } from '../../lib/scene-customization';
 
 export type LabPhase = 'assembly' | 'explore';
 
+const CAMERA_TRANSITION_FACTOR = 0.06;
+const CAMERA_DISTANCE_SCALE = 1.1;
+
 export interface LabCanvasProps {
   phase?: LabPhase;
   assemblyProgress?: number;
@@ -42,7 +45,7 @@ export interface LabCanvasProps {
 export const LAB_STEP_WAYPOINTS = [
   // 0: Toàn cảnh không gian xưởng MinhLab (Panoramic Overview)
   {
-    pos: new THREE.Vector3(9.8, 7.8, 11.8),
+    pos: new THREE.Vector3(10.6, 8.3, 12.8),
     target: new THREE.Vector3(0.0, 1.4, -0.2),
     lightPos: new THREE.Vector3(0.0, 8.5, 0.0),
     lightColor: '#F4F1EA',
@@ -253,6 +256,7 @@ function LabModel({
 
   useFrame(({ clock }) => {
     if (resinLift && animate && !reducedMotion) {
+      // eslint-disable-next-line react-hooks/immutability -- R3F owns this cloned imperative Three.js object; transform/material updates are intentional.
       resinLift.position.y = 1.38 + Math.pow(Math.sin(clock.elapsedTime * 0.35), 2) * 0.07;
     }
 
@@ -266,6 +270,7 @@ function LabModel({
         part.group.position.copy(part.finalPos);
         part.group.scale.copy(part.finalScale);
         for (const record of part.materials) {
+          // eslint-disable-next-line react-hooks/immutability -- R3F owns this cloned imperative Three.js object; transform/material updates are intentional.
           record.material.transparent = record.origTransparent;
           record.material.opacity = record.origOpacity;
         }
@@ -366,6 +371,7 @@ function ResponsiveLabCamera({ isMobile }: { isMobile: boolean }) {
   const { camera } = useThree();
   useEffect(() => {
     if (camera instanceof THREE.PerspectiveCamera) {
+      // eslint-disable-next-line react-hooks/immutability -- R3F owns this cloned imperative Three.js object; transform/material updates are intentional.
       camera.fov = isMobile ? 44 : 35;
       camera.updateProjectionMatrix();
     }
@@ -411,15 +417,17 @@ function CameraController({
       targetLook = LAB_WAYPOINTS_TARGET(activeStep);
     }
 
+    targetPos = targetPos.clone().sub(targetLook).multiplyScalar(CAMERA_DISTANCE_SCALE).add(targetLook);
+
     if (reducedMotion) {
       camera.position.copy(targetPos);
       camera.lookAt(targetLook);
       return;
     }
 
-    // Lerp mượt mà với hệ số 0.075: chuyển cảnh trôi như drone quay phim điện ảnh
-    currentPos.current.lerp(targetPos, 0.075);
-    currentTarget.current.lerp(targetLook, 0.075);
+    // Lerp chậm hơn nhẹ và lùi camera khỏi điểm ngắm để thấy rộng không gian hơn.
+    currentPos.current.lerp(targetPos, CAMERA_TRANSITION_FACTOR);
+    currentTarget.current.lerp(targetLook, CAMERA_TRANSITION_FACTOR);
 
     camera.position.copy(currentPos.current);
     camera.lookAt(currentTarget.current);
@@ -475,6 +483,7 @@ function StationHighlightLight({
 
   return (
     <>
+      {/* eslint-disable-next-line react-hooks/refs -- Stable Three.js scene target is passed to R3F; this is not a React render-state dependency. */}
       <primitive object={targetObjRef.current} />
       <spotLight
         ref={lightRef}
@@ -510,6 +519,7 @@ export const LabCanvas: React.FC<LabCanvasProps> = ({
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizes browser, WebGL or remote API state after mount; keep SSR hydration deterministic.
     setReducedMotion(media.matches);
     const handleMedia = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
     media.addEventListener('change', handleMedia);
@@ -529,7 +539,7 @@ export const LabCanvas: React.FC<LabCanvasProps> = ({
     <div className="w-full h-full relative bg-[#0B0F14]">
       <Canvas
         shadows
-        dpr={[1, 1.5]}
+        dpr={isMobile ? [1, 1.15] : [1, 1.3]}
         camera={{ position: [11, 8.5, 13], fov: 35, near: 0.1, far: 100 }}
         frameloop={shouldAnimate ? 'always' : 'demand'}
         gl={{ antialias: true, powerPreference: 'high-performance' }}

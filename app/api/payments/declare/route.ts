@@ -1,26 +1,33 @@
+import { siteOrigin } from '../../../../src/lib/site-url';
+import { AppError } from '../../../../src/lib/errors';
+import { apiErrorResponse } from '../../../../src/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
-import { OrderService } from '../../../../src/services/order.service';
+import { OrderService } from '../../../../src/server/orders';
+import { readAuthSession } from '../../../../src/lib/auth-session';
+import { isRecord, textField, readJson } from '../../../../src/lib/request-validation';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { orderNumber, transactionReference, bankName, senderAccountName, paymentProofUrl } = body;
+    const body: unknown = await readJson(request);
+    if (!isRecord(body)) throw new AppError('Thông tin chuyển khoản không hợp lệ.');
+    const orderNumber = textField(body.orderNumber, 'Mã đơn', 40);
+    const transactionReference = textField(body.transactionReference, 'Mã giao dịch', 120, false) || undefined;
+    const bankName = textField(body.bankName, 'Ngân hàng', 120, false) || undefined;
+    const senderAccountName = textField(body.senderAccountName, 'Người chuyển', 160, false) || undefined;
+    const trackingToken = textField(body.trackingToken, 'Token tra cứu', 128, false);
+    const paymentProofUrl = textField(body.paymentProofUrl, 'Ảnh chuyển khoản', 2048, false);
+    if (paymentProofUrl) throw new AppError('Tạm thời chưa nhận ảnh biên lai qua liên kết công khai. Hãy khai báo thông tin giao dịch; ảnh sẽ được mở lại khi có kho lưu trữ riêng tư.', 409);
+    const session = await readAuthSession(request);
 
-    if (!orderNumber || !transactionReference || !bankName || !senderAccountName) {
-      return NextResponse.json({
-        success: false,
-        error: 'Vui lòng cung cấp đầy đủ: Mã đơn, Mã giao dịch tham chiếu, Tên ngân hàng và Tên chủ tài khoản chuyển.',
-      }, { status: 400 });
-    }
-
-    const origin = request.nextUrl.origin || 'http://localhost:3000';
+    const origin = siteOrigin(request);
     const result = await OrderService.declarePayment({
       orderNumber,
       transactionReference,
       bankName,
       senderAccountName,
       paymentProofUrl,
-    }, origin);
+      trackingToken,
+    }, origin, session?.id);
 
     return NextResponse.json({
       success: true,
@@ -32,10 +39,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Lỗi khi khai báo chuyển khoản';
-    return NextResponse.json({
-      success: false,
-      error: message,
-    }, { status: 400 });
+    return apiErrorResponse(err, 'Lỗi khi khai báo chuyển khoản');
   }
 }

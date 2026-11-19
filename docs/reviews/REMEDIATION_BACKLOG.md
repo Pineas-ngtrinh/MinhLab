@@ -1,0 +1,22 @@
+# Phần việc còn lại sau kiểm toán 03/11/2026
+
+Nguồn yêu cầu: [master prompt](../prompts/MINHLAB_MASTER_AUDIT.md). Bằng chứng và phần đã sửa: [MINHLAB_AUDIT.md](MINHLAB_AUDIT.md). Đây là backlog; không phải xác nhận đã triển khai.
+
+**Lưu ý cập nhật:** bảng bên dưới là snapshot tại 03/11. BL-01/02/09/12 đã có một phần runtime/migration ngày 11/11; xem [ma trận triển khai mới nhất](implementation-verification-2026-11-11.md) để biết bằng chứng và phần còn thiếu. Những dòng lịch sử không tự mô tả code hiện hành.
+
+| ID | Mức / phân loại | Việc còn lại và tác động | Công sức tương đối | Phụ thuộc / điều kiện hoàn tất |
+|---|---|---|---|---|
+| BL-01 | P1 / NOT_IMPLEMENTED | Atomic apply kế hoạch sản xuất: khóa plan/key và nguồn, đọc lại version trong transaction, kiểm slicer/máy/vật tư, chống over-allocation và double apply, job/reservation/audit commit cùng nhau. Hiện chỉ có thiết kế. | Lớn | Chốt schema, nguồn version và policy; migration bổ sung; race/rollback test DB cô lập theo ELABORATION_TRACEABILITY. Không triển khai engine chỉ để sơ đồ có code tương ứng. |
+| BL-02 | P1 / NOT_IMPLEMENTED | Nhận tệp riêng tư, kiểm nội dung/mã độc, revision, báo giá chính thức và chấp thuận có thể truy vết. API checkout đã có guard custom nhưng chưa có pipeline tiếp nhận đầy đủ. | Lớn | DD-01, DD-02; giữ ước tính tại trình duyệt là tham khảo. |
+| BL-03 | P2 / NEEDS_DECISION | Chưa có giới hạn nguồn truy cập đáng tin cậy cho đăng ký/checkout; throttle đăng nhập hiện theo tài khoản. Random email có thể làm tăng công việc hash và tăng dữ liệu. | Vừa | Chốt reverse proxy/IP đáng tin và giới hạn; không dùng IP header tùy ý hoặc Map theo process. |
+| BL-04 | P2 / NEEDS_DECISION | Retention cho account/session/tracking tokens, auth attempts, outbox và bằng chứng thanh toán chưa có lịch dọn được duyệt. Token hết hạn mất quyền nhưng bản ghi vẫn còn. | Vừa | DD-03; yêu cầu lưu vết và khôi phục; thao tác dọn phải có dry-run, chia lô và kiểm thử. |
+| BL-05 | P2 / UNVERIFIED | Khôi phục backup, production TLS, scheduler, quyền host, giới hạn request ở reverse proxy và log/alert thực tế. Không kiểm chứng hạ tầng thật trong tác vụ này. | Vừa | Môi trường staging cô lập và runbook; chỉ thao tác hạ tầng khi được phép. |
+| BL-06 | P2 / UNVERIFIED | Đối chiếu cảnh báo dependency với registry/CVE mới nhất; không xem audit cũ hoặc build xanh là bằng chứng không có lỗ hổng. | Nhỏ–vừa | Dữ liệu advisory hiện hành; đánh giá tương thích trước nâng phiên bản. |
+| BL-07 | P2 / UNVERIFIED | Render và duyệt toàn bộ 142 trang export tổng hợp; tác vụ ưu tiên các trang Elaboration quan trọng. Các trang chưa xem ảnh phải giữ NOT VERIFIED. | Vừa | Bảng visual QA trong ELABORATION_CHANGELOG; không suy đạt từ XML. |
+| BL-08 | P3 / DESIGN_PROPOSAL | Benchmark STL lớn/ASCII trong worker và preview WebGL trên thiết bị đích; profile query trang sâu và kích thước response thật. Chưa có số đo tải production để tuyên bố tối ưu. | Vừa | Fixture đại diện, cấu hình máy/browser và ngân sách thời gian/bộ nhớ thống nhất. |
+| BL-09 | P2 / NOT_IMPLEMENTED | Hoàn tiền/giao vận/job/QC đầy đủ mới có schema/thiết kế; không dùng các nút cập nhật đơn thủ công như bằng chứng điều khiển máy hay xử lý hoàn tiền tự động. | Lớn | Quy trình xưởng, quyền, trạng thái và kiểm thử module riêng. |
+| BL-10 | P3 / DOCUMENTATION_MISMATCH | Một số kiểu Payment còn chứa REFUNDED dù CHECK verification chỉ cho PENDING/VERIFIED/REJECTED. Không đổi hợp đồng công khai trong bản vá; tách payment aggregate và refund trước khi triển khai. | Nhỏ–vừa | Thiết kế hoàn tiền và migration mới; không sửa CHECK lịch sử. |
+| BL-11 | P3 / DESIGN_PROPOSAL | DB có numeric(…,2) nên vẫn chứa được phần lẻ VND khi ghi SQL trực tiếp. Runtime mới chặn từng đơn giá. Có thể tăng ràng buộc DB nếu cần bao phủ mọi writer. | Vừa | Kiểm tra dữ liệu và chính sách chuyển đổi trước; không sửa/xóa dữ liệu thật hoặc tự làm tròn giá. |
+| BL-12 | P2 / NOT_IMPLEMENTED | Một số status/quantity/QC của schema xưởng mới có COMMENT, chưa có CHECK tương ứng. Trước khi bật workflow job/QC cần kiểm schema thực thi, quantity conservation và lịch sử theo allocation. | Vừa | DD-02, đánh giá dữ liệu, migration riêng không phá hủy và negative/concurrent tests. Không coi COMMENT hoặc tên state trên sơ đồ là bảo đảm DB. |
+
+Không có cơ sở để chuyển sang ORM, microservices, message broker hoặc thêm AWS services nhằm xử lý các bản vá đã xác minh. Không có thay đổi dependency hay schema trong tác vụ này.

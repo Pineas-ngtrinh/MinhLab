@@ -1,0 +1,5 @@
+# Used only by `docker compose ... run --rm web ...`, never by `up`.
+services:
+  web:
+    environment:
+      MIGRATION_DATABASE_URL: postgresql://minhlab_owner:${MINHLAB_DB_OWNER_PASSWORD:?Set owner password}@db:5432/minhlab

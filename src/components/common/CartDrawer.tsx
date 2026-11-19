@@ -1,9 +1,13 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import Image from './ProductImage';
 import { useCart } from '../../context/CartContext';
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
+import { X, Trash2, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ModalDialog } from './ModalDialog';
+import { catalogShippingFee, CATALOG_FREE_SHIPPING_FROM } from '../../domain/orders/checkout-pricing';
+import { QuantityControl } from './QuantityControl';
+import { formatVND } from '../../lib/format';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -15,63 +19,22 @@ export const CartDrawer: React.FC = () => {
     totalPrice,
     totalCount,
     openCheckout,
+    cartLoading,
+    cartError,
   } = useCart();
-
-  // Khóa cuộn trang nền khi mở giỏ hàng
-  React.useEffect(() => {
-    if (!isCartOpen) return;
-
-    const originalBodyOverflow = document.body.style.overflow;
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeCart();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalBodyOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isCartOpen, closeCart]);
 
   if (!isCartOpen) return null;
 
-  // Định dạng tiền VNĐ chuẩn Việt Nam
-  const formatVND = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-  };
-
   // Mốc miễn phí vận chuyển: từ 500.000₫
-  const FREESHIP_THRESHOLD = 500000;
+  const FREESHIP_THRESHOLD = CATALOG_FREE_SHIPPING_FROM;
+  const shippingFee = catalogShippingFee(totalPrice);
   const progressFreeship = Math.min(100, (totalPrice / FREESHIP_THRESHOLD) * 100);
   const remainingForFreeship = FREESHIP_THRESHOLD - totalPrice;
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex justify-end animate-fadeIn"
-      onWheel={(e) => e.stopPropagation()}
-    >
-      {/* Lớp nền mờ khi mở giỏ hàng: Click để đóng */}
-      <div
-        onClick={closeCart}
-        onTouchMove={(e) => e.preventDefault()}
-        onWheel={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity cursor-pointer"
-      />
-
+    <ModalDialog title="Giỏ hàng MinhLab" onDismiss={closeCart} testId="cart-drawer" className="!justify-end items-stretch p-0 animate-fadeIn">
       {/* Panel giỏ hàng trượt từ phải sang (Dark Workshop) */}
       <div 
-        role="dialog"
-        aria-modal="true"
-        aria-label="Giỏ hàng MinhLab"
-        data-testid="cart-drawer"
         onWheel={(e) => e.stopPropagation()}
         className="relative z-10 w-full max-w-md bg-[#141A21] border-l border-[#27313C] shadow-2xl flex flex-col h-full text-[#F4F1EA]"
       >
@@ -93,7 +56,7 @@ export const CartDrawer: React.FC = () => {
           <button
             type="button"
             onClick={closeCart}
-            className="p-2 rounded-lg bg-[#141A21] hover:bg-[#1A222C] text-[#A5ADB8] hover:text-[#F4F1EA] border border-[#27313C] transition-colors"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#141A21] hover:bg-[#1A222C] text-[#A5ADB8] hover:text-[#F4F1EA] border border-[#27313C] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8A261]"
             aria-label="Đóng giỏ hàng"
           >
             <X className="w-4 h-4" />
@@ -125,7 +88,15 @@ export const CartDrawer: React.FC = () => {
 
         {/* Danh Sách Sản Phẩm Trong Giỏ */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-[#27313C]">
-          {items.length === 0 ? (
+          {cartLoading || cartError ? (
+            <div className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center" role={cartError ? 'alert' : 'status'}>
+              <p className="text-sm text-[#F4F1EA]">{cartError || 'Đang tải giỏ hàng…'}</p>
+              {cartError && <button type="button" onClick={() => window.location.reload()}
+                className="min-h-11 px-4 text-sm text-[#C8A261] underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[#C8A261]">
+                Tải lại trang
+              </button>}
+            </div>
+          ) : items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
               <div className="w-14 h-14 rounded-xl bg-[#0F141A] border border-[#27313C] flex items-center justify-center text-[#737D89]">
                 <ShoppingBag className="w-7 h-7" />
@@ -144,18 +115,19 @@ export const CartDrawer: React.FC = () => {
             </div>
           ) : (
             items.map((item) => (
-              <div key={`${item.product.id}-${item.selectedColor || ''}`} className="pt-3 first:pt-0 flex gap-3.5 items-center">
-                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#0F141A] border border-[#27313C] shrink-0">
+              <div key={`${item.product.id}-${item.variantId ?? item.selectedColor ?? ''}`} className="grid grid-cols-[64px_minmax(0,1fr)_44px] items-center gap-x-3 gap-y-2 pt-4 first:pt-0">
+                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#090D12] border border-[#27313C] shrink-0 flex items-center justify-center">
                   <Image
                     src={item.product.image}
                     alt={item.product.title}
                     fill
-                    className="object-cover"
+                    sizes="64px"
+                    className="object-contain p-1"
                   />
                 </div>
 
                 <div className="flex-1 min-w-0 space-y-1 text-left">
-                  <h4 className="text-xs font-semibold text-[#F4F1EA] truncate">
+                  <h4 className="line-clamp-2 text-xs font-semibold leading-snug text-[#F4F1EA]">
                     {item.product.title}
                   </h4>
                   {item.selectedColor && (
@@ -168,38 +140,19 @@ export const CartDrawer: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Điều khiển số lượng */}
-                <div className="flex items-center gap-1 bg-[#0F141A] border border-[#27313C] rounded-lg p-0.5">
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                    className="p-1 rounded hover:bg-[#1A222C] text-[#A5ADB8] hover:text-[#F4F1EA] transition-colors"
-                    aria-label="Giảm số lượng"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-
-                  <span className="w-6 text-center text-xs font-mono font-bold text-[#F4F1EA]">
-                    {item.quantity}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                    className="p-1 rounded hover:bg-[#1A222C] text-[#A5ADB8] hover:text-[#F4F1EA] transition-colors"
-                    aria-label="Tăng số lượng"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
+                <div className="col-start-2 row-start-2">
+                  <QuantityControl value={item.quantity}
+                    onChange={quantity => updateQuantity(item.product.id, quantity, item.variantId ?? item.selectedColor)}
+                    label={item.product.title} />
                 </div>
 
                 {/* Nút xóa món */}
                 <button
                   type="button"
-                  onClick={() => removeFromCart(item.product.id)}
-                  className="p-1.5 text-[#737D89] hover:text-[#EB4037] transition-colors"
+                  onClick={() => removeFromCart(item.product.id, item.variantId ?? item.selectedColor)}
+                  className="col-start-3 row-start-1 flex h-11 w-11 items-center justify-center rounded-lg text-[#A5ADB8] transition-colors hover:text-[#EB4037] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8A261]"
                   title="Xóa khỏi giỏ"
-                  aria-label="Xóa"
+                  aria-label={`Xóa ${item.product.title} khỏi giỏ hàng`}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -218,11 +171,11 @@ export const CartDrawer: React.FC = () => {
               </div>
               <div className="flex justify-between text-[#A5ADB8]">
                 <span>Phí vận chuyển:</span>
-                <span className="text-[#6F9576] font-medium">{totalPrice >= FREESHIP_THRESHOLD ? 'Miễn phí' : 'Tính khi nhận'}</span>
+                <span className="text-[#6F9576] font-medium">{shippingFee === 0 ? 'Miễn phí' : formatVND(shippingFee)}</span>
               </div>
               <div className="flex justify-between text-sm font-bold text-[#F4F1EA] pt-2 border-t border-[#27313C]">
                 <span>Tổng cộng:</span>
-                <span className="text-base font-mono text-[#EB4037]">{formatVND(totalPrice)}</span>
+                <span className="text-base font-mono text-[#EB4037]">{formatVND(totalPrice + shippingFee)}</span>
               </div>
             </div>
 
@@ -241,7 +194,7 @@ export const CartDrawer: React.FC = () => {
         )}
 
       </div>
-    </div>
+    </ModalDialog>
   );
 };
 

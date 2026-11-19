@@ -1,0 +1,116 @@
+{
+  "version": "stl-pla-a1mini-physical-v1",
+  "trainedAt": "2026-10-07",
+  "gitSha": "66ad776",
+  "slicingProfileId": "bambu_a1mini_04_020_auto_pei_02.08.02.61",
+  "provisional": true,
+  "provisionalReason": "Nhãn huấn luyện là ước tính Bambu Studio; chưa có số đo từ bản in thật.",
+  "supportedMaterials": [
+    "PLA"
+  ],
+  "densityGPerCm3": {
+    "PLA": 1.26,
+    "PETG": 1.28,
+    "TPU": 1.22
+  },
+  "mass": {
+    "coefficients": {
+      "intercept": 131.34291269305805,
+      "area": 0.5677112604726884,
+      "areaInfill": -0.6884455907726426,
+      "volumeInfill": 1.2053098854115416
+    },
+    "calibrationByMaterial": {
+      "PLA": {
+        "massFactor": 1.0,
+        "timeFactor": 1.0,
+        "applied": false,
+        "realPrintCount": 0
+      },
+      "PETG": {
+        "massFactor": 1.0,
+        "timeFactor": 1.0,
+        "applied": false,
+        "realPrintCount": 0
+      },
+      "TPU": {
+        "massFactor": 1.0,
+        "timeFactor": 1.0,
+        "applied": false,
+        "realPrintCount": 0
+      }
+    }
+  },
+  "time": {
+    "coefficients": {
+      "intercept": -29.948189962332837,
+      "materialVolume": 0.0703955966175773,
+      "height": 34.817941198130015,
+      "area": 0.009661903011767647
+    },
+    "calibrationByMaterial": {
+      "PLA": {
+        "massFactor": 1.0,
+        "timeFactor": 1.0,
+        "applied": false,
+        "realPrintCount": 0
+      },
+      "PETG": {
+        "massFactor": 1.0,
+        "timeFactor": 1.0,
+        "applied": false,
+        "realPrintCount": 0
+      },
+      "TPU": {
+        "massFactor": 1.0,
+        "timeFactor": 1.0,
+        "applied": false,
+        "realPrintCount": 0
+      }
+    }
+  },
+  "trainingRange": {
+    "scale": [
+      0.5,
+      1.5
+    ],
+    "infill": [
+      0.15,
+      0.8
+    ],
+    "area_mm2": [
+      632.9681353947877,
+      202890.35288941723
+    ],
+    "area_x_infill_mm2": [
+      94.94522030921816,
+      162312.2823115338
+    ],
+    "material_volume_mm3": [
+      612.1031746031746,
+      353539.99206349207
+    ],
+    "volume_x_infill_mm3": [
+      117.4100151221731,
+      325512.8430480247
+    ],
+    "height_mm": [
+      1.75,
+      170.0028076171875
+    ]
+  },
+  "cv": {
+    "mass": {
+      "mape": 0.16286611421077501,
+      "wape": 0.14641775050026906,
+      "mae": 6.507940815144962,
+      "relErrP90": 0.29924981686212393
+    },
+    "time": {
+      "mape": 0.3041090499105604,
+      "wape": 0.3138795873986898,
+      "mae": 1899.5028814331315,
+      "relErrP90": 0.5377179368427024
+    }
+  }
+}

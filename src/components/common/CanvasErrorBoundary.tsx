@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Component, type ReactNode } from 'react';
+import { Component, type ReactNode } from 'react';
 
 export function isWebGLAvailable(): boolean {
   if (typeof window === 'undefined') return false;
@@ -33,10 +33,6 @@ export class CanvasErrorBoundary extends Component<CanvasErrorBoundaryProps, Can
 
   static getDerivedStateFromError(error: Error): CanvasErrorBoundaryState {
     return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.warn('[CanvasErrorBoundary] Caught WebGL/Canvas error:', error.message, info);
   }
 
   render() {

@@ -1,0 +1,15 @@
+{
+  "version": "minhlab-vnd-2026-10-21-hourly-v2",
+  "currency": "VND",
+  "pricePerGramVnd": {
+    "PLA": 1000,
+    "PETG": 1000,
+    "TPU": 1000
+  },
+  "profitIncludedInMaterialPrice": true,
+  "electricityVndPerHour": 3500,
+  "laborVnd": 0,
+  "shippingFeeVnd": 25000,
+  "freeShippingAboveProductVnd": 300000,
+  "rounding": "half_up_vnd"
+}

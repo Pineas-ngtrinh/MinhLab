@@ -6,14 +6,19 @@
 
 # Next.js build output
 /.next/
+/.next-dev/
 /out/
+
+# Local PostgreSQL development data
+.local/
 
 # Production build artifacts
 /build
 /dist
 
 # Environment variables
-.env*.local
+.env*
+!.env.example
 
 # System & Editor files
 .DS_Store
@@ -36,3 +41,18 @@ __pycache__/
 
 # Vercel
 .vercel
+
+# Generated outputs from optional model-authoring scripts
+/minhlab-lab-v1.glb
+/minhlab-mascot-v1.glb
+/minhlab-lab-preview.png
+/minhlab-mascot-detail.png
+/model-info.json
+/validation-report.json
+/result.json
+/dbml-error.log
+
+# Deployment templates contain no credentials.
+!deploy/.env.compose.example
+!deploy/.env.runtime.example
+/deploy/.cleanup-enabled

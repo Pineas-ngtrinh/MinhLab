@@ -1,0 +1,786 @@
+{
+  "purpose": "Synthetic inference parity fixtures; not training observations or accuracy measurements",
+  "sourceModelSha256": "815a478d45e600f7742dbeab7b97bf80f9d5e3b70482bb7216f77212e4c54126",
+  "shapes": [
+    {
+      "name": "box",
+      "stlBase64": "dGVzdCBib3ggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgQQAA8EEAAAAAAACgQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwQQAAAAAAAKBBAADwQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQgAAoEEAAAAAAAAgQgAAoEEAAPBBAAAgQgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACBCAACgQQAA8EEAACBCAAAAAAAA8EEAACBCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKBBAAAAAAAAAAAAAKBBAAAAAAAAIEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoEEAAAAAAAAgQgAAAAAAAAAAAAAgQgAAAAAAAAAAAAAAAAAAAACgQQAAAAAAAAAAAACgQQAA8EEAAAAAAACgQQAA8EEAACBCAAAAAAAAAAAAAAAAAAAAAKBBAAAAAAAAAAAAAKBBAADwQQAAIEIAAKBBAAAAAAAAIEIAAAAAAAAAAAAAAAAAAAAAoEEAAPBBAAAAAAAAAAAAAPBBAAAAAAAAAAAAAPBBAAAgQgAAAAAAAAAAAAAAAAAAAACgQQAA8EEAAAAAAAAAAAAA8EEAACBCAACgQQAA8EEAACBCAAAAAAAAAAAAAAAAAAAAAAAAAADwQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEIAAAAAAAAAAAAAAAAAAAAAAAAAAPBBAAAAAAAAAAAAAAAAAAAgQgAAAAAAAPBBAAAgQgAA",
+      "expected": [
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.753605848538031,
+          "minutes": 11.286083097129406
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 9.14211543176357,
+          "minutes": 27.70753671752587
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.65865615813986,
+          "minutes": 54.03655410756058
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.377592352464352,
+          "minutes": 11.963357964194522
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.458386981711634,
+          "minutes": 34.56321700455234
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 48.465999597569265,
+          "minutes": 78.79164159559367
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.3759707587464653,
+          "minutes": 13.046997751498706
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 25.564421461628537,
+          "minutes": 45.53230546379469
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 84.9577491006563,
+          "minutes": 118.3997815764466
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7091352678503384,
+          "minutes": 13.035488330490379
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 8.923574828526936,
+          "minutes": 32.11377995571387
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.050993150135945,
+          "minutes": 61.851838182110626
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.3184209253359525,
+          "minutes": 13.764183312992456
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.091037810422131,
+          "minutes": 39.48995773777572
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 47.321005651293795,
+          "minutes": 88.48638335887023
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.2932779773129353,
+          "minutes": 14.93009528499578
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 24.958978581454446,
+          "minutes": 51.29184218907467
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 82.95302565314637,
+          "minutes": 131.10165564168557
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7349575055296482,
+          "minutes": 13.715742026461921
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 9.015586085763855,
+          "minutes": 34.824719252878225
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.29096572823846,
+          "minutes": 68.61632452872165
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.3498330664249876,
+          "minutes": 14.582718553278227
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.239632579724848,
+          "minutes": 43.60064491208003
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 47.765294903004865,
+          "minutes": 100.30520125378298
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.333633963857532,
+          "minutes": 15.969880996184317
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 25.19810697006243,
+          "minutes": 57.64212596680291
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 83.7242215826311,
+          "minutes": 151.00740401388114
+        }
+      ]
+    },
+    {
+      "name": "oriented-box",
+      "stlBase64": "dGVzdCBib3ggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKBBAAAAAAAA8EEAAKBBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwQQAAoEEAAAAAAADwQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEIAAPBBAACgQQAAIEIAAAAAAACgQQAAIEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQgAA8EEAAAAAAAAgQgAA8EEAAKBBAAAgQgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACBCAAAAAAAAoEEAAAAAAAAAAAAAoEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEIAAAAAAAAAAAAAIEIAAAAAAACgQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQgAA8EEAAKBBAAAAAAAA8EEAAKBBAAAAAAAAAAAAAKBBAAAAAAAAAAAAAAAAAAAAACBCAAAAAAAAoEEAACBCAADwQQAAoEEAAAAAAAAAAAAAoEEAAAAAAAAAAAAAAAAAAAAAIEIAAPBBAAAAAAAAAAAAAPBBAAAAAAAAAAAAAPBBAACgQQAAAAAAAAAAAAAAAAAAAAAgQgAA8EEAAKBBAAAgQgAA8EEAAAAAAAAAAAAA8EEAAKBBAAAAAAAAAAAAAAAAAAAAACBCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwQQAAAAAAAAAAAAAAAAAAAAAAAAAAIEIAAPBBAAAAAAAAIEIAAAAAAAAAAAAAAAAAAPBBAAAAAAAA",
+      "expected": [
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.753605848538031,
+          "minutes": 7.085099938677908
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 9.14211543176357,
+          "minutes": 19.30557040062287
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.65865615813986,
+          "minutes": 41.43360463220609
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.377592352464352,
+          "minutes": 7.762374805743025
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.458386981711634,
+          "minutes": 26.161250687649343
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 48.465999597569265,
+          "minutes": 66.18869212023917
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.3759707587464653,
+          "minutes": 8.84601459304721
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 25.564421461628537,
+          "minutes": 37.13033914689169
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 84.9577491006563,
+          "minutes": 105.79683210109212
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7091352678503384,
+          "minutes": 7.810514240814396
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 8.923574828526936,
+          "minutes": 21.663831776361913
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.050993150135945,
+          "minutes": 46.176915913082674
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.3184209253359525,
+          "minutes": 8.539209223316474
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.091037810422131,
+          "minutes": 29.04000955842376
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 47.321005651293795,
+          "minutes": 72.81146108984228
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.2932779773129353,
+          "minutes": 9.705121195319798
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 24.958978581454446,
+          "minutes": 40.84189400972271
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 82.95302565314637,
+          "minutes": 115.42673337265765
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7349575055296482,
+          "minutes": 8.29410831997643
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 9.015586085763855,
+          "minutes": 23.98145183990725
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.29096572823846,
+          "minutes": 52.35142340926519
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.3498330664249876,
+          "minutes": 9.161084846792738
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.239632579724848,
+          "minutes": 32.757377499109054
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 47.765294903004865,
+          "minutes": 84.04030013432653
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.333633963857532,
+          "minutes": 10.548247289698828
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 25.19810697006243,
+          "minutes": 46.798858553831934
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 83.7242215826311,
+          "minutes": 134.7425028944247
+        }
+      ]
+    },
+    {
+      "name": "support-T",
+      "stlBase64": "dGVzdCBib3ggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAcAAAAAAAAAAAAAAAAAAAAAACgwAAAAAAAAPBBAACgwAAAAAAAAAAAAACgQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKBAAACgQQAAAAAAAKDAAACgQQAAAAAAAKDAAACgQQAA8EEAAAAAAAAAAAAAAAAAAAAAoMAAAAAAAADwQQAAoEAAAAAAAAAAAAAAoEAAAAAAAADwQQAAAAAAAAAAAAAAAAAAAACgQAAAoEEAAPBBAACgQAAAoEEAAAAAAACgwAAAoEEAAPBBAAAAAAAAAAAAAAAAAAAAAKBAAAAAAAAA8EEAAMhBAAAAAAAA8EEAAMhBAAAAAAAAIEIAAAAAAAAAAAAAAAAAAAAAyEEAAKBBAAAgQgAAyEEAAKBBAADwQQAAoEAAAKBBAADwQQAAAAAAAAAAAAAAAAAAAACgwAAAAAAAAPBBAACgQAAAAAAAAPBBAADIQQAAAAAAACBCAAAAAAAAAAAAAAAAAAAAAMhBAACgQQAAIEIAAKBAAACgQQAA8EEAAKDAAACgQQAA8EEAAAAAAAAAAAAAAAAAAAAAoMAAAAAAAADwQQAAyEEAAAAAAAAgQgAAyMEAAAAAAAAgQgAAAAAAAAAAAAAAAAAAAADIwQAAoEEAACBCAADIQQAAoEEAACBCAACgwAAAoEEAAPBBAAAAAAAAAAAAAAAAAAAAAMjBAAAAAAAAIEIAAMjBAAAAAAAA8EEAAKDAAAAAAAAA8EEAAAAAAAAAAAAAAAAAAAAAoMAAAKBBAADwQQAAyMEAAKBBAADwQQAAyMEAAKBBAAAgQgAAAAAAAAAAAAAAAAAAAACgwAAAAAAAAAAAAACgwAAAoEEAAAAAAACgQAAAoEEAAAAAAAAAAAAAAAAAAAAAAAAAAKDAAAAAAAAAAAAAAKBAAACgQQAAAAAAAKBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoEAAAAAAAAAAAAAAoEAAAKBBAAAAAAAAoEAAAKBBAADwQQAAAAAAAAAAAAAAAAAAAACgQAAAAAAAAAAAAACgQAAAoEEAAPBBAACgQAAAAAAAAPBBAAAAAAAAAAAAAAAAAAAAAKBAAAAAAAAA8EEAAKBAAACgQQAA8EEAAMhBAACgQQAA8EEAAAAAAAAAAAAAAAAAAAAAoEAAAAAAAADwQQAAyEEAAKBBAADwQQAAyEEAAAAAAADwQQAAAAAAAAAAAAAAAAAAAADIQQAAAAAAAPBBAADIQQAAoEEAAPBBAADIQQAAoEEAACBCAAAAAAAAAAAAAAAAAAAAAMhBAAAAAAAA8EEAAMhBAACgQQAAIEIAAMhBAAAAAAAAIEIAAAAAAAAAAAAAAAAAAAAAyEEAAAAAAAAgQgAAyEEAAKBBAAAgQgAAyMEAAKBBAAAgQgAAAAAAAAAAAAAAAAAAAADIQQAAAAAAACBCAADIwQAAoEEAACBCAADIwQAAAAAAACBCAAAAAAAAAAAAAAAAAAAAAMjBAAAAAAAAIEIAAMjBAACgQQAAIEIAAMjBAACgQQAA8EEAAAAAAAAAAAAAAAAAAAAAyMEAAAAAAAAgQgAAyMEAAKBBAADwQQAAyMEAAAAAAADwQQAAAAAAAAAAAAAAAAAAAADIwQAAAAAAAPBBAADIwQAAoEEAAPBBAACgwAAAoEEAAPBBAAAAAAAAAAAAAAAAAAAAAMjBAAAAAAAA8EEAAKDAAACgQQAA8EEAAKDAAAAAAAAA8EEAAAAAAAAAAAAAAAAAAAAAoMAAAAAAAADwQQAAoMAAAKBBAADwQQAAoMAAAKBBAAAAAAAAAAAAAAAAAAAAAAAAAACgwAAAAAAAAPBBAACgwAAAoEEAAAAAAACgwAAAAAAAAAAAAAA=",
+      "expected": [
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.823006809195657,
+          "minutes": 12.29019502319022
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 8.65565416754552,
+          "minutes": 35.59375146007222
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 22.844971823239995,
+          "minutes": 80.48751311447185
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.12863285193508,
+          "minutes": 12.621921488691502
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 12.4250420279984,
+          "minutes": 39.68504453458802
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 37.05658281062314,
+          "minutes": 95.9127937602814
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 2.617634520318156,
+          "minutes": 13.152683833493551
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 18.456062604723,
+          "minutes": 46.23111345381329
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 59.79516039043619,
+          "minutes": 120.5932427935767
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7907693342609055,
+          "minutes": 13.953689666634636
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 8.504047023778655,
+          "minutes": 39.266590650307194
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 22.428411431073584,
+          "minutes": 85.77567428248221
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.0891949624171247,
+          "minutes": 14.31060149479892
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 12.184629771038693,
+          "minutes": 43.66850319766669
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 36.305203140337774,
+          "minutes": 102.37207429212138
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 2.5666759674670754,
+          "minutes": 14.881660419861772
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 18.07356216665475,
+          "minutes": 50.71156327344186
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 58.50806987516049,
+          "minutes": 128.926314307544
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7940358633570308,
+          "minutes": 14.626176795195727
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 8.49899066699746,
+          "minutes": 41.30950425438766
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 22.43458112334324,
+          "minutes": 89.60394411690987
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.0951994033874013,
+          "minutes": 15.050818359350652
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 12.213340994038699,
+          "minutes": 46.54675021229842
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 36.43868573475547,
+          "minutes": 109.34977685011393
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 2.577061067435994,
+          "minutes": 15.730244861998534
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 18.156301517304673,
+          "minutes": 54.926343744955616
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 58.84525311301504,
+          "minutes": 140.94310922324038
+        }
+      ]
+    },
+    {
+      "name": "translated-ascii",
+      "stlBase64": "c29saWQgYm94CmZhY2V0IG5vcm1hbCAwIDAgMApvdXRlciBsb29wCnZlcnRleCAxMjMuMCAtNDUuMCAxMi4wCnZlcnRleCAxNDMuMCAtMTUuMCAxMi4wCnZlcnRleCAxNDMuMCAtNDUuMCAxMi4wCmVuZGxvb3AKZW5kZmFjZXQKZmFjZXQgbm9ybWFsIDAgMCAwCm91dGVyIGxvb3AKdmVydGV4IDEyMy4wIC00NS4wIDEyLjAKdmVydGV4IDEyMy4wIC0xNS4wIDEyLjAKdmVydGV4IDE0My4wIC0xNS4wIDEyLjAKZW5kbG9vcAplbmRmYWNldApmYWNldCBub3JtYWwgMCAwIDAKb3V0ZXIgbG9vcAp2ZXJ0ZXggMTIzLjAgLTQ1LjAgNTIuMAp2ZXJ0ZXggMTQzLjAgLTQ1LjAgNTIuMAp2ZXJ0ZXggMTQzLjAgLTE1LjAgNTIuMAplbmRsb29wCmVuZGZhY2V0CmZhY2V0IG5vcm1hbCAwIDAgMApvdXRlciBsb29wCnZlcnRleCAxMjMuMCAtNDUuMCA1Mi4wCnZlcnRleCAxNDMuMCAtMTUuMCA1Mi4wCnZlcnRleCAxMjMuMCAtMTUuMCA1Mi4wCmVuZGxvb3AKZW5kZmFjZXQKZmFjZXQgbm9ybWFsIDAgMCAwCm91dGVyIGxvb3AKdmVydGV4IDEyMy4wIC00NS4wIDEyLjAKdmVydGV4IDE0My4wIC00NS4wIDEyLjAKdmVydGV4IDE0My4wIC00NS4wIDUyLjAKZW5kbG9vcAplbmRmYWNldApmYWNldCBub3JtYWwgMCAwIDAKb3V0ZXIgbG9vcAp2ZXJ0ZXggMTIzLjAgLTQ1LjAgMTIuMAp2ZXJ0ZXggMTQzLjAgLTQ1LjAgNTIuMAp2ZXJ0ZXggMTIzLjAgLTQ1LjAgNTIuMAplbmRsb29wCmVuZGZhY2V0CmZhY2V0IG5vcm1hbCAwIDAgMApvdXRlciBsb29wCnZlcnRleCAxNDMuMCAtNDUuMCAxMi4wCnZlcnRleCAxNDMuMCAtMTUuMCAxMi4wCnZlcnRleCAxNDMuMCAtMTUuMCA1Mi4wCmVuZGxvb3AKZW5kZmFjZXQKZmFjZXQgbm9ybWFsIDAgMCAwCm91dGVyIGxvb3AKdmVydGV4IDE0My4wIC00NS4wIDEyLjAKdmVydGV4IDE0My4wIC0xNS4wIDUyLjAKdmVydGV4IDE0My4wIC00NS4wIDUyLjAKZW5kbG9vcAplbmRmYWNldApmYWNldCBub3JtYWwgMCAwIDAKb3V0ZXIgbG9vcAp2ZXJ0ZXggMTQzLjAgLTE1LjAgMTIuMAp2ZXJ0ZXggMTIzLjAgLTE1LjAgMTIuMAp2ZXJ0ZXggMTIzLjAgLTE1LjAgNTIuMAplbmRsb29wCmVuZGZhY2V0CmZhY2V0IG5vcm1hbCAwIDAgMApvdXRlciBsb29wCnZlcnRleCAxNDMuMCAtMTUuMCAxMi4wCnZlcnRleCAxMjMuMCAtMTUuMCA1Mi4wCnZlcnRleCAxNDMuMCAtMTUuMCA1Mi4wCmVuZGxvb3AKZW5kZmFjZXQKZmFjZXQgbm9ybWFsIDAgMCAwCm91dGVyIGxvb3AKdmVydGV4IDEyMy4wIC0xNS4wIDEyLjAKdmVydGV4IDEyMy4wIC00NS4wIDEyLjAKdmVydGV4IDEyMy4wIC00NS4wIDUyLjAKZW5kbG9vcAplbmRmYWNldApmYWNldCBub3JtYWwgMCAwIDAKb3V0ZXIgbG9vcAp2ZXJ0ZXggMTIzLjAgLTE1LjAgMTIuMAp2ZXJ0ZXggMTIzLjAgLTQ1LjAgNTIuMAp2ZXJ0ZXggMTIzLjAgLTE1LjAgNTIuMAplbmRsb29wCmVuZGZhY2V0CmVuZHNvbGlkIGJveAo=",
+      "expected": [
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.753605848538031,
+          "minutes": 11.286083097129406
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 9.14211543176357,
+          "minutes": 27.70753671752587
+        },
+        {
+          "material": "PLA",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.65865615813986,
+          "minutes": 54.03655410756058
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.377592352464352,
+          "minutes": 11.963357964194522
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.458386981711634,
+          "minutes": 34.56321700455234
+        },
+        {
+          "material": "PLA",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 48.465999597569265,
+          "minutes": 78.79164159559367
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.3759707587464653,
+          "minutes": 13.046997751498706
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 25.564421461628537,
+          "minutes": 45.53230546379469
+        },
+        {
+          "material": "PLA",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 84.9577491006563,
+          "minutes": 118.3997815764466
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7091352678503384,
+          "minutes": 13.035488330490379
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 8.923574828526936,
+          "minutes": 32.11377995571387
+        },
+        {
+          "material": "PETG",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.050993150135945,
+          "minutes": 61.851838182110626
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.3184209253359525,
+          "minutes": 13.764183312992456
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.091037810422131,
+          "minutes": 39.48995773777572
+        },
+        {
+          "material": "PETG",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 47.321005651293795,
+          "minutes": 88.48638335887023
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.2932779773129353,
+          "minutes": 14.93009528499578
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 24.958978581454446,
+          "minutes": 51.29184218907467
+        },
+        {
+          "material": "PETG",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 82.95302565314637,
+          "minutes": 131.10165564168557
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 0.5,
+          "grams": 1.7349575055296482,
+          "minutes": 13.715742026461921
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.0,
+          "grams": 9.015586085763855,
+          "minutes": 34.824719252878225
+        },
+        {
+          "material": "TPU",
+          "infill": 0.15,
+          "scale": 1.5,
+          "grams": 25.29096572823846,
+          "minutes": 68.61632452872165
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 0.5,
+          "grams": 2.3498330664249876,
+          "minutes": 14.582718553278227
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.0,
+          "grams": 15.239632579724848,
+          "minutes": 43.60064491208003
+        },
+        {
+          "material": "TPU",
+          "infill": 0.4,
+          "scale": 1.5,
+          "grams": 47.765294903004865,
+          "minutes": 100.30520125378298
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 0.5,
+          "grams": 3.333633963857532,
+          "minutes": 15.969880996184317
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.0,
+          "grams": 25.19810697006243,
+          "minutes": 57.64212596680291
+        },
+        {
+          "material": "TPU",
+          "infill": 0.8,
+          "scale": 1.5,
+          "grams": 83.7242215826311,
+          "minutes": 151.00740401388114
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export const PAYMENT_PROOF_MAX_BYTES = 5 * 1024 * 1024;

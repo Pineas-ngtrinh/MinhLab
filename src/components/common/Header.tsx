@@ -1,18 +1,32 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { Menu, X, ShoppingBag, UploadCloud, User } from 'lucide-react';
+import { Menu, X, ShoppingBag, UploadCloud, User, ArrowUpRight } from 'lucide-react';
+import { ModalDialog } from './ModalDialog';
+import { MobileBottomBar } from './MobileBottomBar';
+import { returnToHomeTop } from './home-navigation';
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const { totalCount, openCart } = useCart();
-  const { user, isAuthenticated, roleInfo } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const accountUser = isAuthenticated ? user : null;
+  const accountHref = accountUser ? (accountUser.role === 'CUSTOMER' ? '/tai-khoan' : '/admin') : '/dang-nhap';
+  const openMobileMenu = (trigger: HTMLButtonElement) => {
+    menuTriggerRef.current = trigger;
+    setMobileMenuOpen(true);
+  };
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    window.requestAnimationFrame(() => menuTriggerRef.current?.focus({ preventScroll: true }));
+  };
 
   const navItems = [
     { label: 'Trang chủ', href: '/' },
@@ -24,53 +38,63 @@ export const Header: React.FC = () => {
 
   // Đóng menu mobile khi đổi trang
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizes browser, WebGL or remote API state after mount; keep SSR hydration deterministic.
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const closeOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setMobileMenuOpen(false);
+    };
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => desktop.removeEventListener('change', closeOnDesktop);
+  }, [mobileMenuOpen]);
+
   return (
-    <header className="fixed top-3 sm:top-5 inset-x-0 mx-auto w-[calc(100%-1.5rem)] sm:w-[calc(100%-3rem)] max-w-6xl z-50 transition-all duration-300">
-      {/* Floating Translucent Pill Bar */}
-      <div className="h-16 sm:h-18 px-3.5 sm:px-6 rounded-full bg-[#08090C]/80 backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.65)] flex items-center justify-between">
+    <>
+    <header className="fixed top-0 inset-x-0 mx-auto w-full z-50 lg:top-1 lg:w-[calc(100%-3rem)] lg:max-w-7xl">
+      <div className="flex h-16 items-center justify-center border-b border-white/[0.08] bg-[#08090C] px-4 sm:px-8 md:justify-between lg:h-[68px] lg:rounded-2xl lg:border lg:bg-[#08090C]/90 lg:px-5">
         
         {/* Logo MinhLab */}
         <Link
           href="/"
-          className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037] rounded-full px-1 py-0.5"
+          onNavigate={returnToHomeTop}
+          className="flex min-h-11 shrink-0 items-center rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
           aria-label="MinhLab — Về trang chủ"
         >
-          <div className="relative h-7 w-24 sm:h-8 sm:w-28 transition-transform duration-200 group-hover:scale-102">
+          <div className="relative h-8 w-28">
             <Image
               src="/images/logo.png"
               alt="MinhLab Logo"
               fill
-              sizes="(max-width: 640px) 96px, 112px"
+              sizes="112px"
               priority
               className="object-contain object-left"
             />
           </div>
-          <span className="hidden xl:inline-block text-[10px] font-mono tracking-wider text-[#737D89] border-l border-white/[0.1] pl-2 uppercase">
-            0.12mm FDM Studio
-          </span>
         </Link>
 
-        {/* Menu Điều Hướng Desktop (Editorial Pill Navigation) */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+        {/* Menu Điều Hướng Desktop */}
+        <nav aria-label="Điều hướng chính" className="hidden min-w-0 flex-1 items-center justify-evenly lg:flex lg:mx-4 xl:mx-6">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-3.5 py-1.5 rounded-full text-xs xl:text-[13px] tracking-tight transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037] ${
+                onNavigate={item.href === '/' ? returnToHomeTop : undefined}
+                className={`relative flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-md px-2 xl:px-3 text-xs xl:text-[13px] tracking-tight transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037] ${
                   isActive
-                    ? 'text-white font-medium bg-white/[0.08]'
+                    ? 'text-white font-medium'
                     : 'text-[#A5ADB8] hover:text-white hover:bg-white/[0.04]'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <span>{item.label}</span>
                 {isActive && (
-                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#EB4037]" />
+                  <span className="absolute inset-x-3 bottom-1 h-0.5 rounded-full bg-[#EB4037]" />
                 )}
               </Link>
             );
@@ -78,57 +102,39 @@ export const Header: React.FC = () => {
         </nav>
 
         {/* Cụm Thao Tác (Giỏ Hàng + Tài Khoản + CTA) */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="hidden shrink-0 items-center gap-1 md:flex lg:border-l lg:border-white/[0.08] lg:pl-3">
           
           {/* Nút Mở Giỏ Hàng */}
           <button
             type="button"
             onClick={openCart}
-            className="relative min-w-[40px] min-h-[40px] sm:min-w-[42px] sm:min-h-[42px] rounded-full text-[#F4F1EA] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
+            className="relative flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-md px-2 text-[#F4F1EA] transition-colors hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
             title="Xem giỏ hàng"
             aria-label={`Xem giỏ hàng, hiện có ${totalCount} sản phẩm`}
           >
-            <ShoppingBag className="w-4 h-4 text-[#D1D5DB]" />
+            <ShoppingBag aria-hidden="true" className="h-[18px] w-[18px] text-[#D1D5DB] lg:h-4 lg:w-4" />
             {totalCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#EB4037] text-white text-[10px] font-mono font-bold flex items-center justify-center shadow-md">
+              <span aria-hidden="true" className="text-xs font-mono text-[#C8A261] lg:absolute lg:-top-1 lg:-right-1 lg:flex lg:h-[18px] lg:min-w-[18px] lg:items-center lg:justify-center lg:rounded-full lg:bg-[#EB4037] lg:px-1 lg:text-[10px] lg:font-bold lg:text-white">
                 {totalCount}
               </span>
             )}
           </button>
 
-          {/* Nút Đăng Nhập / Trạng Thái Tài Khoản */}
-          {/* Nút Đăng Nhập / Trạng Thái Tài Khoản (Hiện từ màn hình sm) */}
-          {!isAuthenticated || !user ? (
+          {/* Tài khoản */}
             <Link
-              href="/dang-nhap"
-              className="hidden sm:inline-flex items-center gap-1.5 min-h-[38px] px-3 rounded-full text-xs font-mono text-[#D1D5DB] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
-              title="Đăng nhập tài khoản"
-              aria-label="Đăng nhập tài khoản"
+              href={accountHref}
+              className="hidden lg:inline-flex shrink-0 items-center gap-2 min-h-11 px-3 rounded-md text-xs text-[#D1D5DB] hover:text-white hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
+              title={accountUser?.fullName ?? 'Đăng nhập tài khoản'}
+              aria-label={accountUser ? `Mở tài khoản của ${accountUser.fullName}` : 'Đăng nhập tài khoản'}
             >
-              <User className="w-3.5 h-3.5 text-[#EB4037]" />
-              <span>Tài khoản</span>
+              <User aria-hidden="true" className="w-4 h-4 shrink-0" strokeWidth={1.5} />
+              <span className="max-w-28 truncate xl:max-w-36">{accountUser?.fullName ?? 'Tài khoản'}</span>
             </Link>
-          ) : (
-            <Link
-              href={user.role === 'CUSTOMER' ? '/tai-khoan' : '/admin'}
-              className="hidden sm:inline-flex items-center gap-2 min-h-[38px] px-3 rounded-full text-xs font-mono text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
-              title={`Tài khoản: ${user.fullName} (${user.role})`}
-              aria-label={`Tài khoản: ${user.fullName} (${user.role})`}
-            >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ backgroundColor: roleInfo?.badgeColor || '#EB4037' }}
-              />
-              <span className="max-w-[80px] sm:max-w-[100px] truncate">
-                {user.fullName.split(' ')[0]}
-              </span>
-            </Link>
-          )}
 
           {/* Nút CTA: Gửi file cần in */}
           <Link
             href="/in-theo-file"
-            className="hidden sm:inline-flex items-center gap-1.5 min-h-[38px] px-4 rounded-full bg-[#EB4037] hover:bg-[#FF5147] text-white text-xs font-semibold shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
+              className="hidden lg:inline-flex shrink-0 whitespace-nowrap items-center gap-2 min-h-11 ml-1 px-4 rounded-lg bg-[#EB4037] hover:bg-[#FF5147] text-white text-xs font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
           >
             <UploadCloud className="w-3.5 h-3.5" />
             <span>Gửi file</span>
@@ -137,82 +143,61 @@ export const Header: React.FC = () => {
           {/* Nút Mở Menu Mobile */}
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden shrink-0 min-w-[38px] min-h-[38px] rounded-full text-[#F4F1EA] hover:bg-white/[0.06] border border-white/[0.06] transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037]"
+            onClick={(event) => openMobileMenu(event.currentTarget)}
+            className="flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-sm border-l border-white/[0.12] pl-4 pr-1 text-sm text-[#F4F1EA] transition-colors hover:text-[#C8A261] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#EB4037] lg:hidden"
             aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
           >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            <span>Menu</span><Menu aria-hidden="true" className="h-5 w-5" strokeWidth={1.5} />
           </button>
         </div>
 
       </div>
 
-      {/* Menu Thả Xuống Trên Thiết Bị Di Động */}
-      {mobileMenuOpen && (
-        <div
-          id="mobile-navigation"
-          className="lg:hidden mt-2 rounded-2xl bg-[#08090C]/95 backdrop-blur-2xl border border-white/[0.08] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.8)] space-y-3 animate-fadeIn"
-        >
-          <nav className="flex flex-col space-y-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3.5 py-2.5 rounded-xl text-sm transition-colors flex items-center justify-between ${
-                    isActive
-                      ? 'bg-white/[0.08] font-semibold text-white'
-                      : 'text-[#A5ADB8] hover:text-white hover:bg-white/[0.04]'
-                  }`}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <span>{item.label}</span>
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#EB4037]" />}
-                </Link>
-              );
-            })}
-          </nav>
+    </header>
 
-          <div className="pt-3 border-t border-white/[0.08] space-y-2">
-            {!isAuthenticated || !user ? (
-              <Link
-                href="/dang-nhap"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white text-xs font-mono font-medium"
-              >
-                <User className="w-3.5 h-3.5 text-[#EB4037]" />
-                <span>Đăng nhập tài khoản / Cổng xưởng</span>
-              </Link>
-            ) : (
-              <Link
-                href={user.role === 'CUSTOMER' ? '/tai-khoan' : '/admin'}
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white text-xs font-mono font-medium"
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: roleInfo?.badgeColor || '#EB4037' }}
-                />
-                <span>Vào trang: {user.role === 'CUSTOMER' ? 'Hồ sơ & Đơn hàng' : `Bàn Quản Trị (${user.role})`}</span>
-              </Link>
-            )}
+    <MobileBottomBar onOpenMenu={openMobileMenu} menuOpen={mobileMenuOpen} />
 
-            <Link
-              href="/in-theo-file"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-[#EB4037] hover:bg-[#FF5147] text-white text-xs font-semibold shadow-sm transition-colors"
-            >
-              <UploadCloud className="w-4 h-4" />
-              <span>Gửi file cần in</span>
-            </Link>
+    {mobileMenuOpen && (
+      <ModalDialog title="Menu MinhLab" onDismiss={closeMobileMenu} className="items-end p-0 !bg-black/50 !backdrop-blur-none">
+        <div id="mobile-navigation" className="max-h-[85dvh] w-full max-w-xl overflow-y-auto overscroll-contain rounded-t-2xl border border-b-0 border-white/[0.1] bg-[#0D1015] text-[#F4F1EA]">
+          <div className="flex min-h-14 items-center justify-between border-b border-white/[0.06] px-6">
+            <h2 className="text-sm font-medium tracking-wide">Khám phá MinhLab</h2>
+            <button type="button" onClick={closeMobileMenu} aria-label="Đóng menu" className="flex min-h-11 items-center gap-2 rounded-sm px-1 text-sm hover:text-[#C8A261] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C8A261]">
+              Đóng <X aria-hidden="true" className="h-5 w-5" strokeWidth={1.5} />
+            </button>
+          </div>
+
+          <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2">
+            <nav aria-label="Điều hướng chính">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link key={item.href} href={item.href} onClick={closeMobileMenu} onNavigate={item.href === '/' ? returnToHomeTop : undefined} aria-current={isActive ? 'page' : undefined}
+                    className={`flex min-h-12 items-center justify-between gap-4 border-b border-white/[0.06] py-3 text-lg font-normal tracking-[-0.02em] transition-colors hover:text-[#C8A261] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C8A261] ${isActive ? 'text-[#C8A261]' : 'text-[#F4F1EA]'}`}>
+                    <span>{item.label}</span>
+                    {isActive && <ArrowUpRight aria-hidden="true" className="h-5 w-5 shrink-0" />}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="grid grid-cols-2 gap-3 pt-5">
+              <Link href={accountHref}
+                onClick={closeMobileMenu}
+                className="flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-lg border border-white/[0.1] px-3 text-sm text-[#D1D5DB] hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C8A261]">
+                <User aria-hidden="true" className="h-4 w-4 shrink-0" /><span className="truncate">{accountUser?.fullName ?? 'Tài khoản'}</span>
+              </Link>
+              <Link href="/in-theo-file" onClick={closeMobileMenu} className="flex min-h-12 items-center justify-between gap-4 rounded-lg bg-[#EB4037] px-4 text-sm font-medium text-white transition-colors hover:bg-[#FF5147] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8A261]">
+                Gửi file <UploadCloud aria-hidden="true" className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
-      )}
-    </header>
+      </ModalDialog>
+    )}
+    </>
   );
 };
 

@@ -1,0 +1,9 @@
+{
+  "version": "bambu-a1-mini-04-020-v1",
+  "slicingProfileId": "bambu_a1mini_04_020_auto_pei_02.08.02.61",
+  "buildVolumeMm": { "w": 180, "d": 180, "h": 180 },
+  "nozzleDiameterMm": 0.4,
+  "layerHeightMm": 0.2,
+  "supports": "auto",
+  "slicerVersion": "02.08.02.61"
+}

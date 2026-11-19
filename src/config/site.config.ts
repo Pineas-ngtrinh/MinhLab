@@ -1,36 +1,6 @@
-/**
- * =====================================================================
- * MINHLAB 3D - CẤU HÌNH THƯƠNG HIỆU & DANH MỤC SẢN PHẨM (UNIQLO STYLE)
- * =====================================================================
- * Triết lý thiết kế:
- *  - Phong cách tối giản Nhật Bản (Minimalist / LifeWear / Industrial Design).
- *  - Ngôn ngữ chân thành, tự nhiên, tập trung vào bản chất thủ công & kỹ thuật FDM.
- *  - Thông số kỹ thuật minh bạch: độ dày lớp 0.12mm, vật liệu PLA+ nguyên sinh,
- *    kích thước thực tế, cân nặng và thời gian in.
- * =====================================================================
- */
+/** Nội dung thương hiệu và marketing. Catalogue sản phẩm được đọc từ PostgreSQL. */
 
-export interface ProductItem {
-  id: string;
-  code: string; // Mã danh mục chuẩn catalogue (e.g. № 01 / TOY)
-  title: string;
-  category: string;
-  categorySlug: 'all' | 'art-toys' | 'diorama' | 'desk-setup' | 'keycaps';
-  description: string;
-  longDescription?: string;
-  price: number; // Giá bán (VNĐ)
-  originalPrice?: number; // Giá niêm yết trước ưu đãi
-  image: string;
-  material: string;
-  dimensions: string; // Kích thước (DxRxC cm)
-  weight: string; // Trọng lượng
-  printTime?: string; // Thời gian chế tác
-  layerHeight?: string; // Độ phân giải lớp in (mm)
-  featured?: boolean;
-  badge?: 'MỚI' | 'TIÊU BIỂU' | 'BÁN CHẠY' | 'ĐỘC BẢN';
-  inStock: boolean;
-  colors?: { name: string; hex: string }[];
-}
+export type { ProductItem } from '../contracts/catalog';
 
 export interface ServiceItem {
   id: string;
@@ -71,7 +41,7 @@ export const SITE_CONFIG = {
     badge: 'COLLECTOR WORKSHOP',
     positioning: 'Modern Collector Workshop',
     tagline: 'Phục dựng đồ sưu tầm & In 3D theo yêu cầu',
-    subtitle: 'Giúp bạn hoàn thiện bộ sưu tập và tìm lại những món đồ gắn liền với ký ức bằng công nghệ in 3D FDM chính xác.',
+    subtitle: 'Giúp bạn hoàn thiện bộ sưu tập và tìm lại những món đồ gắn liền với ký ức bằng công nghệ in 3D FDM và resin.',
   },
 
   studioHome: {
@@ -99,7 +69,7 @@ export const SITE_CONFIG = {
     ],
     customTitle: ['File của bạn.', 'Đôi tay của MinhLab.'],
     customDescription: 'Mang bản vẽ đến xưởng. Chúng mình cùng kiểm tra khả năng in, chọn vật liệu và thống nhất báo giá trước khi bắt đầu.',
-    fileFormats: '.STL / .OBJ / .STEP / .3MF',
+    fileFormats: '.STL',
     faqTitle: 'Trước khi bắt đầu.',
     contactTitle: ['Ý tưởng tiếp theo,', 'là của bạn.'],
     contactDescription: 'Chọn một món đã thành hình. Hoặc bắt đầu một điều chưa có.',
@@ -145,7 +115,7 @@ export const SITE_CONFIG = {
       { id: 'chao-ban', label: 'Lời chào', eyebrow: '01 / Chào mừng đến xưởng', title: 'Mỗi món đồ, một câu chuyện.', guide: 'Mình là Khỉ Kỹ Sư. Ghé xưởng nhé, mình dẫn đường!', detail: 'Một món đồ sưu tầm. Một góc bàn rất riêng. Hay ý tưởng của bạn đang chờ được in thành hình.' },
       { id: 'ba-khong-gian', label: 'Ba không gian', eyebrow: '02 / Bạn muốn bắt đầu từ đâu?', title: 'Ba lối vào. Một niềm yêu chế tác.', guide: 'Muốn chọn một món có sẵn, ghé xem xưởng hay in từ file riêng? Mình chỉ đường cho bạn đây.', detail: '' },
       { id: 'san-pham', label: 'Bộ sưu tập', eyebrow: '03 / Bộ sưu tập tại xưởng', title: 'Một góc nhỏ, thêm chút cá tính.', guide: 'Đây là ba mẫu mình muốn giới thiệu với bạn. Thích mẫu nào, bạn có thể thêm ngay vào giỏ nhé.', detail: '' },
-      { id: 'in-rieng', label: 'In theo yêu cầu', eyebrow: '04 / Từ file đến sản phẩm', title: 'Bạn có ý tưởng. Xưởng có đôi tay.', guide: 'Có sẵn file 3D rồi à? Mình sẽ cùng bạn chọn vật liệu, kiểm tra khả năng in và thống nhất báo giá trước khi chạy máy.', detail: '.STL · .OBJ · .STEP · .3MF' },
+      { id: 'in-rieng', label: 'In theo yêu cầu', eyebrow: '04 / Từ file đến sản phẩm', title: 'Bạn có ý tưởng. Xưởng có đôi tay.', guide: 'Có sẵn file STL rồi à? Mình sẽ đọc kích thước, cùng bạn chọn vật liệu, kiểm tra khả năng in và thống nhất báo giá trước khi chạy máy.', detail: '.STL · KÍCH THƯỚC TỰ ĐỌC' },
       { id: 'chuyen-xuong', label: 'Chuyện xưởng', eyebrow: '05 / Chậm một chút, kỹ hơn một chút', title: 'Không chỉ in lại một món đồ.', guide: 'Một món đồ đẹp còn cần đôi tay hoàn thiện. Mình kiểm tra từng chi tiết, từ lớp in đến khớp nối, trước khi gửi đến bạn.', detail: 'MinhLab phục dựng những món đồ sưu tầm đã ngừng sản xuất, để ký ức có thể trở lại trên bàn trưng bày của bạn.' },
       { id: 'hoi-khi-ky-su', label: 'Giải đáp', eyebrow: '06 / Mình nghe bạn hỏi', title: 'Có điều gì bạn muốn biết?', guide: 'Mình để vài câu hỏi thường gặp ở đây. Bạn chạm vào từng câu để xem câu trả lời nhé.', detail: '' },
       { id: 'hen-gap-ban', label: 'Hẹn gặp tại xưởng', eyebrow: '07 / Bắt đầu cùng MinhLab', title: 'Món đồ tiếp theo, là của bạn.', guide: 'Cảm ơn bạn đã đi cùng mình! Ghé bộ sưu tập, gửi file riêng hoặc trò chuyện với xưởng khi bạn cần tư vấn thêm nhé.', detail: '' },
@@ -164,7 +134,7 @@ export const SITE_CONFIG = {
     selectedAdvice: 'Mình đã thêm mẫu bạn chọn vào giỏ rồi nhé.',
     helloAdvice: 'Chào bạn! Mình sẵn sàng rồi. Cuộn một nhịp để cùng vào xưởng nhé.',
     fileLabel: 'Từ bản vẽ của bạn',
-    studioNote: 'In 3D FDM · Hoàn thiện thủ công',
+    studioNote: 'In 3D FDM & resin · Hoàn thiện thủ công',
   },
 
   // Dải thông tin tin cậy (Section 2)
@@ -175,11 +145,11 @@ export const SITE_CONFIG = {
     },
     {
       title: 'Tư vấn vật liệu phù hợp',
-      desc: 'PLA+ nguyên sinh, PETG kháng lực, ABS kỹ thuật',
+      desc: 'FDM: PLA, PETG, PLA Silk · Resin nhiều màu',
     },
     {
       title: 'Báo giá rõ ràng',
-      desc: 'Minh bạch theo gram nhựa & thời gian chạy máy',
+      desc: 'FDM có giá tham khảo tự động · Resin báo giá tại xưởng',
     },
     {
       title: 'Đóng gói chống va đập',
@@ -197,182 +167,13 @@ export const SITE_CONFIG = {
     ctaSecondary: 'Gửi file cần in',
     specs: [
       { label: 'ĐỘ PHÂN GIẢI', value: '0.12 mm', sub: 'Lớp đùn mịn, sắc cạnh' },
-      { label: 'VẬT LIỆU', value: '100% PLA+', sub: 'Nhựa sinh học an toàn' },
+      { label: 'CÔNG NGHỆ', value: 'FDM & resin', sub: 'Vật liệu và màu theo yêu cầu' },
       { label: 'DUNG SAI', value: '±0.05 mm', sub: 'Đo kiểm thước kẹp điện tử' },
       { label: 'HOÀN THIỆN', value: 'Thủ công', sub: 'Tách support & gọt bavia' },
     ],
   },
 
   // Danh mục sản phẩm (Tabs phong cách Uniqlo)
-  categories: [
-    { slug: 'all', name: 'Tất cả sản phẩm', code: 'ALL' },
-    { slug: 'art-toys', name: 'Art Toys & Mô hình', code: 'TOY' },
-    { slug: 'diorama', name: 'Diorama & Đèn Decor', code: 'DIO' },
-    { slug: 'desk-setup', name: 'Phụ kiện Desk Setup', code: 'DSK' },
-    { slug: 'keycaps', name: 'Keycaps Phím Cơ', code: 'KEY' },
-  ],
-
-  // Bộ sưu tập sản phẩm thương mại
-  products: [
-    {
-      id: 'prod-mascot-monkey',
-      code: '№ 01 / TOY',
-      title: 'Mascot Khỉ Kỹ Sư MinhLab (Signature Art Toy)',
-      category: 'Art Toys & Mô hình',
-      categorySlug: 'art-toys',
-      description:
-        'Linh vật Khỉ Kỹ Sư tạo hình voxel đặc trưng, áo lab trắng và hai bàn tay tự do. Mỗi khối pixel được đùn chuẩn xác với bề mặt nhám mịn tinh tế.',
-      longDescription:
-        'Sản phẩm biểu tượng của xưởng MinhLab. Mô hình được chia tầng in FDM tỉ mỉ với độ phân giải lớp 0.12mm, sau đó được gọt dũa bavia và lắp ráp thủ công. Phù hợp đặt trên bàn làm việc, kệ sách hoặc góc setup công nghệ.',
-      price: 450000,
-      originalPrice: 520000,
-      image: '/images/minhlab-mascot-free-v2.png',
-      material: 'Nhựa sinh học PLA+ cao cấp',
-      dimensions: '14 × 10 × 18 cm',
-      weight: '220 gram',
-      printTime: '16 giờ in liên tục',
-      layerHeight: '0.12 mm',
-      featured: true,
-      badge: 'TIÊU BIỂU',
-      inStock: true,
-      colors: [
-        { name: 'Màu chuẩn MinhLab (Tím than / Vàng đồng / Trắng áo lab)', hex: '#7C3AED' },
-        { name: 'Obsidian Matte (Đen mờ / Điểm nhấn đỏ)', hex: '#18181B' },
-        { name: 'Studio Pure White (Trắng gốm mờ)', hex: '#F4F4F5' },
-      ],
-    },
-    {
-      id: 'prod-lab-diorama',
-      code: '№ 02 / DIO',
-      title: 'Diorama Phòng Lab In 3D Mini Voxel (Kèm Đèn LED Ấm)',
-      category: 'Diorama & Đèn Decor',
-      categorySlug: 'diorama',
-      description:
-        'Mô hình thu nhỏ tái hiện không gian xưởng in 3D với 2 cụm máy in, trạm máy tính soi file và linh vật kỹ sư, tích hợp dải LED 5V USB.',
-      longDescription:
-        'Tác phẩm kiến trúc thu nhỏ gồm hơn 40 chi tiết voxel lắp ghép chính xác. Hệ thống dây dẫn và LED 5V được giấu kín dưới sàn, tỏa ánh sáng vàng ấm tạo không gian làm việc tĩnh lặng và ấm cúng vào ban đêm.',
-      price: 1290000,
-      originalPrice: 1450000,
-      image: '/images/minhlab-lab-resin-v2.png',
-      material: 'PLA+ đa sắc phối hợp',
-      dimensions: '24 × 18 × 16 cm',
-      weight: '680 gram',
-      printTime: '42 giờ in & lắp ráp',
-      layerHeight: '0.16 mm',
-      featured: true,
-      badge: 'ĐỘC BẢN',
-      inStock: true,
-      colors: [
-        { name: 'Bản phối Studio Đa Sắc', hex: '#2563EB' },
-        { name: 'Bản Đen Monochrome Nhám', hex: '#18181B' },
-      ],
-    },
-    {
-      id: 'prod-headphone-stand',
-      code: '№ 03 / DSK',
-      title: 'Giá Treo Tai Nghe Cấu Trúc Kháng Lực Hexa-Mesh',
-      category: 'Phụ kiện Desk Setup',
-      categorySlug: 'desk-setup',
-      description:
-        'Thiết kế dạng lưới tổ ong tối ưu trọng lượng và độ cứng. Vòm cong nâng đỡ công thái học, bảo vệ đệm tai nghe không bị lún xẹp.',
-      longDescription:
-        'Sản phẩm được in nguyên khối bằng nhựa PETG kỹ thuật chống va đập. Chân đế đúc đặc kèm 4 đệm cao su chống trượt giúp giữ thăng bằng vững chãi cho cả những chiếc tai nghe audiophile nặng trên 500g.',
-      price: 320000,
-      originalPrice: 380000,
-      image: '/images/minhlab-mascot-free-v2.png',
-      material: 'PETG Matte kháng lực',
-      dimensions: '13 × 13 × 27 cm',
-      weight: '310 gram',
-      printTime: '12 giờ in',
-      layerHeight: '0.16 mm',
-      featured: false,
-      badge: 'MỚI',
-      inStock: true,
-      colors: [
-        { name: 'Matte Charcoal (Xám than chì)', hex: '#27272A' },
-        { name: 'Deep Black (Đen mờ)', hex: '#09090B' },
-        { name: 'MinhLab Crimson (Đỏ mờ)', hex: '#E60012' },
-      ],
-    },
-    {
-      id: 'prod-keycap-artisan',
-      code: '№ 04 / KEY',
-      title: 'Keycap Artisan Voxel Khỉ Kỹ Sư (Profile OEM / Cherry)',
-      category: 'Keycaps Phím Cơ',
-      categorySlug: 'keycaps',
-      description:
-        'Nút phím in 3D FDM siêu nét 0.08mm. Tương thích chuẩn chân switch chữ thập (+) phổ biến trên mọi bàn phím cơ.',
-      longDescription:
-        'Từng khối pixel trên khuôn mặt chú khỉ kỹ sư được đùn chính xác ở độ phân giải 0.08mm. Nút phím sau khi in được xử lý nhiệt nhẹ để chân cắm bám khít switch mà không làm lỏng stem.',
-      price: 190000,
-      originalPrice: 220000,
-      image: '/images/minhlab-lab-resin-v2.png',
-      material: 'PLA Tough chịu mài mòn',
-      dimensions: '1.8 × 1.8 × 1.6 cm',
-      weight: '12 gram',
-      printTime: '3.5 giờ in',
-      layerHeight: '0.08 mm',
-      featured: false,
-      badge: 'BÁN CHẠY',
-      inStock: true,
-      colors: [
-        { name: 'Tím than & Vàng đồng', hex: '#7C3AED' },
-        { name: 'Xám xi măng tối giản', hex: '#52525B' },
-      ],
-    },
-    {
-      id: 'prod-desk-organizer',
-      code: '№ 05 / DSK',
-      title: 'Khay Đựng Bút & Dụng Cụ Voxel Modular Cube',
-      category: 'Phụ kiện Desk Setup',
-      categorySlug: 'desk-setup',
-      description:
-        'Khay sắp xếp bàn làm việc chia ngăn thông minh cho bút, dao trổ mô hình, USB và thẻ nhớ, có thể ghép nối mô-đun.',
-      longDescription:
-        'Lấy cảm hứng từ các khối kiến trúc modular tối giản. Sản phẩm có góc vát đáy dễ lấy dụng cụ nhỏ, chất liệu nhựa nhám mờ hạn chế bám bụi và dấu vân tay.',
-      price: 260000,
-      originalPrice: 300000,
-      image: '/images/minhlab-mascot-free-v2.png',
-      material: 'PLA+ Matte chống bám vân tay',
-      dimensions: '16 × 10 × 9 cm',
-      weight: '260 gram',
-      printTime: '10 giờ in',
-      layerHeight: '0.20 mm',
-      featured: false,
-      inStock: true,
-      colors: [
-        { name: 'Đen than mờ (Matte Black)', hex: '#18181B' },
-        { name: 'Xám Studio (Concrete Gray)', hex: '#71717A' },
-      ],
-    },
-    {
-      id: 'prod-phone-dock',
-      code: '№ 06 / DSK',
-      title: 'Đế Đỡ Điện Thoại Góc Nghiêng Công Thái Học 65°',
-      category: 'Phụ kiện Desk Setup',
-      categorySlug: 'desk-setup',
-      description:
-        'Góc nghiêng 65° tối ưu cho nhận diện FaceID và cuộc gọi video, tích hợp rãnh luồn dây cáp Type-C / Lightning gọn gàng.',
-      longDescription:
-        'Thiết kế nguyên khối vững chắc, phần gá đặt có gờ nâng tránh che mất phụ đề khi xem video. Chân đế dán sẵn đệm silicone bám chắc trên mặt bàn gỗ hoặc kính.',
-      price: 240000,
-      originalPrice: 280000,
-      image: '/images/minhlab-lab-resin-v2.png',
-      material: 'PLA+ đúc dày chịu lực',
-      dimensions: '10 × 10 × 12 cm',
-      weight: '190 gram',
-      printTime: '8 giờ in',
-      layerHeight: '0.16 mm',
-      featured: false,
-      badge: 'MỚI',
-      inStock: true,
-      colors: [
-        { name: 'Đen nhám (Matte Black)', hex: '#09090B' },
-        { name: 'Trắng Studio (Warm White)', hex: '#F4F4F5' },
-      ],
-    },
-  ] as ProductItem[],
-
   // Thông tin tour phòng lab
   labJourney: {
     tag: 'XƯỞNG CHẾ TÁC THỰC TẾ',
@@ -385,14 +186,14 @@ export const SITE_CONFIG = {
   services: [
     {
       id: 'fdm-print',
-      title: 'In 3D FDM Theo File Của Bạn',
+      title: 'In 3D FDM & Resin Theo File Của Bạn',
       description:
-        'Gia công mẫu thử nghiệm, vỏ hộp thiết bị, linh kiện thay thế hoặc mô hình từ file 3D (.STL, .OBJ, .STEP) với độ chính xác cao.',
+        'Gia công mẫu thử nghiệm, vỏ hộp thiết bị, linh kiện thay thế hoặc mô hình từ tệp .STL; MinhLab đọc kích thước và kiểm tra khả năng in trước khi báo giá.',
       iconName: 'Printer',
       specs: [
-        'Vật liệu: PLA+, PETG, ABS kỹ thuật',
-        'Tùy chọn độ mịn lớp: 0.12mm – 0.28mm',
-        'Báo giá minh bạch theo gram nhựa thực tế',
+        'FDM: PLA, PETG, PLA Silk; resin: trắng, đen, xám, clear',
+        'Ước tính tự động FDM; resin được xưởng kiểm tra và báo giá riêng',
+        'Chọn màu theo vật liệu; xưởng xác nhận màu thực tế trước khi in',
       ],
     },
     {
@@ -437,9 +238,9 @@ export const SITE_CONFIG = {
     },
     {
       step: '03',
-      title: 'Tiến Hành Chế Tác FDM',
-      description: 'Mô hình được đùn từng lớp nhựa nóng chảy trên bàn in PEI phẳng với hệ thống giám sát nhiệt độ vi sai.',
-      detail: 'Đảm bảo từng đường đùn nhựa bám dính chắc chắn, không bị cong vênh hay bọt khí.',
+      title: 'Tiến Hành In FDM Hoặc Resin',
+      description: 'Xưởng chế tác theo công nghệ FDM hoặc resin, vật liệu và màu đã thống nhất với bạn.',
+      detail: 'Kiểm tra chất lượng trong quá trình in và hoàn thiện theo yêu cầu đã xác nhận.',
     },
     {
       step: '04',
@@ -454,7 +255,7 @@ export const SITE_CONFIG = {
     {
       step: '01',
       title: 'Gửi file và mô tả nhu cầu',
-      desc: 'Tải tệp .STL, .OBJ, .STEP hoặc .3MF kèm yêu cầu về kích thước, màu sắc và mục đích sử dụng.',
+      desc: 'Tải tệp .STL; MinhLab tự đọc kích thước X × Y × Z. Ghi thêm màu sắc và mục đích sử dụng mong muốn.',
     },
     {
       step: '02',
@@ -464,12 +265,12 @@ export const SITE_CONFIG = {
     {
       step: '03',
       title: 'Xác nhận vật liệu & báo giá',
-      desc: 'Tư vấn loại sợi nhựa (PLA+, PETG, ABS), độ dày lớp (0.12 – 0.28mm) và báo giá theo khối lượng thực tế.',
+      desc: 'Chọn FDM hoặc resin, vật liệu và màu. FDM có khoảng giá tham khảo tự động; resin được xưởng báo giá trực tiếp.',
     },
     {
       step: '04',
       title: 'Tiến hành in và hoàn thiện',
-      desc: 'Đùn nhựa kiểm soát nhiệt độ vi sai, gọt sạch bavia và xử lý mịn các bề mặt tiếp giáp.',
+      desc: 'In theo công nghệ đã chọn, xử lý support và hoàn thiện bề mặt theo thỏa thuận.',
     },
     {
       step: '05',
@@ -481,9 +282,13 @@ export const SITE_CONFIG = {
   // 6 câu hỏi thường gặp (Section 9)
   faqs: [
     {
+      question: 'MinhLab có nhận in resin và nhiều màu không?',
+      answer: 'Xưởng nhận cả FDM và resin. Mỗi vật liệu có bảng màu riêng tại trang in theo file; resin có trắng, đen, xám và clear. Với yêu cầu phối nhiều màu trên một mẫu, bạn mô tả cách phối và gửi ảnh tham khảo để xưởng tư vấn khả năng thực hiện cùng báo giá.',
+    },
+    {
       question: 'MinhLab nhận những định dạng file nào?',
       answer:
-        'MinhLab hỗ trợ các định dạng 3D tiêu chuẩn gồm .STL, .OBJ, .STEP (STP) và .3MF với dung lượng tệp tối đa 100MB. Nếu bạn có file dạng nén (.ZIP, .RAR) chứa nhiều chi tiết rời, bạn cũng có thể đính kèm khi gửi yêu cầu.',
+        'MinhLab hiện nhận tệp .STL tối đa 100MB qua biểu mẫu. Tệp được đọc kích thước ngay trên trình duyệt; STL không lưu đơn vị đo nên hệ thống giả định mm và bạn cần xác nhận kích thước trước khi in.',
     },
     {
       question: 'File lỗi hoặc không thể in thì xử lý thế nào?',
@@ -493,7 +298,7 @@ export const SITE_CONFIG = {
     {
       question: 'Giá in được tính như thế nào?',
       answer:
-        'Giá in tại MinhLab được tính toán minh bạch dựa trên 3 yếu tố: khối lượng nhựa thực tế (bao gồm cả support cần thiết), thời gian máy chạy và vật liệu lựa chọn (PLA+, PETG hoặc ABS kỹ thuật). Không phụ thu các chi phí ẩn.',
+        'Báo giá tự động hiện chỉ dành cho FDM, dựa trên cấu hình ước tính vật liệu và thời gian in. Xưởng vẫn nhận in resin và tư vấn báo giá trực tiếp khi bạn gửi file. MinhLab xác nhận chi phí cuối trước khi in.',
     },
     {
       question: 'Có hỗ trợ chỉnh sửa hoặc thiết kế file không?',
@@ -512,16 +317,54 @@ export const SITE_CONFIG = {
     },
   ] as FAQItem[],
 
+  checkout: {
+    validation: {
+      summaryTitle: 'Vui lòng kiểm tra thông tin nhận hàng',
+      fullName: 'Vui lòng nhập họ tên người nhận.',
+      email: 'Vui lòng nhập email nhận thông tin đơn hàng.',
+      emailFormat: 'Email chưa đúng định dạng. Ví dụ: ten@example.com.',
+      phone: 'Vui lòng nhập số điện thoại liên hệ.',
+      phoneFormat: 'Số điện thoại chưa hợp lệ. Ví dụ: 0901 234 567.',
+      address: 'Vui lòng nhập địa chỉ nhận hàng chi tiết.',
+    },
+    payment: {
+      title: 'Thanh toán VietQR',
+      description: 'Quét mã bằng ứng dụng ngân hàng để thanh toán đơn hàng.',
+      amountLabel: 'Số tiền thanh toán',
+      bankLabel: 'Ngân hàng',
+      accountLabel: 'Số tài khoản',
+      recipientLabel: 'Người nhận',
+      transferLabel: 'Nội dung chuyển khoản',
+      transferHint: 'Giữ nguyên nội dung để MinhLab đối chiếu đúng đơn hàng.',
+      qrHint: 'Mở ứng dụng ngân hàng và chọn quét mã QR',
+      qrError: 'Chưa tải được mã QR. Bạn có thể chuyển khoản theo thông tin bên cạnh.',
+      retryQr: 'Tải lại mã QR',
+      waitingTitle: 'Chờ xác nhận thanh toán',
+      waitingDescription: 'Sau khi chuyển khoản, bấm “Tôi đã chuyển khoản” để báo MinhLab đối soát. Khai báo này chưa xác nhận tiền đã vào.',
+      pendingMessage: 'Chưa có xác nhận từ MinhLab. Nếu đã chuyển khoản, bấm “Tôi đã chuyển khoản” để báo nhân viên đối soát.',
+      cancelledMessage: 'Đơn hàng đã bị hủy. Vui lòng xem lại đơn hàng hoặc liên hệ MinhLab nếu bạn đã chuyển khoản.',
+      reviewMessage: 'Khoản thanh toán cần được kiểm tra lại. Vui lòng liên hệ MinhLab qua trang theo dõi đơn hàng.',
+      refundedMessage: 'Khoản thanh toán đã được ghi nhận hoàn tiền. Vui lòng xem lại đơn hàng trước khi tiếp tục.',
+      unavailableTitle: 'Cần kiểm tra lại đơn hàng',
+      checkError: 'Chưa thể kiểm tra thanh toán. Vui lòng thử lại khi có kết nối.',
+      checkAction: 'Cập nhật trạng thái',
+      checkingAction: 'Đang cập nhật…',
+      trackingAction: 'Theo dõi đơn hàng',
+      closeAction: 'Thanh toán sau',
+      copiedLabel: 'Đã sao chép',
+    },
+  },
+
   // Thông tin liên hệ studio
   contact: {
-    phone: '0988 888 888',
-    zaloPhone: '0988 888 888',
+    phone: '0969 620 230',
+    zaloPhone: '0969 620 230',
     email: 'contact@minhlab3d.vn',
     address: 'TP. Hồ Chí Minh, Việt Nam (Xưởng Chế Tác MinhLab 3D)',
     workingHours: '08:00 – 21:00 (Thứ Hai – Chủ Nhật)',
     socials: {
       facebook: 'https://facebook.com',
-      zalo: 'https://zalo.me',
+      zalo: 'https://zalo.me/0969620230',
       github: 'https://github.com',
     },
   } as ContactInfo,

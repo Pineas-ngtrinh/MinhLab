@@ -1,11 +1,9 @@
-'use client';
-
 import React from 'react';
 import { SITE_CONFIG } from '../../config/site.config';
 
 export const TrustBar: React.FC = () => {
   return (
-    <section className="border-y border-white/[0.06] bg-[#08090C] py-6 sm:py-8 px-4 sm:px-8 w-full max-w-full">
+    <section className="border-y border-white/[0.06] bg-[#0D0F10] py-6 sm:py-8 px-4 sm:px-8 w-full max-w-full">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x divide-white/[0.06]">
           {SITE_CONFIG.trustItems.map((item, idx) => (

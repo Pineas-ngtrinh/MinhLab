@@ -1,0 +1,65 @@
+name: Quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-postgres-only
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Disposable service credentials; never point this workflow at production.
+      DATABASE_URL: postgres://minhlab_app:ci-runtime-only@127.0.0.1:5432/postgres
+      MIGRATION_DATABASE_URL: postgres://postgres:ci-postgres-only@127.0.0.1:5432/postgres
+      TEST_DATABASE_URL: postgres://postgres:ci-postgres-only@127.0.0.1:5432/postgres
+      TEST_RUNTIME_DATABASE_URL: postgres://minhlab_app:ci-runtime-only@127.0.0.1:5432/postgres
+      MINHLAB_TEST_DATABASE_DISPOSABLE: 'true'
+      MINHLAB_EXTERNAL_TEST_DATABASE_LIFECYCLE: 'true'
+      NEXT_PUBLIC_SITE_URL: http://localhost:3100
+      MINHLAB_REQUIRE_EMAIL_VERIFICATION: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Prepare isolated runtime role
+        run: |
+          node <<'NODE'
+          const {Pool} = require('pg');
+          const pool = new Pool({connectionString: process.env.MIGRATION_DATABASE_URL});
+          (async () => {
+            try {
+              await pool.query("CREATE ROLE minhlab_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'ci-runtime-only'");
+            } finally { await pool.end(); }
+          })().catch(error => { process.stderr.write(error.message + '\n'); process.exitCode = 1; });
+          NODE
+      - run: npm run check
+      - run: npm run test:unit
+      - run: npm run test:production
+      - run: npm run build

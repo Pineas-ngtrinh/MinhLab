@@ -1,0 +1,8 @@
+[Unit]
+Description=Update ClamAV signatures
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=12h
+Unit=minhlab-worker@signatures.service
+[Install]
+WantedBy=timers.target

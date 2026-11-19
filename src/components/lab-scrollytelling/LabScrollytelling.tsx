@@ -48,48 +48,48 @@ const STEPS: ProcessStep[] = [
     number: '00',
     shortTitle: 'Toàn cảnh',
     title: 'Toàn cảnh không gian xưởng MinhLab',
-    location: 'Studio Chế Tác & Xưởng In FDM, Resin',
-    description: 'Một máy in FDM và một máy in Resin cùng trạm kiểm tra file, kệ vật liệu và bàn hoàn thiện thủ công. Mỗi công nghệ được lựa chọn theo yêu cầu của sản phẩm.',
+    location: 'Không gian xưởng',
+    description: 'Xem các khu vực kiểm tra file, in 3D và hoàn thiện sản phẩm.',
     icon: <Sparkles className="w-4 h-4" />,
   },
   {
     number: '01',
     shortTitle: 'Kiểm tra file',
     title: 'Kiểm tra file',
-    location: 'Trạm Terminal & Soi File Lưới',
-    description: 'File được kiểm tra bề mặt mesh, kích thước, thành mỏng và những vị trí có nguy cơ lỗi trước khi in.',
+    location: 'Trạm kiểm tra file',
+    description: 'Kiểm tra file để phát hiện lỗi trước khi in.',
     icon: <MonitorCheck className="w-4 h-4" />,
   },
   {
     number: '02',
     shortTitle: 'Chuẩn bị',
     title: 'Chuẩn bị thông số',
-    location: 'Cụm Máy In & Cuộn Filament PLA+',
-    description: 'MinhLab lựa chọn vật liệu, độ dày lớp, hướng đặt mô hình và support phù hợp với mục đích sử dụng.',
+    location: 'Khu vực chuẩn bị máy in',
+    description: 'Chọn vật liệu và thông số in phù hợp với mẫu.',
     icon: <Printer className="w-4 h-4" />,
   },
   {
     number: '03',
     shortTitle: 'Tiến hành in',
     title: 'Tiến hành in',
-    location: 'Cụm Máy In FDM Đùn Từng Lớp 0.12mm',
-    description: 'Mẫu được tạo thành từng lớp và được theo dõi trong quá trình in để hạn chế cong vênh hoặc sai lệch.',
+    location: 'Máy in FDM',
+    description: 'Máy in tạo sản phẩm theo từng lớp.',
     icon: <Layers className="w-4 h-4" />,
   },
   {
     number: '04',
     shortTitle: 'Hoàn thiện',
     title: 'Hoàn thiện thủ công',
-    location: 'Bàn Dụng Cụ & Xử Lý Bavia',
-    description: 'Support được tháo, bavia được xử lý và các chi tiết được kiểm tra, lắp thử trước khi đóng gói.',
+    location: 'Bàn hoàn thiện',
+    description: 'Tháo support, xử lý bề mặt và lắp ráp sản phẩm.',
     icon: <Wrench className="w-4 h-4" />,
   },
   {
     number: '05',
     shortTitle: 'Kiểm định',
     title: 'Kiểm định và đóng gói',
-    location: 'Khu Vực Bàn Hoàn Thiện & Đóng Hộp Chống Va Đập',
-    description: 'Sản phẩm được kiểm tra lần cuối, chụp ảnh xác nhận và đóng gói chống va đập trước khi giao.',
+    location: 'Bàn kiểm định',
+    description: 'Kiểm tra lần cuối rồi đóng gói sản phẩm.',
     icon: <PackageCheck className="w-4 h-4" />,
   },
 ];
@@ -136,7 +136,7 @@ const ASSEMBLY_PARTS_INFO: AssemblyPartInfo[] = [
     code: '05/07',
     tag: 'TRẠM THIẾT KẾ',
     title: 'Trạm máy tính Design Terminal',
-    description: 'Trạm kiểm tra tệp lưới STL/STEP, tính toán support và phân bổ đường cắt lớp g-code chuẩn xác.',
+    description: 'Trạm kiểm tra tệp lưới STL, tính toán support và phân bổ đường cắt lớp g-code chuẩn xác.',
   },
   {
     maxProgress: 0.90,
@@ -191,6 +191,7 @@ export const LabScrollytelling: React.FC = () => {
     if (typeof window === 'undefined') return;
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (media.matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizes browser, WebGL or remote API state after mount; keep SSR hydration deterministic.
       setReducedMotion(true);
       setPhase('explore');
       setAssemblyProgress(1);
@@ -215,6 +216,7 @@ export const LabScrollytelling: React.FC = () => {
       const progressParam = params.get('progress');
 
       if (assemblyParam === 'skip' || stepParam !== null) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizes browser, WebGL or remote API state after mount; keep SSR hydration deterministic.
         setPhase('explore');
         setAssemblyProgress(1);
       } else if (progressParam !== null) {
@@ -236,20 +238,23 @@ export const LabScrollytelling: React.FC = () => {
 
   // Nhận diện kích thước màn hình & năng lực phần cứng (Adaptive Tier Detection)
   useEffect(() => {
-    const checkEnvironment = () => {
+    const updateViewport = () => {
       setIsMobile(window.innerWidth < 1024);
+    };
+    updateViewport();
 
-      // Kiểm tra hỗ trợ WebGL
+    const checkCapabilities = () => {
+      // Context dò hỗ trợ không được giữ tài nguyên GPU.
       try {
         const testCanvas = document.createElement('canvas');
         const gl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl');
         if (!gl) {
           setWebglFailed(true);
-          return;
+        } else {
+          gl.getExtension('WEBGL_lose_context')?.loseContext();
         }
       } catch {
         setWebglFailed(true);
-        return;
       }
 
       // Kiểm tra cấu hình thiết bị yếu (Hardware Concurrency <= 2 hoặc Memory < 2GB)
@@ -261,9 +266,9 @@ export const LabScrollytelling: React.FC = () => {
         }
       }
     };
-    checkEnvironment();
-    window.addEventListener('resize', checkEnvironment);
-    return () => window.removeEventListener('resize', checkEnvironment);
+    checkCapabilities();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
   }, []);
 
   // Giám sát khi người dùng cuộn tới khu vực xưởng để tối ưu render
@@ -389,10 +394,10 @@ export const LabScrollytelling: React.FC = () => {
       </div>
 
       {/* SÂN KHẤU 3D TOÀN MÀN HÌNH (FULL-WIDTH, KHÔNG KHUNG VIỀN CARD) */}
-      <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[820px] xl:h-[880px] overflow-hidden flex flex-col justify-between">
+      <div className="relative w-full min-h-0 overflow-hidden md:flex md:h-[680px] md:flex-col md:justify-between lg:h-[820px] xl:h-[880px]">
         
         {/* Layer WebGL Canvas chiếm trọn sân khấu */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-x-0 top-0 z-0 h-[min(54svh,480px)] min-h-[340px] max-h-[480px] pointer-events-none md:inset-0 md:h-auto md:min-h-0 md:max-h-none">
           {!webglFailed && !isWeakDevice ? (
             <LabCanvas
               phase={phase}
@@ -437,21 +442,21 @@ export const LabScrollytelling: React.FC = () => {
         {/* ============================================================== */}
         {/* HUD TRÊN CÙNG: TIÊU ĐỀ, TRẠNG THÁI & ĐIỀU HƯỚNG */}
         {/* ============================================================== */}
-        <div className="relative z-20 pt-8 sm:pt-10 px-4 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between gap-4 pointer-events-none">
+        <div className="absolute inset-x-0 top-[calc(5rem+env(safe-area-inset-top,0px))] z-20 px-3 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between gap-2 pointer-events-none md:relative md:inset-auto md:pt-10 md:px-8 md:gap-4">
           
           {/* Định vị khu vực / Trạng thái lắp ráp */}
-          <div className="pointer-events-auto flex items-center gap-3 px-3.5 py-1.5 rounded-lg bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-subtle">
+          <div className="pointer-events-auto flex min-w-0 items-center gap-2 px-3 py-2 sm:gap-3 sm:px-3.5 sm:py-1.5 rounded-lg bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-subtle">
             <span className={`w-2 h-2 rounded-full ${isAssemblyActive ? 'bg-[#EB4037] animate-pulse' : 'bg-[#EB4037]'}`} />
-            <span className="text-[11px] font-mono tracking-wider text-[#A5ADB8] uppercase">
-              {isAssemblyActive ? 'LẮP RÁP XƯỞNG' : 'KHÔNG GIAN XƯỞNG'}
+            <span className="whitespace-nowrap text-[11px] font-mono tracking-wider text-[#A5ADB8] uppercase">
+              {isAssemblyActive ? 'LẮP RÁP XƯỞNG' : <><span className="sm:hidden">TOUR</span><span className="hidden sm:inline">KHÔNG GIAN XƯỞNG</span></>}
             </span>
-            <span className="text-white/20">/</span>
-            <span className="text-xs font-mono text-[#F4F1EA]">
+            <span className="hidden sm:inline text-white/20">/</span>
+            <span className="min-w-0 truncate text-[11px] sm:text-xs font-mono text-[#F4F1EA]">
               {isAssemblyActive
                 ? `${Math.round(assemblyProgress * 100)}%`
                 : activeStep === 0
-                ? 'Toàn cảnh xưởng'
-                : `Bước ${currentStep.number} · ${currentStep.shortTitle}`}
+                ? <><span className="sm:hidden">Toàn cảnh</span><span className="hidden sm:inline">Toàn cảnh xưởng</span></>
+                : <><span className="sm:hidden">{currentStep.number}/05</span><span className="hidden sm:inline">Bước {currentStep.number} · {currentStep.shortTitle}</span></>}
             </span>
           </div>
 
@@ -544,11 +549,11 @@ export const LabScrollytelling: React.FC = () => {
 
           {/* Nút chuyển nhanh sang bộ sưu tập trên mobile */}
           {!isAssemblyActive && (
-            <div className="pointer-events-auto md:hidden">
+            <div className="pointer-events-auto shrink-0 md:hidden">
               <button
                 type="button"
                 onClick={scrollToCollection}
-                className="text-xs text-[#A5ADB8] hover:text-[#F4F1EA] underline underline-offset-2 font-mono"
+                className="min-h-11 px-2 text-xs text-[#A5ADB8] hover:text-[#F4F1EA] underline underline-offset-2 font-mono"
               >
                 Sản phẩm ↓
               </button>
@@ -557,14 +562,17 @@ export const LabScrollytelling: React.FC = () => {
 
         </div>
 
+        {/* Chừa riêng khung hình 3D trên điện thoại để thẻ hướng dẫn không phủ cảnh. */}
+        <div className="h-[min(54svh,480px)] min-h-[340px] max-h-[480px] md:hidden" aria-hidden="true" />
+
         {/* ============================================================== */}
         {/* HUD DƯỚI CÙNG: CARD THÔNG TIN (ASSEMBLY BLUEPRINT HOẶC EXPLORE) */}
         {/* ============================================================== */}
-        <div className="relative z-20 pb-8 sm:pb-12 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-end justify-between gap-6 pointer-events-none">
+        <div className="relative z-20 px-3 pt-3 pb-4 sm:px-8 md:pt-0 md:pb-12 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-stretch md:items-end justify-between gap-4 md:gap-6 pointer-events-none">
           
           {isAssemblyActive ? (
             /* CARD THÔNG TIN LẮP RÁP (BLUEPRINT HUD) */
-            <div className="pointer-events-auto w-full md:max-w-xl p-5 sm:p-6 rounded-2xl bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-2xl space-y-3.5 text-left animate-fadeIn">
+            <div className="pointer-events-auto w-full md:max-w-xl p-4 sm:p-6 rounded-2xl bg-[#141A21]/95 md:bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-2xl space-y-3 md:space-y-3.5 text-left animate-fadeIn">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EB4037]/15 text-[#EB4037] border border-[#EB4037]/30 shrink-0">
@@ -614,14 +622,14 @@ export const LabScrollytelling: React.FC = () => {
             </div>
           ) : (
             /* CARD THÔNG TIN CHI TIẾT BƯỚC KHÁM PHÁ HIỆN TẠI */
-            <div className="pointer-events-auto w-full md:max-w-xl p-5 sm:p-6 rounded-2xl bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-2xl space-y-3.5 text-left animate-fadeIn">
+            <div className="pointer-events-auto w-full md:max-w-xl p-4 sm:p-6 rounded-2xl bg-[#141A21]/95 md:bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-2xl space-y-3 md:space-y-3.5 text-left animate-fadeIn">
               
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EB4037]/15 text-[#EB4037] border border-[#EB4037]/30 shrink-0">
                     {activeStep === 0 ? 'TOÀN CẢNH KHÔNG GIAN' : `BƯỚC ${currentStep.number} / 05`}
                   </span>
-                  <span className="text-xs font-mono text-[#8492BD] flex items-center gap-1.5 truncate">
+                  <span className="hidden sm:flex text-xs font-mono text-[#8492BD] items-center gap-1.5 truncate">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#8492BD] shrink-0" />
                     <span className="truncate">{currentStep.location}</span>
                   </span>
@@ -633,22 +641,22 @@ export const LabScrollytelling: React.FC = () => {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-[#F4F1EA] tracking-tight leading-snug">
+              <h3 className="text-lg sm:text-2xl font-bold text-[#F4F1EA] tracking-tight leading-snug">
                 {currentStep.title}
               </h3>
 
-              <p className="text-xs sm:text-sm text-[#A5ADB8] leading-relaxed">
+              <p className="text-sm sm:text-sm text-[#A5ADB8] leading-relaxed">
                 {currentStep.description}
               </p>
 
               {/* Cụm Điều Khiển [Quay lại] [Tiếp theo / Xem sản phẩm] */}
-              <div className="pt-3 border-t border-[#27313C] flex items-center justify-between gap-3">
+              <div className="pt-3 border-t border-[#27313C] flex items-center justify-between gap-2 sm:gap-3">
                 
                 <button
                   type="button"
                   disabled={activeStep === 0}
                   onClick={handlePrev}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border text-xs font-medium transition-all ${
+                  className={`inline-flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1.5 px-2 sm:px-3.5 py-2 rounded-lg border text-xs font-medium transition-all ${
                     activeStep === 0
                       ? 'border-[#27313C]/40 text-[#737D89]/40 cursor-not-allowed bg-transparent'
                       : 'border-[#27313C] bg-[#0F141A] text-[#F4F1EA] hover:bg-[#1A222C]'
@@ -656,17 +664,19 @@ export const LabScrollytelling: React.FC = () => {
                   aria-label="Quay lại"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
-                  <span>{activeStep === 1 ? 'Về toàn cảnh' : 'Quay lại'}</span>
+                  <span className="sm:hidden">{activeStep === 1 ? 'Toàn cảnh' : 'Trước'}</span>
+                  <span className="hidden sm:inline">{activeStep === 1 ? 'Về toàn cảnh' : 'Quay lại'}</span>
                 </button>
 
-                <span className="text-xs font-mono text-[#A5ADB8]">
-                  {activeStep === 0 ? 'Góc nhìn tổng thể' : `Bước ${activeStep} / 5`}
+                <span className="shrink-0 text-[11px] sm:text-xs font-mono text-[#A5ADB8]">
+                  <span className="sm:hidden">{activeStep === 0 ? '00/05' : `${currentStep.number}/05`}</span>
+                  <span className="hidden sm:inline">{activeStep === 0 ? 'Góc nhìn tổng thể' : `Bước ${activeStep} / 5`}</span>
                 </span>
 
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#EB4037] hover:bg-[#FF5147] text-white text-xs font-medium transition-colors shadow-subtle group"
+                  className="inline-flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1.5 px-2 sm:px-4 py-2 rounded-lg bg-[#EB4037] hover:bg-[#FF5147] text-white text-xs font-medium transition-colors shadow-subtle group"
                   aria-label={
                     activeStep === 0
                       ? 'Bắt đầu xem quy trình'
@@ -675,13 +685,14 @@ export const LabScrollytelling: React.FC = () => {
                       : 'Bước tiếp theo'
                   }
                 >
-                  <span>
+                  <span className="hidden sm:inline">
                     {activeStep === 0
                       ? 'Bắt đầu quy trình (01)'
                       : activeStep === STEPS.length - 1
                       ? 'Xem sản phẩm hoàn thiện'
                       : 'Tiếp theo'}
                   </span>
+                  <span className="sm:hidden">{activeStep === STEPS.length - 1 ? 'Sản phẩm' : activeStep === 0 ? 'Bắt đầu' : 'Tiếp'}</span>
                   {activeStep === STEPS.length - 1 ? (
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   ) : (

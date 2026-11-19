@@ -1,21 +1,31 @@
 'use client';
 
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Center, Text } from '@react-three/drei';
+import { useEffect, useMemo } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
-import { Box, RotateCw, Layers, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Box } from 'lucide-react';
 import { CanvasErrorBoundary } from '../common/CanvasErrorBoundary';
+import { useStlPreview } from './useStlPreview';
+import { layoutPreviewParts, previewFileKey, type PreviewDimensions } from './stl-preview-layout';
+import { createFdmPreviewMaterial, PREVIEW_UNITS_PER_MM } from './fdm-preview-material';
+import { DEFAULT_QUOTE_CONFIG } from '../../lib/quote';
 
 interface STLViewerCanvasProps {
-  file: File | null;
+  files: File[];
+  selectedFile: File | null;
+  showAll: boolean;
+  fdmSurface: boolean;
   filamentColor: string;
   wireframe: boolean;
-  onDimensionsDetected?: (dims: { x: number; y: number; z: number; volumeCm3: number }) => void;
+  scalePercent: number;
+  onSelect(file: File): void;
+  onDimensionsDetected?: (dims: PreviewDimensions) => void;
 }
-
-// Bàn in 3D FDM (Build Plate 220x220mm)
+const BUILD_PLATE_SURFACE_Y = -0.04;
+const CAMERA_FOV = 38;
+// Bàn in 3D FDM hiển thị theo kích thước Bambu Lab A1 mini (180x180mm)
 function BuildPlate() {
   return (
     <group position={[0, -0.05, 0]}>
@@ -43,198 +53,75 @@ function BuildPlate() {
   );
 }
 
-// Mẫu thử mặc định khi chưa tải file (Benchmark Calibration Cube)
-function DefaultDemoModel({
-  filamentColor,
-  wireframe,
-}: {
-  filamentColor: string;
-  wireframe: boolean;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
 
-  useFrame((_, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.4;
-    }
+function PreviewMesh({ geometry, position, scale, filamentColor, wireframe, fdmSurface, selected, onSelect }: {
+  geometry: THREE.BufferGeometry; position: [number, number, number]; scale: number;
+  filamentColor: string; wireframe: boolean; fdmSurface: boolean; selected: boolean; onSelect(): void;
+}) {
+  const material = useMemo(() => {
+    const value = fdmSurface && !wireframe
+      ? createFdmPreviewMaterial(filamentColor, scale, DEFAULT_QUOTE_CONFIG.printer.layerHeightMm)
+      : new THREE.MeshStandardMaterial({ color: filamentColor, roughness: 0.48, metalness: 0 });
+    value.wireframe = wireframe;
+    value.emissive.set(selected ? '#C8A261' : '#000000');
+    value.emissiveIntensity = 0.12;
+    return value;
+  }, [fdmSurface, filamentColor, scale, selected, wireframe]);
+  useEffect(() => () => material.dispose(), [material]);
+  return <mesh geometry={geometry} material={material} dispose={null} position={position} scale={scale * PREVIEW_UNITS_PER_MM}
+    onClick={event => { event.stopPropagation(); if (event.delta < 4) onSelect(); }} />;
+}
+
+export default function STLViewerCanvas({ files, selectedFile, showAll, fdmSurface, filamentColor, wireframe, scalePercent, onSelect, onDimensionsDetected }: STLViewerCanvasProps) {
+  const entries = useStlPreview(files);
+  const selectedModel = selectedFile ? entries.get(previewFileKey(selectedFile))?.model : null;
+  useEffect(() => { if (selectedModel) onDimensionsDetected?.(selectedModel.dimensions); }, [selectedModel, onDimensionsDetected]);
+  const scale = Number.isFinite(scalePercent) && scalePercent > 0 ? scalePercent / 100 : 1;
+  const visible = (showAll ? files : files.filter(file => file === selectedFile)).flatMap(file => {
+    const model = entries.get(previewFileKey(file))?.model;
+    return model ? [{ file, model }] : [];
   });
-
-  return (
-    <group position={[0, 0.6, 0]}>
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <boxGeometry args={[1.2, 1.2, 1.2]} />
-        <meshStandardMaterial
-          color={filamentColor}
-          roughness={0.35}
-          metalness={0.15}
-          wireframe={wireframe}
-        />
-      </mesh>
-      {/* Điểm định vị góc */}
-      <mesh position={[0, -0.6, 0]}>
-        <cylinderGeometry args={[0.9, 0.9, 0.04, 32]} />
-        <meshStandardMaterial color="#27313C" roughness={0.6} />
-      </mesh>
-    </group>
-  );
-}
-
-// Mô hình STL tải lên thực tế
-function UserSTLModel({
-  file,
-  filamentColor,
-  wireframe,
-  onDimensionsDetected,
-}: {
-  file: File;
-  filamentColor: string;
-  wireframe: boolean;
-  onDimensionsDetected?: (dims: { x: number; y: number; z: number; volumeCm3: number }) => void;
-}) {
-  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      try {
-        const buffer = e.target?.result as ArrayBuffer;
-        if (!buffer) return;
-
-        const loader = new STLLoader();
-        const geom = loader.parse(buffer);
-
-        geom.computeVertexNormals();
-        geom.computeBoundingBox();
-
-        if (geom.boundingBox && active) {
-          const bbox = geom.boundingBox;
-          const sizeX = bbox.max.x - bbox.min.x;
-          const sizeY = bbox.max.y - bbox.min.y;
-          const sizeZ = bbox.max.z - bbox.min.z;
-
-          // Normalize model size to fit build plate (scale factor)
-          const maxDim = Math.max(sizeX, sizeY, sizeZ);
-          const scale = maxDim > 0 ? 2.5 / maxDim : 1;
-          geom.scale(scale, scale, scale);
-          geom.center();
-
-          // Calculate approximate volume in cm3 (assuming 1 unit = 1mm before normalization)
-          const volumeCm3 = Math.round((sizeX * sizeY * sizeZ * 0.0004) * 10) / 10;
-
-          onDimensionsDetected?.({
-            x: Math.round(sizeX),
-            y: Math.round(sizeY),
-            z: Math.round(sizeZ),
-            volumeCm3: Math.max(volumeCm3, 5),
-          });
-
-          setGeometry(geom);
-          setError(null);
-        }
-      } catch (err) {
-        if (active) setError('Không thể đọc file STL. Vui lòng kiểm tra định dạng nhị phân/ASCII.');
-      }
-    };
-
-    reader.onerror = () => {
-      if (active) setError('Lỗi khi đọc tệp.');
-    };
-
-    reader.readAsArrayBuffer(file);
-
-    return () => {
-      active = false;
-    };
-  }, [file, onDimensionsDetected]);
-
-  if (error) {
-    return (
-      <group position={[0, 0.5, 0]}>
-        <mesh>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#EB4037" wireframe />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (!geometry) return null;
-
-  return (
-    <group position={[0, 0.8, 0]}>
-      <mesh geometry={geometry} castShadow receiveShadow>
-        <meshStandardMaterial
-          color={filamentColor}
-          roughness={0.4}
-          metalness={0.1}
-          wireframe={wireframe}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-export default function STLViewerCanvas({
-  file,
-  filamentColor,
-  wireframe,
-  onDimensionsDetected,
-}: STLViewerCanvasProps) {
-  const isSTL = file?.name?.toLowerCase().endsWith('.stl');
-
-  return (
-    <div className="w-full h-full relative cursor-grab active:cursor-grabbing select-none">
-      <CanvasErrorBoundary
-        fallback={
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-[#070A0E] text-center text-xs font-mono text-[#A5ADB8]">
-            <Box className="w-8 h-8 text-[#EB4037] mb-2" />
-            <span>Chế độ xem 3D bàn máy FDM</span>
-            <span className="text-[10px] text-[#737D89] mt-1">Đang chạy ở chế độ tối ưu đồ họa nhẹ</span>
-          </div>
-        }
-      >
-        <Canvas
-          shadows
-          dpr={[1, 1.5]}
-          camera={{ position: [3.5, 3.2, 4.2], fov: 38 }}
-          gl={{ alpha: true, antialias: true }}
-        >
-          <ambientLight intensity={1.6} />
-          <directionalLight
-            position={[5, 8, 4]}
-            intensity={2.8}
-            castShadow
-            shadow-mapSize={[1024, 1024]}
-          />
-          <directionalLight position={[-4, 3, -3]} intensity={1.4} color="#FFE6CC" />
-
-          <Suspense fallback={null}>
-            <BuildPlate />
-
-            {isSTL && file ? (
-              <UserSTLModel
-                file={file}
-                filamentColor={filamentColor}
-                wireframe={wireframe}
-                onDimensionsDetected={onDimensionsDetected}
-              />
-            ) : (
-              <DefaultDemoModel filamentColor={filamentColor} wireframe={wireframe} />
-            )}
-          </Suspense>
-
-          <OrbitControls
-            minDistance={2.5}
-            maxDistance={8}
-            maxPolarAngle={Math.PI / 2.05} // Không cho camera chìm dưới đáy bàn
-            autoRotate={!file}
-            autoRotateSpeed={0.8}
-          />
-        </Canvas>
-      </CanvasErrorBoundary>
+  const layout = layoutPreviewParts(visible.map(part => part.model.dimensions), scale);
+  const bounds = { x: Math.max(180, layout.width) * PREVIEW_UNITS_PER_MM,
+    y: Math.max(1, layout.height) * PREVIEW_UNITS_PER_MM, z: Math.max(180, layout.depth) * PREVIEW_UNITS_PER_MM };
+  const targetY = BUILD_PLATE_SURFACE_Y + bounds.y / 2;
+  const fitExtent = Math.hypot(bounds.x, bounds.y + 0.4, bounds.z);
+  const failed = files.filter(file => entries.get(previewFileKey(file))?.error);
+  const completed = files.filter(file => entries.has(previewFileKey(file))).length;
+  return <div className="relative h-full w-full select-none cursor-grab active:cursor-grabbing">
+    <CanvasErrorBoundary fallback={<div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-xs text-[#A5ADB8]"><Box aria-hidden="true" className="h-8 w-8" /><p>Thiết bị chưa mở được khung 3D. Bạn vẫn xem kết quả từng linh kiện ở danh sách bên dưới.</p></div>}>
+      <Canvas dpr={[1, 1.5]} camera={{ position: [3.5, 3.2, 4.2], fov: CAMERA_FOV, near: 0.001, far: Math.max(1000, fitExtent * 100) }} gl={{ alpha: true, antialias: true }}>
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[4, 6, 3]} intensity={2.2} />
+        <directionalLight position={[-4, 2, -2]} intensity={0.7} color="#FFE6CC" />
+        <BuildPlate />
+        {visible.map(({ file, model }, index) => <PreviewMesh key={previewFileKey(file)} geometry={model.geometry}
+          position={[layout.positions[index].x * PREVIEW_UNITS_PER_MM, BUILD_PLATE_SURFACE_Y, layout.positions[index].z * PREVIEW_UNITS_PER_MM]}
+          scale={scale} filamentColor={filamentColor} wireframe={wireframe} fdmSurface={fdmSurface} selected={file === selectedFile}
+          onSelect={() => onSelect(file)} />)}
+        <OrbitControls makeDefault minDistance={0.05} maxDistance={Math.max(16, fitExtent * 50)} maxPolarAngle={Math.PI / 2.05} target={[0, targetY, 0]} />
+        <CameraFrame targetY={targetY} fitExtent={fitExtent} />
+      </Canvas>
+    </CanvasErrorBoundary>
+    <div className="pointer-events-none absolute left-2 right-2 top-2 space-y-1 text-[11px] leading-5 text-[#A5ADB8]" role="status" aria-live="polite">
+      {completed < files.length && <p className="w-fit rounded bg-[#0B0F14]/95 px-2">Đang mở 3D: {completed}/{files.length} file…</p>}
+      {failed.map(file => <p key={previewFileKey(file)} className="break-words rounded bg-[#0B0F14]/95 px-2 text-[#FF8179]">{file.name}: {entries.get(previewFileKey(file))?.error}</p>)}
+      {(layout.width > 180 || layout.depth > 180 || layout.height > 180) && <p className="rounded bg-[#0B0F14]/95 px-2 text-[#C8A261]">Bố trí xem trước vượt khổ 180 mm; cần xưởng sắp mẻ hoặc kiểm tra tỷ lệ.</p>}
     </div>
-  );
+  </div>;
+}
+
+function CameraFrame({ targetY, fitExtent }: { targetY: number; fitExtent: number }) {
+  const { camera, size } = useThree();
+  const controls = useThree(state => state.controls) as OrbitControlsImpl | undefined;
+  useEffect(() => {
+    const aspect = Math.max(0.1, size.width / Math.max(1, size.height));
+    const halfFov = Math.atan(Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV / 2)) * Math.min(1, aspect));
+    const distance = Math.max(4.5, fitExtent / (2 * Math.sin(halfFov)) * 1.12);
+    const target = new THREE.Vector3(0, targetY, 0);
+    camera.position.copy(target).addScaledVector(new THREE.Vector3(0.55, 0.42, 0.72).normalize(), distance);
+    camera.lookAt(target); camera.updateProjectionMatrix();
+    if (controls) { controls.target.copy(target); controls.update(); }
+  }, [camera, controls, fitExtent, targetY, size.width, size.height]);
+  return null;
 }

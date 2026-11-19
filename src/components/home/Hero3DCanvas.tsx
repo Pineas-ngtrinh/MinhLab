@@ -1,68 +1,63 @@
 'use client';
 
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import gsap from 'gsap';
-import { removeMascotHandheld } from '../../lib/scene-customization';
+import { createMascotInstance } from '../../lib/mascot-instance';
+import { useCanvasActivity } from '../../hooks/useCanvasActivity';
 
 // Preload 3D model asset
 useGLTF.preload('/models/minhlab-mascot-v1.glb');
 
-export type HeroMascotAction = 'idle' | 'greet' | 'point' | 'inspect' | 'hop';
+export type HeroMascotAction = 'idle' | 'greet';
 
 interface Hero3DCanvasProps {
   action: HeroMascotAction;
-  actionTrigger: number;
   wireframe: boolean;
-  autoRotate: boolean;
   onLoaded?: () => void;
+  animate?: boolean;
 }
 
 function MascotModel({
   action,
-  actionTrigger,
   wireframe,
   onLoaded,
+  active,
 }: {
   action: HeroMascotAction;
-  actionTrigger: number;
   wireframe: boolean;
   onLoaded?: () => void;
+  active: boolean;
 }) {
   const { scene } = useGLTF('/models/minhlab-mascot-v1.glb');
   const root = useRef<THREE.Group>(null);
-  const hopProgress = useRef({ value: 0 });
+  const motion = useRef<THREE.Group>(null);
+  const { camera, size, invalidate } = useThree();
+  const [targetY, setTargetY] = useState(0);
 
   useEffect(() => {
     onLoaded?.();
   }, [onLoaded]);
 
-  const { instance, head, left, right, rest } = useMemo(() => {
-    const instance = scene.clone(true);
-    removeMascotHandheld(instance);
-
-    instance.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        if (child.material) {
-          const mat = child.material.clone() as THREE.MeshStandardMaterial;
-          child.material = mat;
-        }
-      }
-    });
+  const { instance, head, left, right, rest, bounds, center, setWireframe, dispose } = useMemo(() => {
+    const { instance, setWireframe, dispose } = createMascotInstance(scene);
 
     const head = instance.getObjectByName('Mascot_Head');
     const left = instance.getObjectByName('Mascot_LeftArm');
     const right = instance.getObjectByName('Mascot_RightArm');
+    const bounds = new THREE.Box3().setFromObject(instance);
+    const center = bounds.getCenter(new THREE.Vector3());
 
     return {
       instance,
+      setWireframe,
+      dispose,
       head,
       left,
       right,
+      bounds,
+      center,
       rest: {
         head: head?.rotation.clone() ?? new THREE.Euler(),
         left: left?.rotation.clone() ?? new THREE.Euler(),
@@ -71,38 +66,42 @@ function MascotModel({
     };
   }, [scene]);
 
-  // Apply wireframe toggle dynamically
+  // Keep the model's proportions uniform and fit its complete silhouette to the
+  // current canvas, including the wider orbit needed to turn it all the way around.
   useEffect(() => {
-    instance.traverse((child) => {
-      if (child instanceof THREE.Mesh && child.material) {
-        if (Array.isArray(child.material)) {
-          child.material.forEach((m) => {
-            m.wireframe = wireframe;
-          });
-        } else {
-          child.material.wireframe = wireframe;
-        }
-      }
-    });
-  }, [wireframe, instance]);
+    const perspectiveCamera = camera as THREE.PerspectiveCamera;
+    const modelSize = bounds.getSize(new THREE.Vector3());
+    const modelScale = 1.4;
+    const groundY = -0.66;
+    const focalY = groundY + modelSize.y * modelScale * 0.5;
+    const verticalFov = THREE.MathUtils.degToRad(perspectiveCamera.fov);
+    const horizontalFov = 2 * Math.atan(
+      Math.tan(verticalFov * 0.5) * (size.width / Math.max(size.height, 1))
+    );
+    const margin = 0.76;
+    const verticalDistance = (modelSize.y * modelScale * 0.5) / Math.tan(verticalFov * 0.5);
+    const orbitHalfWidth = Math.hypot(modelSize.x, modelSize.z) * modelScale * 0.5;
+    const horizontalDistance = orbitHalfWidth / Math.tan(horizontalFov * 0.5);
+    const distance = Math.max(verticalDistance, horizontalDistance) / margin;
 
-  // Ballistic hop timeline
+    if (root.current) root.current.position.y = focalY;
+    perspectiveCamera.position.set(0, focalY + distance * 0.08, distance);
+    perspectiveCamera.lookAt(0, focalY, 0);
+    perspectiveCamera.updateProjectionMatrix();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizes browser, WebGL or remote API state after mount; keep SSR hydration deterministic.
+    setTargetY(focalY);
+  }, [bounds, camera, size.height, size.width]);
+
+  useEffect(() => dispose, [dispose]);
+
   useEffect(() => {
-    if (action === 'hop') {
-      hopProgress.current.value = 0;
-      const tween = gsap.to(hopProgress.current, {
-        value: 1,
-        duration: 0.65,
-        ease: 'power1.inOut',
-      });
-      return () => {
-        tween.kill();
-      };
-    }
-  }, [action, actionTrigger]);
+    setWireframe(wireframe);
+    invalidate();
+  }, [wireframe, setWireframe, invalidate]);
 
   useFrame(({ clock }, delta) => {
-    if (!root.current) return;
+    if (!active || !root.current) return;
+    if (!motion.current) return;
     const time = clock.elapsedTime;
     const blend = (cur: number, tgt: number, speed = 8) =>
       THREE.MathUtils.damp(cur, tgt, speed, delta);
@@ -110,7 +109,6 @@ function MascotModel({
     let targetPosY = 0;
     let targetRotX = 0;
     let targetRotY = 0;
-    let targetScaleY = 1;
 
     let targetHeadX = rest.head.x;
     let targetHeadY = rest.head.y;
@@ -127,7 +125,6 @@ function MascotModel({
     switch (action) {
       case 'idle': {
         targetPosY = Math.sin(time * 1.8) * 0.025;
-        targetScaleY = 1 + Math.sin(time * 1.8) * 0.01;
         targetHeadY = rest.head.y + Math.sin(time * 0.8) * 0.1;
         targetHeadX = rest.head.x + Math.sin(time * 1.2) * 0.04;
         targetLeftZ = rest.left.z + Math.sin(time * 1.8) * 0.04;
@@ -145,52 +142,11 @@ function MascotModel({
         targetRightZ = rest.right.z - 0.15;
         break;
       }
-      case 'point': {
-        targetRotY = 0.2;
-        targetHeadY = rest.head.y + 0.2;
-        targetHeadX = rest.head.x + 0.05;
-        targetLeftZ = rest.left.z - 1.0;
-        targetLeftX = rest.left.x - 0.45;
-        targetLeftY = rest.left.y + 0.3;
-        targetRightZ = rest.right.z - 0.2;
-        break;
-      }
-      case 'inspect': {
-        targetPosY = -0.04;
-        targetRotX = 0.18;
-        targetHeadX = rest.head.x + 0.25;
-        targetHeadY = rest.head.y + Math.sin(time * 2) * 0.08;
-        targetLeftZ = rest.left.z - 0.45;
-        targetLeftX = rest.left.x - 0.3;
-        targetRightZ = rest.right.z - 0.3;
-        targetRightX = rest.right.x - 0.2;
-        break;
-      }
-      case 'hop': {
-        const p = hopProgress.current.value;
-        if (p < 0.2) {
-          targetScaleY = 0.82;
-          targetPosY = -0.12;
-        } else if (p < 0.7) {
-          const arc = Math.sin(((p - 0.2) / 0.5) * Math.PI);
-          targetPosY = arc * 0.4;
-          targetScaleY = 1.15;
-          targetRotY = Math.PI * 0.2;
-        } else if (p < 0.9) {
-          targetScaleY = 0.85;
-          targetPosY = -0.06;
-        } else {
-          targetScaleY = 1;
-          targetPosY = 0;
-        }
-        break;
-      }
     }
 
-    root.current.position.y = blend(root.current.position.y, targetPosY, 6);
     root.current.rotation.x = blend(root.current.rotation.x, targetRotX, 6);
     root.current.rotation.y = blend(root.current.rotation.y, targetRotY, 6);
-    root.current.scale.y = blend(root.current.scale.y, targetScaleY, 6);
+    motion.current.position.y = blend(motion.current.position.y, targetPosY, 6);
 
     if (head) {
       head.rotation.set(
@@ -216,27 +172,57 @@ function MascotModel({
   });
 
   return (
-    <group ref={root} position={[0, -0.65, 0]} scale={[1.4, 1.4, 1.4]}>
-      <primitive object={instance} dispose={null} />
-    </group>
+    <>
+      <group ref={root} scale={1.4}>
+        <group ref={motion}>
+          <primitive object={instance} position={center.clone().negate()} dispose={null} />
+        </group>
+      </group>
+      <OrbitControls
+        enableRotate
+        enableZoom={false}
+        enablePan={false}
+        autoRotate={false}
+        enableDamping={false}
+        minPolarAngle={Math.PI / 3}
+        maxPolarAngle={Math.PI / 1.9}
+        target={[0, targetY, 0]}
+      />
+    </>
   );
 }
 
+/** Idle motion needs only 30 scheduled frames/s; OrbitControls still invalidates on interaction. */
+function IdleFrames({ enabled }: { enabled: boolean }) {
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    invalidate();
+    if (!enabled) return;
+    const timer = window.setInterval(() => invalidate(), 1000 / 30);
+    return () => window.clearInterval(timer);
+  }, [enabled, invalidate]);
+  return null;
+}
+
 export default function Hero3DCanvas({
+  animate = true,
   action,
-  actionTrigger,
   wireframe,
-  autoRotate,
   onLoaded,
 }: Hero3DCanvasProps) {
+  const container = useRef<HTMLDivElement>(null);
+  const active = useCanvasActivity(container);
+
   return (
-    <div className="w-full h-full relative cursor-grab active:cursor-grabbing select-none">
+    <div ref={container} className="w-full h-full relative cursor-grab active:cursor-grabbing select-none">
       <Canvas
+        frameloop="demand"
         shadows
-        dpr={[1, 1.5]}
-        camera={{ position: [0, 0.4, 3.8], fov: 36 }}
+        dpr={[1, 1.25]}
+        camera={{ position: [0, 0, 8], fov: 36 }}
         gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
       >
+        <IdleFrames enabled={active && animate} />
         <ambientLight intensity={1.8} />
         <directionalLight
           position={[-3, 6, 5]}
@@ -251,7 +237,7 @@ export default function Hero3DCanvas({
         <Suspense fallback={null}>
           <MascotModel
             action={action}
-            actionTrigger={actionTrigger}
+            active={active && animate}
             wireframe={wireframe}
             onLoaded={onLoaded}
           />
@@ -265,14 +251,6 @@ export default function Hero3DCanvas({
           />
         </Suspense>
 
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          autoRotate={autoRotate}
-          autoRotateSpeed={1.5}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 1.9}
-        />
       </Canvas>
     </div>
   );

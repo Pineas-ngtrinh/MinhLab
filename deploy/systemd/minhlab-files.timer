@@ -1,0 +1,8 @@
+[Unit]
+Description=Scan files and close expired custom quotes
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+Unit=minhlab-worker@files.service
+[Install]
+WantedBy=timers.target

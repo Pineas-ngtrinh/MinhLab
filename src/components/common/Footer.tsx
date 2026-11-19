@@ -4,7 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SITE_CONFIG } from '../../config/site.config';
-import { ArrowUp, Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { ArrowUp, Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
+import { returnToHomeTop } from './home-navigation';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -12,34 +13,28 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer id="lien-he" className="bg-[#0B0F14] border-t border-[#27313C] pt-16 pb-12 px-4 sm:px-8 text-xs text-[#A5ADB8] w-full max-w-full overflow-hidden">
+    <footer id="lien-he" className="bg-background border-t border-[#27313C] pt-12 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] px-4 sm:px-8 text-xs text-[#A5ADB8] w-full max-w-full md:pb-12">
       <div className="max-w-7xl mx-auto space-y-12 w-full">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
           
           {/* Thông tin thương hiệu MinhLab */}
           <div className="md:col-span-5 space-y-4 text-left">
             <div className="flex items-center gap-2.5">
-              <Link href="/" className="relative h-7 w-28 block">
+              <Link href="/" onNavigate={returnToHomeTop} className="relative h-7 w-28 block">
                 <Image
                   src="/images/logo.png"
                   alt="MinhLab Logo"
                   fill
+                  sizes="112px"
                   className="object-contain object-left"
                 />
               </Link>
-              <span className="text-[11px] font-mono text-[#737D89] border-l border-[#27313C] pl-2 leading-none">
-                Modern 3D Workshop
-              </span>
             </div>
             
             <p className="text-xs text-[#A5ADB8] max-w-md leading-relaxed">
-              Xưởng phục dựng các mẫu đồ chơi, mô hình sưu tầm đã ngừng sản xuất và dịch vụ gia công in 3D FDM chuẩn xác theo tệp của khách hàng.
+              Xưởng phục dựng các mẫu đồ chơi, mô hình sưu tầm đã ngừng sản xuất và dịch vụ gia công in 3D FDM và resin theo tệp của khách hàng.
             </p>
 
-            <div className="flex items-center gap-3 pt-1 text-xs font-mono text-[#737D89]">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#6F9576]" />
-              <span>Xưởng đang hoạt động · Nhận tệp trực tuyến 24/7</span>
-            </div>
           </div>
 
           {/* Điều hướng danh mục */}
@@ -96,12 +91,26 @@ export const Footer: React.FC = () => {
               <p className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#EB4037] shrink-0" />
                 <span>
-                  Hotline / Zalo:{' '}
-                  <a href={`tel:${SITE_CONFIG.contact.phone}`} className="hover:text-[#F4F1EA] font-mono text-[#F4F1EA]">
+                  Hotline:{' '}
+                  <a
+                    href={`tel:${SITE_CONFIG.contact.phone.replace(/\s+/g, '')}`}
+                    className="hover:text-[#F4F1EA] font-mono text-[#F4F1EA]"
+                  >
                     {SITE_CONFIG.contact.phone}
                   </a>
                 </span>
               </p>
+              {SITE_CONFIG.contact.socials.zalo && (
+                <p className="flex items-center gap-2">
+                  <MessageCircle className="w-3.5 h-3.5 text-[#EB4037] shrink-0" />
+                  <span>
+                    Zalo:{' '}
+                    <a href={SITE_CONFIG.contact.socials.zalo} target="_blank" rel="noopener noreferrer" className="hover:text-[#F4F1EA] font-mono text-[#F4F1EA]">
+                      Nhắn tin cho MinhLab
+                    </a>
+                  </span>
+                </p>
+              )}
               <p className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-[#EB4037] shrink-0" />
                 <span>
@@ -123,7 +132,7 @@ export const Footer: React.FC = () => {
         {/* Dòng bản quyền & nút cuộn lên đầu */}
         <div className="pt-6 border-t border-[#27313C] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[#737D89] font-mono text-[11px]">
-            © {new Date().getFullYear()} MinhLab. Xưởng phục dựng đồ sưu tầm & in 3D FDM thủ công.
+            © {new Date().getFullYear()} MinhLab. Xưởng phục dựng đồ sưu tầm & in 3D FDM & resin.
           </p>
           
           <button

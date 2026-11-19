@@ -1,19 +1,26 @@
+import { parsePageOptions } from '../../../../src/lib/pagination';
+import { ORDER_STATUSES } from '../../../../src/domain/orders/order';
+import type { CustomerOrderData } from '../../../../src/contracts/orders';
+import { apiErrorResponse } from '../../../../src/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
-import { OrderService } from '../../../../src/services/order.service';
+import { OrderService } from '../../../../src/server/orders';
+import { authorizeRoles } from '../../../../src/lib/auth-session';
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const email = searchParams.get('email');
-
-  if (!email) {
-    return NextResponse.json({ success: false, error: 'Thiếu tham số email' }, { status: 400 });
-  }
-
   try {
-    const orders = OrderService.getOrdersByCustomerEmail(email);
+    const access = await authorizeRoles(request, ['CUSTOMER']);
+    if (access.response) return access.response;
+
+    const customerId = access.session?.id;
+    if (!customerId) return NextResponse.json({ success: false, error: 'Phiên đăng nhập không hợp lệ.' }, { status: 401 });
+
+    const page = await OrderService.getCustomerOrdersPage(customerId,parsePageOptions(request.nextUrl.searchParams,ORDER_STATUSES));
     return NextResponse.json({
       success: true,
-      data: orders.map(({ order, items, payment }) => ({
+      pagination:page.pagination,
+      summary:page.summary,
+      data: page.data.map(({ order, items, payment, production }): CustomerOrderData => ({
+        production,
         orderNumber: order.order_number,
         orderStatus: order.order_status,
         paymentStatus: order.payment_status,
@@ -33,9 +40,8 @@ export async function GET(request: NextRequest) {
           amount: payment.amount,
         } : null,
       })),
-    });
+    }, {headers:{'Cache-Control':'no-store'}});
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Lỗi khi tra cứu đơn hàng cá nhân';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    return apiErrorResponse(err, 'Lỗi khi tra cứu đơn hàng cá nhân');
   }
 }

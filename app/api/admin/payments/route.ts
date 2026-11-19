@@ -1,12 +1,20 @@
+import { parsePageOptions } from '../../../../src/lib/pagination';
+import { apiErrorResponse } from '../../../../src/lib/api-response';
 import { NextResponse } from 'next/server';
-import { OrderService } from '../../../../src/services/order.service';
+import { NextRequest } from 'next/server';
+import { OrderService } from '../../../../src/server/orders';
+import { authorizeRoles } from '../../../../src/lib/auth-session';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const paymentsList = OrderService.getAllPayments();
+    const access = await authorizeRoles(request, ['ADMIN']);
+    if (access.response) return access.response;
+
+    const { data: paymentsList, pagination } = await OrderService.getPaymentsPage(parsePageOptions(request.nextUrl.searchParams, ['PENDING', 'VERIFIED', 'REJECTED', 'REFUNDED']));
 
     return NextResponse.json({
       success: true,
+      pagination,
       data: paymentsList.map(({ payment, order, attachments }) => ({
         id: payment.id,
         paymentNumber: payment.payment_number,
@@ -25,12 +33,12 @@ export async function GET() {
         verificationStatus: payment.verification_status,
         verifiedBy: payment.verified_by,
         verifiedAt: payment.verified_at,
+        rejectionReason: payment.rejection_reason,
         attachments: attachments.map((a) => a.file_url),
         createdAt: payment.created_at,
       })),
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Lỗi khi tải danh sách thanh toán';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    return apiErrorResponse(err, 'Lỗi khi tải danh sách thanh toán');
   }
 }

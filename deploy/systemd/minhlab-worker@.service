@@ -1,0 +1,10 @@
+[Unit]
+Description=MinhLab staging worker %i
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/minhlab/current
+ExecStart=/bin/bash /srv/minhlab/current/deploy/worker.sh %i
+TimeoutStartSec=15min

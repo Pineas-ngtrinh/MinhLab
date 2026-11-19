@@ -1,0 +1,8 @@
+[Unit]
+Description=Deliver approved staging notifications
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=1min
+Unit=minhlab-worker@notifications.service
+[Install]
+WantedBy=timers.target

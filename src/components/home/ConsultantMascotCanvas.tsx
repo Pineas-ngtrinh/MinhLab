@@ -16,7 +16,7 @@ interface ExtendedCanvasProps extends ConsultantMascotProps {
   onLoaded?: () => void;
 }
 
-function ConsultantModel({ action, facing, actionTrigger, reducedMotion, active, onLoaded }: ExtendedCanvasProps) {
+function ConsultantModel({ action, facing, actionTrigger, reducedMotion, onLoaded }: ExtendedCanvasProps) {
   const { scene } = useGLTF('/models/minhlab-mascot-v1.glb');
   const root = useRef<THREE.Group>(null);
   const hopProgress = useRef({ value: 0 });

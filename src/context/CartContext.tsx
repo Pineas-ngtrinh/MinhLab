@@ -15,28 +15,35 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ProductItem } from '../config/site.config';
+import { restoreCart, matchesCartItem, mergeCartItems, cartReferences } from '../lib/cart';
+import { selectProductVariant } from '../lib/catalog';
+import type { ProductItem, CatalogData } from '../contracts/catalog';
+import type { ApiResponse } from '../contracts/api';
 
 export interface CartItem {
+  variantId?: string;
   product: ProductItem;
   quantity: number;
   selectedColor?: string;
 }
 
 interface CartContextType {
+  cartLoading: boolean;
+  cartError: string;
   items: CartItem[];
   totalCount: number;
   totalPrice: number;
   isCartOpen: boolean;
   isCheckoutOpen: boolean;
   directBuyProduct: CartItem | null;
-  addToCart: (product: ProductItem, quantity?: number, selectedColor?: string) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addToCart: (product: ProductItem, quantity?: number, selectedColor?: string) => boolean;
+  removeFromCart: (productId: string, selectedColor?: string) => void;
+  updateQuantity: (productId: string, quantity: number, selectedColor?: string) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
-  openCheckout: (directProduct?: { product: ProductItem; selectedColor?: string }) => void;
+  openCheckout: (directProduct?: { product: ProductItem; selectedColor?: string; quantity?: number }) => void;
+  updateCheckoutQuantity: (productId: string, quantity: number, selectedColor?: string) => void;
   closeCheckout: () => void;
 }
 
@@ -46,66 +53,91 @@ const CART_STORAGE_KEY = 'minhlab_cart_items_v1';
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [cartLoaded, setCartLoaded] = useState(false);
+  const [cartError, setCartError] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [directBuyProduct, setDirectBuyProduct] = useState<CartItem | null>(null);
 
   // Đọc dữ liệu giỏ hàng từ localStorage khi trang load (Client-side)
   useEffect(() => {
+    const controller = new AbortController();
+    let saved: unknown;
     try {
-      const saved = localStorage.getItem(CART_STORAGE_KEY);
-      if (saved) {
-        setItems(JSON.parse(saved));
-      }
-    } catch {
-      // Bỏ qua lỗi parse nếu chưa có dữ liệu
+      saved = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    } catch { saved = []; }
+    if (!Array.isArray(saved) || saved.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Rehydrate browser storage after mount; keep SSR deterministic.
+      setCartLoaded(true);
+      return;
     }
+    async function load() {
+      try {
+        const response = await fetch('/api/catalog', {cache:'no-store',signal:controller.signal});
+        const body: ApiResponse<CatalogData> = await response.json();
+        if (!response.ok || !body.success) throw new Error('Catalogue unavailable');
+        if (controller.signal.aborted) return;
+        setItems(added => mergeCartItems(restoreCart(saved, body.data.products), added));
+        setCartLoaded(true);
+      } catch {
+        if (!controller.signal.aborted) setCartError('Chưa thể tải giỏ hàng đã lưu. Vui lòng tải lại trang để thử lại.');
+      }
+    }
+    void load();
+    return () => controller.abort();
   }, []);
 
   // Tự động lưu giỏ hàng vào localStorage mỗi khi có thay đổi
   useEffect(() => {
+    if (!cartLoaded) return;
     try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartReferences(items)));
     } catch {
       // Bỏ qua lỗi lưu nếu bộ nhớ bị khóa
     }
-  }, [items]);
+  }, [items, cartLoaded]);
 
   // Thêm sản phẩm vào giỏ
   const addToCart = (product: ProductItem, quantity: number = 1, selectedColor?: string) => {
+    if (!Number.isInteger(quantity) || quantity < 1) return false;
+    if (!cartLoaded) { setIsCartOpen(true); return false; }
+    const selected = selectProductVariant(product, selectedColor);
+    if (!selected) return false;
+    const variant = selected.variants.find(value=>value.available && (!selectedColor || value.name===selectedColor))!;
     setItems((prev) => {
       const color = selectedColor || product.colors?.[0]?.name;
       const existingIndex = prev.findIndex(
-        (item) => item.product.id === product.id && item.selectedColor === color
+        (item) => item.product.id === product.id && (item.variantId ? item.variantId === variant.id : item.selectedColor === color)
       );
 
       if (existingIndex > -1) {
-        const updated = [...prev];
-        updated[existingIndex].quantity += quantity;
-        return updated;
+        return prev.map((item, index) => index === existingIndex
+          ? { ...item, product: selected, variantId:variant.id, quantity: Math.min(100, item.quantity + quantity) } : item);
       }
 
-      return [...prev, { product, quantity, selectedColor: color }];
+      return [...prev, { product: selected, variantId:variant.id, quantity: Math.min(100, quantity), selectedColor: color }];
     });
 
     // Mở giỏ hàng để khách thấy sản phẩm vừa thêm
     setIsCartOpen(true);
+    return true;
   };
 
   // Xóa sản phẩm khỏi giỏ
-  const removeFromCart = (productId: string) => {
-    setItems((prev) => prev.filter((item) => item.product.id !== productId));
+  const removeFromCart = (productId: string, selectedColor?: string) => {
+    setItems((prev) => prev.filter((item) => !matchesCartItem(item, productId, selectedColor)));
   };
 
   // Cập nhật số lượng
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (productId: string, quantity: number, selectedColor?: string) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(productId, selectedColor);
       return;
     }
 
+    if (!Number.isInteger(quantity)) return;
     setItems((prev) =>
-      prev.map((item) => (item.product.id === productId ? { ...item, quantity } : item))
+      prev.map((item) => (matchesCartItem(item, productId, selectedColor) ? { ...item, quantity: Math.min(100, quantity) } : item))
     );
   };
 
@@ -122,14 +154,20 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const closeCart = () => setIsCartOpen(false);
 
   // Mở modal thanh toán (Hỗ trợ Mua ngay 1 sản phẩm cụ thể hoặc toàn bộ giỏ)
-  const openCheckout = (directProduct?: { product: ProductItem; selectedColor?: string }) => {
+  const openCheckout = (directProduct?: { product: ProductItem; selectedColor?: string; quantity?: number }) => {
     if (directProduct) {
+      const quantity = directProduct.quantity ?? 1;
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) return;
+      const selected = selectProductVariant(directProduct.product, directProduct.selectedColor);
+      if (!selected) return;
       setDirectBuyProduct({
-        product: directProduct.product,
-        quantity: 1,
+        product: selected,
+        variantId:selected.variants.find(value=>value.available && (!directProduct.selectedColor || value.name===directProduct.selectedColor))?.id,
+        quantity,
         selectedColor: directProduct.selectedColor || directProduct.product.colors?.[0]?.name,
       });
     } else {
+      if (!cartLoaded || items.length === 0) return;
       setDirectBuyProduct(null);
     }
     setIsCartOpen(false);
@@ -141,6 +179,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setDirectBuyProduct(null);
   };
 
+  const updateCheckoutQuantity = (productId: string, quantity: number, selectedColor?: string) => {
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) return;
+    if (directBuyProduct) {
+      setDirectBuyProduct(current => current && matchesCartItem(current, productId, selectedColor)
+        ? { ...current, quantity } : current);
+    } else {
+      updateQuantity(productId, quantity, selectedColor);
+    }
+  };
+
   // Tính tổng số lượng sản phẩm trong giỏ
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -150,6 +198,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return (
     <CartContext.Provider
       value={{
+        cartLoading: !cartLoaded && !cartError,
+        cartError,
         items,
         totalCount,
         totalPrice,
@@ -163,6 +213,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         openCart,
         closeCart,
         openCheckout,
+        updateCheckoutQuantity,
         closeCheckout,
       }}
     >
@@ -171,26 +222,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-// Giá trị fallback an toàn tránh lỗi crash nếu component được render độc lập
-const defaultCartContext: CartContextType = {
-  items: [],
-  totalCount: 0,
-  totalPrice: 0,
-  isCartOpen: false,
-  isCheckoutOpen: false,
-  directBuyProduct: null,
-  addToCart: () => {},
-  removeFromCart: () => {},
-  updateQuantity: () => {},
-  clearCart: () => {},
-  openCart: () => {},
-  closeCart: () => {},
-  openCheckout: () => {},
-  closeCheckout: () => {},
-};
-
 // Hook tiện lợi dùng trong các component
 export const useCart = () => {
   const context = useContext(CartContext);
-  return context || defaultCartContext;
+  if (!context) throw new Error('useCart must be used within CartProvider');
+  return context;
 };

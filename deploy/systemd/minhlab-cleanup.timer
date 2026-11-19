@@ -1,0 +1,8 @@
+[Unit]
+Description=Remove expired private model files
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=minhlab-worker@cleanup.service
+[Install]
+WantedBy=timers.target

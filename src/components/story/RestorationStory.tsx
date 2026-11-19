@@ -1,15 +1,13 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Sparkles, Check, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 
 export const RestorationStory: React.FC = () => {
   return (
     <section 
       id="ve-minhlab" 
-      className="py-20 sm:py-28 px-4 sm:px-8 bg-[#0F141A]/75 border-t border-[#27313C] w-full max-w-full overflow-hidden"
+      className="py-12 sm:py-16 px-4 sm:px-8 bg-[#0F141A]/75 w-full max-w-full"
       aria-label="Câu chuyện phục dựng tại MinhLab"
     >
       <div className="max-w-7xl mx-auto w-full">
@@ -19,8 +17,8 @@ export const RestorationStory: React.FC = () => {
           <div className="lg:col-span-5 relative">
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#0B0F14] border border-[#27313C] shadow-2xl">
               <Image
-                src="/images/minhlab-mascot-free-v2.png"
-                alt="Chi tiết đường vân layer và bề mặt hoàn thiện tại xưởng MinhLab"
+                src="https://res.cloudinary.com/dpllx6qv4/image/upload/v1791293391/789178405_122181786440852692_7516432822826651604_n_xd8qzb.jpg"
+                alt="Hoàn thiện thủ công và dán chi tiết lên mô hình in 3D tại xưởng MinhLab"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover object-center"
