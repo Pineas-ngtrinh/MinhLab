@@ -14,12 +14,12 @@ function fixture(includeProxy){
   put('package.json','{}');
   put('deploy/.env.runtime','SYNTHETIC_SECRET=fixture-only\n');
   put('deploy/.env.runtime.example','SYNTHETIC_SECRET=\n');
-  put('docs/ooad/keep.drawio','<mxfile/>');
+  put('docs/notes.md','# Project notes');
   if(includeProxy)put('proxy.ts','export const proxy = () => "request-guard-fixture";\n');
   return root;
 }
 
-test('release archive carries the API proxy, verifies its hash and excludes runtime secrets and OOAD',()=>{
+test('release archive carries the API proxy, verifies its hash and excludes runtime secrets and documentation',()=>{
   const root=fixture(true);
   try{
     const result=spawnSync(process.execPath,['scripts/deploy/package-release.cjs'],{cwd:root,encoding:'utf8'});
@@ -36,7 +36,7 @@ test('release archive carries the API proxy, verifies its hash and excludes runt
     assert(fs.readFileSync(path.join(unpack,'.dockerignore'),'utf8').split(/\r?\n/).includes('!proxy.ts'));
     assert(fs.existsSync(path.join(unpack,'deploy/.env.runtime.example')));
     assert(!fs.existsSync(path.join(unpack,'deploy/.env.runtime')));
-    assert(!fs.existsSync(path.join(unpack,'docs/ooad/keep.drawio')));
+    assert(!fs.existsSync(path.join(unpack,'docs')));
   }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
 
