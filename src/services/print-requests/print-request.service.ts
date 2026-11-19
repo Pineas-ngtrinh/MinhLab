@@ -11,6 +11,7 @@ const own = (a: RequestActor, r: RequestState) => {
         throw new AppError('Không tìm thấy yêu cầu in.', 404);
 };
 export function createPrintRequestService(d: RequestDependencies) {
+    // Lần gửi lại cùng nội dung nhận kết quả cũ. Đổi tài khoản hoặc sửa nội dung thì phải dùng khóa mới.
     const operation = (a: RequestActor, key: string, input: unknown, run: (w: Parameters<Parameters<RequestDependencies['transaction']>[0]>[0]) => Promise<unknown>) => d.transaction(async (w) => {
         const hash = d.hash(input);
         const replay = await w.replay(key);
@@ -49,6 +50,7 @@ export function createPrintRequestService(d: RequestDependencies) {
                 return { id };
             });
         },
+        // Sau khi chuyển đơn, việc giữ tệp cần tính cả trạng thái của đơn đó.
         lifecycle(a: RequestActor, key: string, id: string, revision: number, action: 'CLOSE' | 'REOPEN' | 'HOLD' | 'RELEASE_HOLD', note: string, reviewAt?: string, holdId?: string) {
             role(a, action === 'HOLD' || action === 'RELEASE_HOLD' ? ['ADMIN'] : ['CUSTOMER', 'ADMIN']);
             return operation(a, key, { action, id, revision, note, reviewAt, holdId }, async w => {
@@ -161,6 +163,7 @@ export function createPrintRequestService(d: RequestDependencies) {
                 return { id };
             });
         },
+        // Chấp thuận cả báo giá một lần để tệp, giá và điều khoản đi cùng đơn được tạo.
         accept(a: RequestActor, key: string, id: string, revision: number, quoteId: string, termsHash: string) {
             role(a, ['CUSTOMER']);
             return operation(a, key, { action: 'ACCEPT', id, revision, quoteId, termsHash }, async (w) => {

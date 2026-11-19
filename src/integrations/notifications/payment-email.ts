@@ -92,7 +92,7 @@ MinhLab 3D Core System
     const idempotencyKey = `VERIFIED-${payload.orderNumber}-${payload.amountPaid}`;
     const formatVND = (val: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
     const subject = `Đặt hàng thành công — Mã đơn ${payload.orderNumber}`;
-    
+
     const itemsList = payload.orderItems
       .map((item) => `- ${item.itemName} x${item.quantity}: ${formatVND(item.unitPrice * item.quantity)}`)
       .join('\n');

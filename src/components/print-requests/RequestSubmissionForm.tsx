@@ -49,15 +49,25 @@ export function RequestSubmissionForm({ preset, existing, onSaved }: {
         const str = (n: string) => String(form.get(n) ?? '');
         try {
             if (preset?.validationError) throw new Error(preset.validationError);
-            const file = preset?.file ?? (form.get('file') instanceof File && (form.get('file') as File).size ? (form.get('file') as File) : null);
+            const selected = form.get('file');
+            const file = preset?.file ?? (selected instanceof File && selected.size ? selected : null);
             let fileId = existing?.file?.availability === 'PURGED' ? null : existing?.file?.id ?? null;
             if (file) {
                 if (file.size > 50 * 1024 * 1024) throw new Error('File tải lên tối đa 50 MB. File xem trước có thể lớn hơn; hãy giảm dung lượng hoặc liên hệ xưởng.');
                 const format = file.name.split('.').pop()?.toUpperCase();
                 if (!format || !['STL', 'OBJ', 'STEP'].includes(format))
                     throw new Error('Chỉ nhận STL, OBJ hoặc STEP theo cấu hình xưởng.');
+                // Nếu tạo phiếu lỗi sau khi tải tệp, lần thử lại dùng mã tệp đã lưu.
                 if (upload.current?.file !== file) {
-                    const r = await fetch('/api/print-files', { method: 'POST', headers: { 'Content-Type': 'application/octet-stream', 'X-Model-Format': format, 'X-File-Name': encodeURIComponent(file.name) }, body: file });
+                    const r = await fetch('/api/print-files', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/octet-stream',
+                            'X-Model-Format': format,
+                            'X-File-Name': encodeURIComponent(file.name),
+                        },
+                        body: file,
+                    });
                     const b = await readApiResponse<{ id: string }>(r);
                     if (!r.ok || !b.success)
                         throw new Error(b.error ?? 'Chưa lưu được file.');
@@ -65,7 +75,20 @@ export function RequestSubmissionForm({ preset, existing, onSaved }: {
                 }
                 fileId = upload.current!.id;
             }
-            const input = { fileId, quantity: preset?.quantity ?? Number(str('quantity')), material: preset?.material ?? str('material'), color: preset?.color ?? str('color'), purpose: preset?.purpose ?? str('purpose'), note: preset?.note ?? str('note'), rightsAccepted: preset?.rights ?? form.get('rights') === 'on', contact: { name: preset?.name ?? str('name'), phone: preset?.phone ?? str('phone'), address: str('address') } };
+            const input = {
+                fileId,
+                quantity: preset?.quantity ?? Number(str('quantity')),
+                material: preset?.material ?? str('material'),
+                color: preset?.color ?? str('color'),
+                purpose: preset?.purpose ?? str('purpose'),
+                note: preset?.note ?? str('note'),
+                rightsAccepted: preset?.rights ?? (form.get('rights') === 'on'),
+                contact: {
+                    name: preset?.name ?? str('name'),
+                    phone: preset?.phone ?? str('phone'),
+                    address: str('address'),
+                },
+            };
             const payload = JSON.stringify({ action: 'SUBMIT', input, ...(existing ? { id: existing.id, revision: existing.revision } : {}) });
             if (retry.current?.payload !== payload)
                 retry.current = { payload, key: crypto.randomUUID() };

@@ -88,6 +88,7 @@ export function createAuthService(dependencies: AuthDependencies) {
       });
     },
 
+    // Đổi trạng thái và đánh dấu mã đã dùng trong cùng giao dịch để mã không bị dùng hai lần.
     async verifyAccountEmail(token: string, email?: string): Promise<void> {
       const isCode = /^[0-9]{8}$/.test(token);
       const normalized = normalizeAccountEmail(email ?? '');
@@ -132,6 +133,7 @@ export function createAuthService(dependencies: AuthDependencies) {
       return token;
     },
 
+    // Đọc lại vai trò và trạng thái tài khoản để việc thu hồi quyền có hiệu lực trên phiên cũ.
     async readSession(token: string | undefined) {
       if (!isAuthToken(token)) return null;
       return dependencies.accounts.findSession(dependencies.tokens.hash(token), dependencies.requireVerifiedEmail());

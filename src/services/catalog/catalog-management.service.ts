@@ -54,6 +54,7 @@ export function createCatalogManagement(dependencies: CatalogDependencies) {
         return after!;
       });
     },
+    // Tách công bố khỏi lưu nháp để xưởng có thời gian kiểm ảnh, giá và quyền sử dụng mẫu.
     async publish(id: string, input: PublicationInput, actorId: string) {
       return dependencies.transaction(async (writer) => {
         const current = await writer.get(id);

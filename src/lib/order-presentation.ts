@@ -27,4 +27,3 @@ export const PAYMENT_STATUS_BADGES: Record<PaymentStatus, OrderBadge> = {
   PARTIALLY_REFUNDED: { label: 'Đã Hoàn Tiền Một Phần', className: 'bg-[#A5ADB8]/15 border-[#A5ADB8]/30 text-[#A5ADB8]' },
   REFUNDED: { label: 'Đã Hoàn Tiền', className: 'bg-[#A5ADB8]/15 border-[#A5ADB8]/30 text-[#A5ADB8]' },
 };
-

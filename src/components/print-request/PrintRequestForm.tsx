@@ -11,9 +11,7 @@ import { describePrintSettings } from './print-request-settings';
 
 export const PrintRequestForm: React.FC = () => {
   const model = usePrintRequest();
-  const {
-    handleValidate,
-  } = model;
+  const { handleValidate } = model;
   return ((
     <section
       id="in-theo-file"
@@ -21,7 +19,6 @@ export const PrintRequestForm: React.FC = () => {
       aria-label="Khu vực gửi tệp in 3D theo yêu cầu"
     >
       <div className="max-w-7xl mx-auto w-full">
-        {/* Tiêu đề & Giới thiệu Section */}
         <div className="max-w-3xl mb-8 sm:mb-10 space-y-3 text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#141A21] border border-[#27313C] text-[10px] sm:text-[11px] font-mono tracking-wider text-[#A5ADB8] uppercase">
             <span className="w-1.5 h-1.5 rounded-full bg-[#EB4037]" />
@@ -37,24 +34,29 @@ export const PrintRequestForm: React.FC = () => {
           </p>
         </div>
 
-        {/* BÀN LÀM VIỆC KỸ THUẬT (2 CỘT CHÍNH) */}
         <form onSubmit={handleValidate} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 items-start">
-          {/* CỘT TRÁI: KHUNG TẢI FILE & SIMULATED CHECKLIST (5 CỘT) */}
           <PrintFilePanel model={model} />
-
-          {/* CỘT PHẢI: THÔNG SỐ KỸ THUẬT & LIÊN HỆ (7 CỘT) */}
           <PrintConfigurationPanel model={model} />
-
         </form>
-        <RequestSubmissionForm preset={{file:model.rawFile,quantity:Number(model.quantity),material:model.material,color:model.color,purpose:describePrintSettings(model.purpose,model.scalePercent,model.infillPercent,model.layerHeight),note:model.notes,name:model.fullName,phone:model.phone,rights:model.confirmedRights,validationError:!model.hasValidScale ? 'Tỷ lệ in phải nằm trong khoảng 1% đến 5000%.' : !model.hasValidQuantity ? 'Số lượng phải là số nguyên từ 1 đến 100.' : null}} />
-
+        {/* Phiếu chỉ gửi linh kiện đang chọn trong khung xem trước. */}
+        <RequestSubmissionForm
+          preset={{
+            file: model.rawFile,
+            quantity: Number(model.quantity),
+            material: model.material,
+            color: model.color,
+            purpose: describePrintSettings(model.purpose, model.scalePercent, model.infillPercent, model.layerHeight),
+            note: model.notes,
+            name: model.fullName,
+            phone: model.phone,
+            rights: model.confirmedRights,
+            validationError: !model.hasValidScale
+              ? 'Tỷ lệ in phải nằm trong khoảng 1% đến 5000%.'
+              : !model.hasValidQuantity ? 'Số lượng phải là số nguyên từ 1 đến 100.' : null,
+          }}
+        />
       </div>
-
-      {/* ============================================================== */}
-      {/* MODAL XÁC NHẬN & GỬI TÓM TẮT THÔNG SỐ                          */}
-      {/* ============================================================== */}
       <PrintSummaryModal model={model} />
-
     </section>
   ));
 };

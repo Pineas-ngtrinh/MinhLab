@@ -29,7 +29,7 @@ export function createCheckout(dependencies: OrderDependencies) {
       throw new AppError('Sản phẩm in theo yêu cầu không được kèm mã sản phẩm hoặc biến thể có sẵn.');
     }
     if (input.paymentMethod !== 'VIETQR') throw new AppError('Hiện chỉ hỗ trợ thanh toán bằng QR cá nhân VietQR.');
-  
+
     if (input.items.some((item) => item.itemType === 'CUSTOM_PRINT')) {
       throw new AppError('Hãy chấp thuận toàn bộ báo giá tại trang yêu cầu in để tạo đúng một đơn; không checkout từng thông số riêng.');
     }
@@ -43,12 +43,20 @@ export function createCheckout(dependencies: OrderDependencies) {
         if (recovered) return recovered;
       }
       const destination = dependencies.paymentDestination();
-      if(!destination) throw new AppError('Thanh toán VietQR chưa sẵn sàng. Vui lòng liên hệ xưởng.',503);
+      if (!destination) throw new AppError('Thanh toán VietQR chưa sẵn sàng. Vui lòng liên hệ xưởng.', 503);
+      // Chốt tên và giá theo biến thể trong cơ sở dữ liệu vì giỏ có thể đang giữ giá cũ.
       const pricedItems: PricedOrderItem[] = await Promise.all(input.items.map(async item => {
         const variant = await orders.findVariant(item.productId ?? '', item.color, dependencies.requirePublishedCatalog(), item.productVariantId);
         if (!variant) throw new AppError(`Không tìm thấy mẫu “${item.itemName}” đang được bán.`);
-        return {...item, itemName: variant.name, unitPrice: variant.price,
-          productVariantId: variant.id, skuSnapshot: variant.sku, color: variant.color, material: variant.material};
+        return {
+          ...item,
+          itemName: variant.name,
+          unitPrice: variant.price,
+          productVariantId: variant.id,
+          skuSnapshot: variant.sku,
+          color: variant.color,
+          material: variant.material,
+        };
       }));
       if (pricedItems.some(item => !validUnitPrice(item.unitPrice))) {
         throw new AppError('Đơn giá cần là số nguyên VND trong giới hạn thanh toán. Vui lòng liên hệ xưởng.');

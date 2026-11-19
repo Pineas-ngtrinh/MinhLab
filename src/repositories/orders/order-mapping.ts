@@ -172,4 +172,3 @@ export function toAttachment(row: AttachmentRow): PaymentAttachment {
     createdAt: asIso(row.created_at),
   };
 }
-

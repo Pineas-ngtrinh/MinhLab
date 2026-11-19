@@ -1,19 +1,33 @@
 import { createHash } from 'node:crypto';
+import {
+    privateFileConfig,
+    readPrivateFile,
+    removePrivateFile,
+    scanPrivateFile,
+    storePrivateStl,
+} from '../integrations/private-files/local-store';
+import { purgeJournalRoot, journalPurge } from '../integrations/private-files/purge-journal';
 import { withTransaction } from '../lib/db';
 import { AppError } from '../lib/errors';
-import { privateFileConfig, storePrivateStl, removePrivateFile, readPrivateFile, scanPrivateFile } from '../integrations/private-files/local-store';
-import { privateFiles } from '../repositories/print-requests/private-file.repository';
-import { lockPrivateFileLifecycle, cleanupCandidates, finishFilePurge } from '../repositories/print-requests/file-retention.repository';
-import { purgeJournalRoot, journalPurge } from '../integrations/private-files/purge-journal';
 import { analyzeStl, StlParseError } from '../lib/quote/stl/analyze';
+import {
+    cleanupCandidates,
+    finishFilePurge,
+    lockPrivateFileLifecycle,
+} from '../repositories/print-requests/file-retention.repository';
+import { privateFiles } from '../repositories/print-requests/private-file.repository';
+
 export async function uploadPrivateFile(request: Request, ownerId: string) {
     const config = privateFileConfig();
     if (!config)
         throw new AppError('Đang chờ cấu hình kho private, giới hạn, thời gian lưu và công cụ kiểm an toàn file tại xưởng.', 503);
     const format = (request.headers.get('X-Model-Format') ?? 'STL').toLowerCase();
     let filename = `model.${format}`;
-    try { filename = decodeURIComponent(request.headers.get('X-File-Name') ?? filename).normalize('NFC'); }
-    catch { throw new AppError('Tên file không hợp lệ.'); }
+    try {
+        filename = decodeURIComponent(request.headers.get('X-File-Name') ?? filename).normalize('NFC');
+    } catch {
+        throw new AppError('Tên file không hợp lệ.');
+    }
     if (!filename.trim() || filename.length > 255 || /[/\\\u0000-\u001f\u007f]/.test(filename) || !filename.toLowerCase().endsWith(`.${format}`)) {
         throw new AppError('Tên file cần đúng định dạng, tối đa 255 ký tự và không chứa đường dẫn.');
     }
@@ -26,11 +40,13 @@ export async function uploadPrivateFile(request: Request, ownerId: string) {
             return { id: await privateFiles.save(c, ownerId, { ...stored, filename }) };
         }
         catch (error) {
-            await removePrivateFile(config, stored.key).catch(() => { });
+            // Ghi metadata thất bại thì dọn tệp vừa lưu để tránh có tệp mồ côi.
+            await removePrivateFile(config, stored.key).catch(() => {});
             throw error;
         }
     });
 }
+
 export async function downloadPrivateFile(id: string, userId: string, role: string) {
     return withTransaction(async client => {
         await lockPrivateFileLifecycle(client);
@@ -43,7 +59,7 @@ export async function downloadPrivateFile(id: string, userId: string, role: stri
         const extension = file.object_key.split('.').pop();
         if (!extension || !['stl', 'obj', 'step'].includes(extension)) throw new AppError('Định dạng file riêng tư không hợp lệ.', 409);
         if (Number(file.byte_size) > 100 * 1024 * 1024) throw new AppError('File vượt giới hạn tải.', 413);
-        // Buffer the bounded model while holding the lifecycle lock; purge cannot interrupt a disk read.
+        // Đọc xong tệp trong lúc còn giữ khóa để tác vụ dọn tệp không xen vào.
         try {
             const bytes = await readPrivateFile(config, file.object_key);
             return { body: new Uint8Array(bytes), bytes: String(bytes.byteLength), filename: `model.${extension}` };
@@ -53,6 +69,8 @@ export async function downloadPrivateFile(id: string, userId: string, role: stri
         }
     });
 }
+
+// Quét trước rồi mới kiểm nội dung. Mã băm giúp phát hiện tệp bị đổi sau khi tải.
 export async function processPrivateFiles(limit = 5) {
     const config = privateFileConfig();
     if (!config)
@@ -98,6 +116,8 @@ export async function processPrivateFiles(limit = 5) {
     }
     return { status: 'DONE', processed };
 }
+
+// Mặc định chỉ xem danh sách. Khi xóa thật, ghi nhật ký bền vững trước khi đụng tới tệp.
 export async function cleanupPrivateFiles(apply = false, retryFailed = false) {
     const config = privateFileConfig();
     if (!config) return { status: 'WAITING_CONFIGURATION', eligible: 0, removed: 0, failed: 0 };

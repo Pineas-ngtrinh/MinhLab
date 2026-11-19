@@ -168,6 +168,7 @@ export function createProductionService(d: ProductionDependencies) {
                 if (plan.body.blockers.length || plan.status !== 'PENDING_APPROVAL')
                     throw new AppError('Kế hoạch đang chờ dữ liệu, chưa được duyệt.', 409);
                 const s = await w.snapshot();
+                // Nếu máy, vật liệu hoặc lịch đã đổi từ lúc đề xuất, xưởng cần lập lại kế hoạch.
                 if (d.hash(s) !== plan.snapshotHash || plan.body.jobs.some(j => Date.parse(j.startAt) < Date.parse(d.now()))) {
                     await w.decidePlan(id, 'STALE', actor.id, 'Dữ liệu hoặc lịch đã thay đổi.');
                     await w.audit('PLAN_STALE', id, actor.id, {});

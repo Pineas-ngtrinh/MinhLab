@@ -27,6 +27,8 @@ export function createOrderWorkflows(dependencies: OrderDependencies) {
 
   return {
     getOrderByNumber,
+
+    // Khách khai báo giao dịch. Quản trị viên đối chiếu rồi mới đánh dấu đã thu tiền.
     async declarePayment(input: DeclarePaymentInput, baseUrl = 'http://localhost:3000', customerId?: string) {
       if (input.paymentProofUrl?.trim()) {
         throw new AppError('Tạm thời chưa nhận ảnh biên lai qua liên kết công khai. Hãy khai báo thông tin giao dịch; ảnh sẽ được mở lại khi có kho lưu trữ riêng tư.', 409);
@@ -79,6 +81,7 @@ export function createOrderWorkflows(dependencies: OrderDependencies) {
         const actor = actorId(verifiedBy);
         if (!actor) throw new AppError('Tài khoản người duyệt không còn quyền đối soát.', 403);
         const {order, payment} = await lockOrderAndPayment(orders, number);
+        // Nút trên tin Telegram cũ chỉ áp dụng cho lần khai báo gốc.
         if (expectedDeclaration && ((payment.transactionReference ?? null) !== expectedDeclaration.reference || payment.transferredAt !== expectedDeclaration.transferredAt)) {
           throw new AppError('Khai báo chuyển khoản đã thay đổi. Hãy kiểm tra lại trước khi xác nhận.', 409);
         }
@@ -151,6 +154,7 @@ export function createOrderWorkflows(dependencies: OrderDependencies) {
       });
     },
 
+    // Dọn đơn khỏi danh sách quản trị bằng lưu trữ để giữ lịch sử và tham chiếu.
     async archiveOrder(number: string, archivedBy?: string, role?: RoleCode) {
       if (role !== 'ADMIN') throw new AppError('Chỉ ADMIN mới được xóa đơn khỏi danh sách quản trị.', 403);
       const actor = actorId(archivedBy);
