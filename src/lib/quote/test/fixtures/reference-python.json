@@ -1,6 +1,6 @@
 {
   "sourceModelSha256": "8b7a29fad6140069d8bf429a95fa73c1e86c38ac2d821e8c424da849e41a3331",
-  "generator": "generate-v3-fixtures.py; Python v3 geometry/predict/pricing, synthetic shapes only",
+  "generator": "generate-reference-fixtures.py; Python v3 geometry/predict/pricing, synthetic shapes only",
   "shapes": [
     {
       "name": "box",

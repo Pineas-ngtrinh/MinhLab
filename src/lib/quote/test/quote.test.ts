@@ -5,7 +5,7 @@ import { priceFdm } from '../pricing/pricing';
 import { computeQuote, toCustomerQuoteView } from '../quote';
 import { toReferenceQuoteView } from '../reference';
 import { analyzeStl, type MeshFeatures } from '../stl/analyze';
-import fixtures from './fixtures/v3-python.json';
+import fixtures from './fixtures/reference-python.json';
 
 const fixture = fixtures.shapes[0];
 const mesh = () => analyzeStl(Buffer.from(fixture.stlBase64, 'base64'));

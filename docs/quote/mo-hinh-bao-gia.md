@@ -1,6 +1,6 @@
-# Quote core — resource predictor (17/11/2026)
+# Mô hình ước tính nhựa và thời gian in
 
-The source default is `model_resource_v1.json` (`minhlab-resource-physics-v1`).
+The source default is [`resource-model.json`](../../src/lib/quote/config/resource-model.json) (`minhlab-resource-physics-v1`).
 It predicts grams and model printing minutes with nonnegative weighted Ridge,
 using physical geometry features and separate material blocks. Price is not a
 training target. Model coefficients and feature scales match the offline export;
@@ -15,7 +15,7 @@ The store's current rate card uses **1,000 VND/g including profit + predicted mo
 Round half up once after summing material, electricity and labor. `priceFdm` accepts
 mass in grams and model time in **seconds**; the exported model predicts minutes.
 Labor is 0; shipping is 25,000 VND at product prices up to 300,000 VND, free strictly
-above 300,000 VND. Store rates live in `config/rate_card.json`, independently of
+above 300,000 VND. Store rates live in [`rate_card.json`](../../src/lib/quote/config/rate_card.json), independently of
 the resource model. Changing rates must not change predicted grams or minutes.
 
 The physical bed remains 180 × 180 × 180 mm. Inference respects the model's
@@ -46,8 +46,7 @@ Development nested source-group validation: 1,107 scenarios, 30 STLs, 26 source
 groups; mass MAE 3.4075 g / MAPE 6.4719%, model time MAE 23.2349 min / MAPE
 20.0913%. These are slicer labels, not physical machine measurements. A new recipe
 was explored after baseline errors on four additional sources were inspected;
-those later results are diagnostic, not an untouched final test. See the full
-[evidence and limitations](../../../docs/reviews/resource-quote-2026-11-17.md).
+those later results are diagnostic, not an untouched final test.
 
 Run `npm run test:quote` for analyzer, pricing and Python parity tests. Each model's portable
 fixtures contain 108 Python reference cases across synthetic boxes, orientation,
@@ -61,15 +60,13 @@ bed limits, and verify resources are independent of store rates.
 For maintenance of the preserved legacy v3 artifact only (does not activate v3):
 
 ```sh
-python3 scripts/quote/sync-quote-v3.py --model-dir /absolute/path/to/model_improved_v3
+python3 scripts/quote/sync-reference-model.py --model-dir /absolute/path/to/model_improved_v3
 ```
 
 To regenerate synthetic fixtures (use the training Python environment with NumPy):
 
 ```sh
-python3 scripts/quote/generate-v3-fixtures.py --model-dir /absolute/path/to/model_improved_v3
+python3 scripts/quote/generate-reference-fixtures.py --model-dir /absolute/path/to/model_improved_v3
 ```
 
-`model_params.json` is the historical v1 snapshot and is no longer imported by the
-website. `model_v3_metadata.json` records the historical v3 provenance; it does not
-describe the new default model's training or accuracy.
+[Reference model metadata](../../src/lib/quote/config/reference-model-metadata.json) describes the older model used for regression tests.

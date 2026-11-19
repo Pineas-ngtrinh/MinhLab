@@ -1,4 +1,4 @@
-# Bản đồ project MinhLab 3D
+# Cấu trúc mã nguồn MinhLab 3D
 
 ## Thư mục gốc
 
@@ -9,21 +9,19 @@
 | `database/` | Migration SQL và dữ liệu seed |
 | `scripts/` | Công cụ chạy thủ công/CI, phân nhóm theo mục đích |
 | `public/` | Tài nguyên công khai mà website tải trực tiếp |
-| `assets/` | Ảnh và nhận diện nguồn phục vụ biên tập |
 | `docs/` | Tài liệu kỹ thuật, thiết kế, nghiên cứu và vận hành |
-| `.agents/` | Quy chuẩn và skill dự án |
 | `.github/` | Workflow CI |
 | `.local/` | Database local, backup và artifact cá nhân; Git bỏ qua |
 | `.next/`, `.next-dev/` | Output build/dev tự sinh; Git bỏ qua |
 
-Các file cấu hình Next.js, TypeScript, Tailwind, npm và `proxy.ts` ở root theo quy ước công cụ. Chạy công cụ qua các lệnh `npm run …` trong README; tên lệnh không đổi khi script đổi thư mục.
+Các file cấu hình Next.js, TypeScript, Tailwind, npm và `proxy.ts` ở root theo quy ước công cụ. Danh sách lệnh nằm trong [package.json](../package.json).
 
 ## Tìm nơi sửa theo tác vụ
 
 | Muốn sửa | Bắt đầu tại | Phần liên quan |
 | --- | --- | --- |
 | Trang chủ | `app/page.tsx`, `src/components/home/` | `src/config/site.config.ts` |
-| Catalogue và chi tiết sản phẩm | `src/components/products/`, `src/server/catalog.ts` | `src/services/catalog/`, `src/repositories/catalog/` |
+| Danh mục và chi tiết sản phẩm | `src/components/products/`, `src/server/catalog.ts` | `src/services/catalog/`, `src/repositories/catalog/` |
 | Quản trị sản phẩm | `app/admin/san-pham/`, `src/components/admin/catalog/` | `app/api/admin/products/` |
 | Giỏ và checkout | `src/context/CartContext.tsx`, `src/components/checkout/` | `src/services/orders/`, `src/domain/orders/` |
 | Tài khoản và đăng nhập | `src/components/auth/`, `src/components/account/` | `src/services/auth/`, `src/server/auth.ts` |
@@ -36,7 +34,19 @@ Các file cấu hình Next.js, TypeScript, Tailwind, npm và `proxy.ts` ở root
 | Header, footer, modal dùng chung | `src/components/common/`, `src/components/layout/` | `src/styles/` |
 | Schema và seed | `database/migrations/`, `database/seeds/` | `scripts/database/` |
 | CI và kiểm tra | `.github/workflows/`, `scripts/checks/`, `scripts/tests/` | `package.json` |
-| Tài liệu | [Mục lục docs](docs/README.md) | [Kiến trúc](docs/architecture.md) |
+| Tài liệu | [Kiến trúc](architecture.md) | [Triển khai trên VPS](operations/vps-docker.md) |
+
+## Chạy trên máy phát triển
+
+Cài Node.js 22 và PostgreSQL, rồi chạy từ thư mục dự án:
+
+```bash
+npm ci
+npm run db:start
+npm run dev
+```
+
+`db:start` khởi tạo cơ sở dữ liệu local, chạy migration và nạp sản phẩm ban đầu. Mở `http://localhost:3000`. Các biến dành cho dịch vụ ngoài có mẫu ở [tệp cấu hình](../.env.example). Xem [triển khai bằng Docker](operations/vps-docker.md) khi đưa lên VPS.
 
 ## Cách đọc mã nguồn
 
@@ -46,7 +56,7 @@ Luồng backend: `app/api/` → `src/server/` ghép dependency → `src/services
 
 Test nghiệp vụ ở gần module trong thư mục `test/`; test helper ở `src/lib/test/`; test công cụ và tích hợp ở `scripts/tests/`. Không chuyển test ra xa module chỉ để gom mọi test vào một nơi.
 
-Khi thêm chức năng vào auth/catalog/orders, dùng nhóm tương ứng ở các tầng hiện hành. Không tạo thêm tầng hoặc barrel export chỉ để rút ngắn đường dẫn. Không sửa migration đã áp dụng; tạo migration mới. GLB, camera spline và cơ chế tải 3D được bảo vệ theo AGENTS.md.
+Khi thêm chức năng vào auth/catalog/orders, dùng nhóm tương ứng ở các tầng hiện hành. Không tạo thêm tầng hoặc barrel export chỉ để rút ngắn đường dẫn. Không sửa migration đã áp dụng; tạo migration mới.
 
 ## Điểm vào các module backend
 
@@ -66,4 +76,4 @@ Khi lần một lỗi: bắt đầu ở route hoặc UI gây lỗi, đi vào com
 - `npm run architecture:report`: xem nhóm code, phụ thuộc import, file dài và file nhiều caller.
 - `npm run --silent architecture:report -- --json`: lấy graph file nội bộ, gồm cả cạnh type-only.
 
-Báo cáo không gồm HTTP/DB call graph và không kết luận file không có caller là mã thừa. Xem [đánh giá công cụ](docs/reviews/architecture-tooling-2026-11-04.md) để chọn Knip, dependency-cruiser hoặc công cụ trình bày khi cần.
+Báo cáo không gồm HTTP/DB call graph và không kết luận file không có caller là mã thừa.

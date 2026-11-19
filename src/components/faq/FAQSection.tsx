@@ -14,7 +14,7 @@ export const FAQSection: React.FC = () => {
   return (
     <section className="pt-10 pb-14 sm:pt-12 sm:pb-16 lg:pt-16 lg:pb-20 px-4 sm:px-8 bg-transparent border-t border-white/[0.06] w-full max-w-full overflow-hidden text-[#F4F1EA]">
       <div className="max-w-4xl mx-auto w-full space-y-8">
-        
+
         {/* Tiêu đề & Giới thiệu */}
         <div className="text-left space-y-4">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#F4F1EA] leading-[1.08]">

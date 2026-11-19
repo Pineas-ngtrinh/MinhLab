@@ -8,7 +8,7 @@ export const HomeLabTeaser: React.FC = () => {
   return (
     <section className="studio-workshop py-12 sm:py-16 lg:py-20 px-4 sm:px-8 border-b border-white/[0.06]">
       <div className="max-w-6xl mx-auto w-full space-y-8 sm:space-y-10">
-        
+
         {/* ============================================================== */}
         {/* HEADER — CINEMATIC WORKSHOP INTRO                              */}
         {/* ============================================================== */}
@@ -41,7 +41,7 @@ export const HomeLabTeaser: React.FC = () => {
         <Link href="/phong-lab" aria-label="Xem không gian xưởng 3D" className="relative block rounded-2xl overflow-hidden bg-[#090D12] border border-white/[0.06] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8A261]">
           <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full">
             <Image
-              src="/images/minhlab-lab-resin-v2.png"
+              src="/images/minhlab-lab-resin.png"
               alt="Mô phỏng 3D phòng lab MinhLab"
               fill
               sizes="(max-width: 1200px) 100vw, 1200px"

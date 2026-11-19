@@ -12,7 +12,7 @@ const Hero3DCanvas = dynamic(() => import('./Hero3DCanvas'), { ssr: false, loadi
 function MascotFallback() {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-[#090D12]">
-      <Image src="/images/minhlab-mascot-free-v2.png" alt="Khỉ Kỹ Sư MinhLab" fill sizes="(max-width: 1024px) 100vw, 560px" className="object-contain p-8" />
+      <Image src="/images/minhlab-mascot-free.png" alt="Khỉ Kỹ Sư MinhLab" fill sizes="(max-width: 1024px) 100vw, 560px" className="object-contain p-8" />
       <p className="absolute inset-x-4 bottom-4 text-center text-xs text-[#A5ADB8]">Thiết bị chưa hiển thị được 3D. Bạn đang xem ảnh thay thế.</p>
     </div>
   );
@@ -79,7 +79,7 @@ export function Hero3DSection() {
                 {webGLSupported !== false && !is3DReady && (
                   <div role="status" className="absolute inset-0 bg-[#090D12]">
                     <Image
-                      src="/images/minhlab-mascot-free-v2.png"
+                      src="/images/minhlab-mascot-free.png"
                       alt=""
                       fill
                       priority

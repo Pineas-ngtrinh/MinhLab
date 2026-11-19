@@ -8,7 +8,7 @@
  *  - Quản lý trạng thái giỏ hàng (thêm, sửa số lượng, xóa sản phẩm).
  *  - Mở/đóng Drawer giỏ hàng và Modal thanh toán nhanh (Quick Checkout).
  *  - Tính toán tổng tiền, số lượng sản phẩm, lưu giỏ hàng vào localStorage.
- * 
+ *
  * Cách sử dụng trong component:
  *  const { items, addToCart, openCart, openCheckout } = useCart();
  * =====================================================================

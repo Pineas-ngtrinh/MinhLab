@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 parser=argparse.ArgumentParser(description='Generate portable synthetic STL fixtures using reviewed Python v3 inference.')
 parser.add_argument('--model-dir',type=Path,required=True)
-parser.add_argument('--output',type=Path,default=Path(__file__).resolve().parents[2]/'src/lib/quote/test/fixtures/v3-python.json')
+parser.add_argument('--output',type=Path,default=Path(__file__).resolve().parents[2]/'src/lib/quote/test/fixtures/reference-python.json')
 args=parser.parse_args()
 model_dir=args.model_dir
 sys.path.insert(0,str(model_dir))
@@ -36,7 +36,7 @@ for a in range(n):
 t_shape=verts[faces]
 assert not any(mesh_issues(t_shape).values()),mesh_issues(t_shape)
 shapes=[('box',box_triangles()),('oriented-box',box_triangles()[:,:,[2,1,0]][:,::-1]),('support-T',t_shape),('translated-ascii',box_triangles()+[123,-45,12])]
-result={'sourceModelSha256':hashlib.sha256((model_dir/'model_v3.json').read_bytes()).hexdigest(),'generator':'generate-v3-fixtures.py; Python v3 geometry/predict/pricing, synthetic shapes only','shapes':[]}
+result={'sourceModelSha256':hashlib.sha256((model_dir/'model_v3.json').read_bytes()).hexdigest(),'generator':'generate-reference-fixtures.py; Python v3 geometry/predict/pricing, synthetic shapes only','shapes':[]}
 with tempfile.TemporaryDirectory() as tmp:
  for name,t in shapes:
   p=Path(tmp)/'shape.stl';write_stl(p,t)

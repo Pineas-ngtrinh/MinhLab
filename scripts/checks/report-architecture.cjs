@@ -36,7 +36,7 @@ if (process.argv.includes('--json')) {
     '## 10 file dài nhất cần đọc trước khi tách', '', '| File | Số dòng |', '| --- | ---: |',
     ...[...result.graph].sort((a, b) => b.lines - a.lines || a.file.localeCompare(b.file)).slice(0, 10)
       .map(node => `| ${node.file} | ${node.lines} |`), '',
-    'Độ dài chỉ gợi ý nơi cần đọc, không chứng minh thiết kế sai. Camera spline và cơ chế tải 3D vẫn được bảo vệ theo AGENTS.md.', '',
+    'Độ dài tệp giúp chọn nơi cần đọc trước khi cân nhắc tách mã.', '',
     '## 10 file có nhiều caller runtime nhất', '', '| File | Số file import trực tiếp |', '| --- | ---: |',
     ...[...incoming].sort(([a, x], [b, y]) => y.size - x.size || a.localeCompare(b)).slice(0, 10)
       .map(([file, callers]) => `| ${file} | ${callers.size} |`), '',

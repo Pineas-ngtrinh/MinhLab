@@ -1,10 +1,10 @@
 # Khung luồng và điều kiện gom mẻ in catalogue MinhLab
 
-Ngày thiết kế: 29/10/2026. Trạng thái: **đặc tả nghiệp vụ; một phần core/schema/UI đã triển khai ngày 11/11/2026**. Xem [ma trận triển khai](../reviews/implementation-verification-2026-11-11.md). Planner dùng BOM/stock/check/machine data đã xác nhận và hiện lịch FIFO khi chưa có due date; nó không thay thế optimizer toàn cục hoặc xác nhận capacity.
+Ngày thiết kế: 29/10/2026. Trạng thái: **đặc tả nghiệp vụ; một phần core/schema/UI đã triển khai ngày 11/11/2026**. Planner dùng BOM/stock/check/machine data đã xác nhận và hiện lịch FIFO khi chưa có due date; nó không thay thế optimizer toàn cục hoặc xác nhận capacity.
 
 Rà soát Stage 1 ngày 30/10/2026: làm rõ hai cấp gom nhóm và điều kiện máy/profile chung cho toàn mẻ. Các điều kiện này có test domain hiện tại; việc nhập và xác minh dữ liệu thật còn lại.
 
-**Cập nhật quyết định 10/11/2026:** luồng vận hành chi tiết ở [đặc tả agent](production-agent-workflow.md), dữ liệu dùng ở [snapshot không tô vàng](../research/production-agent-data-2026-11-10.md). Người có quyền luôn quyết định duyệt/sửa/từ chối; hệ thống tự cập nhật sau phê duyệt. Máy được giữ đến khi nhóm sản phẩm liên quan chuyển sang đóng gói. Những nội dung về tự áp dụng không có người duyệt trong định hướng 02/11 đã được thay thế. Các ví dụ Black/White/Three Claws bên dưới giải thích thuật toán, không thuộc tập SKU nhập từ workbook lần này.
+**Cập nhật quyết định 10/11/2026:** luồng vận hành chi tiết ở [đặc tả agent](production-agent-workflow.md). Người có quyền luôn quyết định duyệt/sửa/từ chối; hệ thống tự cập nhật sau phê duyệt. Máy được giữ đến khi nhóm sản phẩm liên quan chuyển sang đóng gói. Những nội dung về tự áp dụng không có người duyệt trong định hướng 02/11 đã được thay thế. Các ví dụ Black/White/Three Claws bên dưới giải thích thuật toán, không thuộc tập SKU nhập từ workbook lần này.
 
 Định hướng chủ dự án ngày 02/11/2026: AI agent là một tác nhân trong sản phẩm, chủ động chuẩn bị và tối ưu kế hoạch trong phạm vi quyền được cấu hình. Adapter actor/runtime giới hạn đã được thêm; chưa bật provider/model thật, chưa có kế hoạch tối ưu toàn cục, và quyền phê duyệt vẫn thuộc người dùng.
 
@@ -229,9 +229,9 @@ Ví dụ kiểm thử tổng hợp, không phải số lượng BOM thật: nế
 | ProductionPlan | input versions/hash, proposals, validator result, proposedBy, approvedBy, revision |
 | ActualRun | job/attempt ID, actual settings/override, material use, failure/QC và thời điểm |
 
-Current workshop DTO chỉ có mã đơn/trạng thái và item name/quantity/material/color ([workshop.ts](/Users/nguyenphucphu/Downloads/minhlab-3d/src/contracts/workshop.ts:1)); cần read model production có ID/revision, không gom bằng tên hiển thị.
+Current workshop DTO chỉ có mã đơn/trạng thái và item name/quantity/material/color ([workshop.ts](../../src/contracts/workshop.ts)); cần read model production có ID/revision, không gom bằng tên hiển thị.
 
-Schema đã có printers và production_jobs, nhưng job đang tham chiếu một order_item ([001_init.sql](/Users/nguyenphucphu/Downloads/minhlab-3d/database/migrations/001_init.sql:420)). Khi implement sẽ mở rộng với allocations nhiều-nhiều theo migration riêng, giữ legacy và luồng A; không tạo bảng PrintJob thứ hai trùng nghĩa.
+Schema đã có printers và production_jobs, nhưng job đang tham chiếu một order_item ([001_init.sql](../../database/migrations/001_init.sql)). Khi implement sẽ mở rộng với allocations nhiều-nhiều theo migration riêng, giữ legacy và luồng A; không tạo bảng PrintJob thứ hai trùng nghĩa.
 
 Phân vai:
 
@@ -285,6 +285,6 @@ Workspace có khu vực **Trợ lý sản xuất** hiển thị việc đang x�
 11. Hủy một đơn trong mẻ: các đơn khác giữ allocation; không xóa lịch sử.
 12. Order có CUSTOM_PRINT hoặc price fields thay đổi ở client: planner chỉ xử lý READY_PRODUCT và không sửa giá.
 
-Bản nguồn Activity UML: [E09-catalog-batching-flow.puml](/Users/nguyenphucphu/Downloads/minhlab-3d/docs/ooad/diagrams/designed/E09-catalog-batching-flow.puml). Bản UML này chưa đồng bộ quyết định vận hành 10/11; ưu tiên [đặc tả hiện hành](production-agent-workflow.md) khi đối chiếu quyền duyệt, trạng thái và mốc giải phóng máy. Tác vụ này không sửa bộ sơ đồ OOAD.
+Xem [quy trình lập kế hoạch](production-agent-workflow.md).
 
 Tài liệu này thiết kế luồng và chính sách; không sửa source, cấu hình, giá hoặc database.

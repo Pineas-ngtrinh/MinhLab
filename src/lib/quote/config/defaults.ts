@@ -1,6 +1,6 @@
-import modelSource from './model_v3.json';
-import resourceModel from './model_resource_v1.json';
-import metadata from './model_v3_metadata.json';
+import modelSource from './reference-model.json';
+import resourceModel from './resource-model.json';
+import metadata from './reference-model-metadata.json';
 import printerSource from './printer.json';
 import rateCardSource from './rate_card.json';
 import type { QuoteConfig } from '../quote';

@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
     <footer id="lien-he" className="bg-background border-t border-[#27313C] pt-12 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] px-4 sm:px-8 text-xs text-[#A5ADB8] w-full max-w-full md:pb-12">
       <div className="max-w-7xl mx-auto space-y-12 w-full">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
-          
+
           {/* Thông tin thương hiệu MinhLab */}
           <div className="md:col-span-5 space-y-4 text-left">
             <div className="flex items-center gap-2.5">
@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
                 />
               </Link>
             </div>
-            
+
             <p className="text-xs text-[#A5ADB8] max-w-md leading-relaxed">
               Xưởng phục dựng các mẫu đồ chơi, mô hình sưu tầm đã ngừng sản xuất và dịch vụ gia công in 3D FDM và resin theo tệp của khách hàng.
             </p>
@@ -44,32 +44,32 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-[#A5ADB8] text-xs">
               <li>
-                <Link 
-                  href="/bo-suu-tap" 
+                <Link
+                  href="/bo-suu-tap"
                   className="hover:text-[#F4F1EA] transition-colors"
                 >
                   Bộ sưu tập tại xưởng
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/phong-lab" 
+                <Link
+                  href="/phong-lab"
                   className="hover:text-[#F4F1EA] transition-colors"
                 >
                   Tour 3D phòng lab xưởng
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/in-theo-file" 
+                <Link
+                  href="/in-theo-file"
                   className="hover:text-[#F4F1EA] transition-colors"
                 >
                   Gửi file in theo yêu cầu
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/ve-minhlab" 
+                <Link
+                  href="/ve-minhlab"
                   className="hover:text-[#F4F1EA] transition-colors"
                 >
                   Về MinhLab & Câu chuyện phục dựng
@@ -134,7 +134,7 @@ export const Footer: React.FC = () => {
           <p className="text-[#737D89] font-mono text-[11px]">
             © {new Date().getFullYear()} MinhLab. Xưởng phục dựng đồ sưu tầm & in 3D FDM & resin.
           </p>
-          
+
           <button
             type="button"
             onClick={scrollToTop}

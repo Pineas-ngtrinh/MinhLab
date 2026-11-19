@@ -6,15 +6,15 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import gsap from 'gsap';
 import type { LabPhase } from '../lab-journey/LabCanvas';
-import { 
-  ArrowRight, 
-  ChevronRight, 
-  ChevronLeft, 
-  Layers, 
-  MonitorCheck, 
-  Printer, 
-  PackageCheck, 
-  Wrench, 
+import {
+  ArrowRight,
+  ChevronRight,
+  ChevronLeft,
+  Layers,
+  MonitorCheck,
+  Printer,
+  PackageCheck,
+  Wrench,
   Sparkles,
   CheckCircle2,
   Maximize2,
@@ -395,7 +395,7 @@ export const LabScrollytelling: React.FC = () => {
 
       {/* SÂN KHẤU 3D TOÀN MÀN HÌNH (FULL-WIDTH, KHÔNG KHUNG VIỀN CARD) */}
       <div className="relative w-full min-h-0 overflow-hidden md:flex md:h-[680px] md:flex-col md:justify-between lg:h-[820px] xl:h-[880px]">
-        
+
         {/* Layer WebGL Canvas chiếm trọn sân khấu */}
         <div className="absolute inset-x-0 top-0 z-0 h-[min(54svh,480px)] min-h-[340px] max-h-[480px] pointer-events-none md:inset-0 md:h-auto md:min-h-0 md:max-h-none">
           {!webglFailed && !isWeakDevice ? (
@@ -421,7 +421,7 @@ export const LabScrollytelling: React.FC = () => {
                   aria-hidden={stepIdx !== activeStep}
                 >
                   <Image
-                    src="/images/minhlab-lab-resin-v2.png"
+                    src="/images/minhlab-lab-resin.png"
                     alt={`Không gian xưởng MinhLab - ${STEPS[stepIdx]?.shortTitle || ''}`}
                     fill
                     sizes="100vw"
@@ -443,7 +443,7 @@ export const LabScrollytelling: React.FC = () => {
         {/* HUD TRÊN CÙNG: TIÊU ĐỀ, TRẠNG THÁI & ĐIỀU HƯỚNG */}
         {/* ============================================================== */}
         <div className="absolute inset-x-0 top-[calc(5rem+env(safe-area-inset-top,0px))] z-20 px-3 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between gap-2 pointer-events-none md:relative md:inset-auto md:pt-10 md:px-8 md:gap-4">
-          
+
           {/* Định vị khu vực / Trạng thái lắp ráp */}
           <div className="pointer-events-auto flex min-w-0 items-center gap-2 px-3 py-2 sm:gap-3 sm:px-3.5 sm:py-1.5 rounded-lg bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-subtle">
             <span className={`w-2 h-2 rounded-full ${isAssemblyActive ? 'bg-[#EB4037] animate-pulse' : 'bg-[#EB4037]'}`} />
@@ -463,7 +463,7 @@ export const LabScrollytelling: React.FC = () => {
           {/* Dải Timeline Nút Bấm Khi Ở Explore Mode */}
           {!isAssemblyActive ? (
             <div className="pointer-events-auto hidden md:flex items-center gap-1.5">
-              <nav 
+              <nav
                 className="flex items-center gap-1.5 p-1 rounded-xl bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-subtle"
                 aria-label="Chọn góc nhìn toàn cảnh hoặc các bước quy trình"
               >
@@ -569,7 +569,7 @@ export const LabScrollytelling: React.FC = () => {
         {/* HUD DƯỚI CÙNG: CARD THÔNG TIN (ASSEMBLY BLUEPRINT HOẶC EXPLORE) */}
         {/* ============================================================== */}
         <div className="relative z-20 px-3 pt-3 pb-4 sm:px-8 md:pt-0 md:pb-12 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-stretch md:items-end justify-between gap-4 md:gap-6 pointer-events-none">
-          
+
           {isAssemblyActive ? (
             /* CARD THÔNG TIN LẮP RÁP (BLUEPRINT HUD) */
             <div className="pointer-events-auto w-full md:max-w-xl p-4 sm:p-6 rounded-2xl bg-[#141A21]/95 md:bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-2xl space-y-3 md:space-y-3.5 text-left animate-fadeIn">
@@ -623,7 +623,7 @@ export const LabScrollytelling: React.FC = () => {
           ) : (
             /* CARD THÔNG TIN CHI TIẾT BƯỚC KHÁM PHÁ HIỆN TẠI */
             <div className="pointer-events-auto w-full md:max-w-xl p-4 sm:p-6 rounded-2xl bg-[#141A21]/95 md:bg-[#141A21]/90 backdrop-blur-md border border-[#27313C] shadow-2xl space-y-3 md:space-y-3.5 text-left animate-fadeIn">
-              
+
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EB4037]/15 text-[#EB4037] border border-[#EB4037]/30 shrink-0">
@@ -651,7 +651,7 @@ export const LabScrollytelling: React.FC = () => {
 
               {/* Cụm Điều Khiển [Quay lại] [Tiếp theo / Xem sản phẩm] */}
               <div className="pt-3 border-t border-[#27313C] flex items-center justify-between gap-2 sm:gap-3">
-                
+
                 <button
                   type="button"
                   disabled={activeStep === 0}

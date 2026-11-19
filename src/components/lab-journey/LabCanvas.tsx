@@ -563,7 +563,7 @@ export const LabCanvas: React.FC<LabCanvasProps> = ({
         />
 
         <directionalLight position={[-6, 6, -6]} intensity={1.2} color="#8492BD" />
-        
+
         {/* Điểm nhấn đèn ấm tại bàn in */}
         <pointLight position={[-1.72, 2.8, -2.32]} intensity={3.5} distance={5} color="#D48955" />
 

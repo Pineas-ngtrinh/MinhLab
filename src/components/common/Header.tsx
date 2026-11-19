@@ -56,7 +56,7 @@ export const Header: React.FC = () => {
     <>
     <header className="fixed top-0 inset-x-0 mx-auto w-full z-50 lg:top-1 lg:w-[calc(100%-3rem)] lg:max-w-7xl">
       <div className="flex h-16 items-center justify-center border-b border-white/[0.08] bg-[#08090C] px-4 sm:px-8 md:justify-between lg:h-[68px] lg:rounded-2xl lg:border lg:bg-[#08090C]/90 lg:px-5">
-        
+
         {/* Logo MinhLab */}
         <Link
           href="/"
@@ -103,7 +103,7 @@ export const Header: React.FC = () => {
 
         {/* Cụm Thao Tác (Giỏ Hàng + Tài Khoản + CTA) */}
         <div className="hidden shrink-0 items-center gap-1 md:flex lg:border-l lg:border-white/[0.08] lg:pl-3">
-          
+
           {/* Nút Mở Giỏ Hàng */}
           <button
             type="button"

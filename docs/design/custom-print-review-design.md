@@ -1,6 +1,6 @@
 # Thiết kế OOAD — gửi file, duyệt kỹ thuật và đặt in
 
-Ngày thiết kế: 02/11/2026. **Đặc tả giữ vai trò nguồn quy tắc; một phần runtime đã triển khai ngày 11/11/2026.** Phiếu/file riêng tư, assignment/review, quote/acceptance và custom production có API/schema/UI hiện hành; xem [ma trận triển khai](../reviews/implementation-verification-2026-11-11.md). Những đoạn “hiện trạng” dưới đây là mốc khảo sát 02/11, không phải trạng thái code hiện tại. Phạm vi: in theo file của khách; giữ modular monolith Next.js/PostgreSQL, mô hình FDM và thanh toán VietQR đối soát thủ công. Không dùng luồng custom để thay BOM catalogue.
+Ngày thiết kế: 02/11/2026. **Đặc tả giữ vai trò nguồn quy tắc; một phần runtime đã triển khai ngày 11/11/2026.** Phiếu/file riêng tư, assignment/review, quote/acceptance và custom production có API/schema/UI hiện hành. Những đoạn “hiện trạng” dưới đây là mốc khảo sát 02/11, không phải trạng thái code hiện tại. Phạm vi: in theo file của khách; giữ modular monolith Next.js/PostgreSQL, mô hình FDM và thanh toán VietQR đối soát thủ công. Không dùng luồng custom để thay BOM catalogue.
 
 ## 1. Mục tiêu và ranh giới hiện trạng
 

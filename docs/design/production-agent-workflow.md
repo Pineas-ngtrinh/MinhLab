@@ -1,6 +1,6 @@
 # Luồng AI agent điều phối sản xuất catalogue
 
-Ngày chốt ban đầu: 10/11/2026; bổ sung onboarding dữ liệu và ranh giới actor ngày 11/11/2026. Trạng thái: **đặc tả vẫn là nguồn quy tắc; một phần runtime/API/migration đã được triển khai ngày 11/11/2026**. Mức độ và phần còn thiếu được ghi tại [ma trận triển khai](../reviews/implementation-verification-2026-11-11.md). Các sơ đồ không phải bằng chứng test.
+Ngày chốt ban đầu: 10/11/2026; bổ sung onboarding dữ liệu và ranh giới actor ngày 11/11/2026. Trạng thái: **đặc tả vẫn là nguồn quy tắc; một phần runtime/API/migration đã được triển khai ngày 11/11/2026**. Các sơ đồ không phải bằng chứng test.
 
 Tài liệu này cụ thể hóa [khung gom mẻ](production-batching-design.md). Quyết định ngày 10/11 thay thế phần cho phép agent tự áp dụng kế hoạch trong thiết kế ngày 02/11: mọi kế hoạch và thay đổi kế hoạch đều do người có quyền quyết định. Hệ thống tự thực hiện các cập nhật liên quan sau khi người duyệt chấp nhận.
 
@@ -9,7 +9,7 @@ Tài liệu này cụ thể hóa [khung gom mẻ](production-batching-design.md)
 - Áp dụng cho dòng đơn mua sản phẩm catalogue đủ điều kiện sản xuất, kể cả sản phẩm nhận đặt trước. CUSTOM_PRINT không đi vào planner này.
 - Tập dữ liệu ban đầu chỉ lấy các dòng không tô vàng trong workbook: 6 biến thể, 37 dòng BOM. Đây là snapshot tham chiếu ban đầu, không phải danh sách hard-code giới hạn agent. Sau này agent dùng sản phẩm, linh kiện và BOM revision hợp lệ đã được công bố trên database. Các dòng vàng không được dùng để tự thêm sản phẩm hoặc yêu cầu sản xuất.
 - Theo xác nhận được người dùng cung cấp ngày 10/11, mỗi dòng BOM là **1 đơn vị linh kiện/nhóm linh kiện trên một bộ sản phẩm**. Riêng tay dùng mẫu một bên, nhân bản và lật gương để tạo bên còn lại. Một nhóm tay trong BOM khác với số object vật lý trên bàn in.
-- Xác nhận số lượng không tự duyệt vật liệu, profile, khả năng máy hoặc bố trí mẻ. Snapshot và các điểm cần đối chiếu nằm ở [dữ liệu đầu vào](../research/production-agent-data-2026-11-10.md).
+- Xác nhận số lượng không tự duyệt vật liệu, profile, khả năng máy hoặc bố trí mẻ. Snapshot và các điểm cần đối chiếu nằm ở dữ liệu đầu vào.
 - Agent chỉ nhận mã nội bộ, revision, số lượng, quy cách, lịch và xác nhận kỹ thuật. File 3D, project slicer, G-code, tên file thật, đường dẫn và đường dẫn tải được giữ tại xưởng. Agent không đọc hình học, sửa file hoặc gửi lệnh khởi động máy.
 
 ## 2. Người và hệ thống làm gì
@@ -205,5 +205,3 @@ Chưa chốt nhà cung cấp/model/API LLM. Bản thiết kế không phụ thu�
 | Sửa sản phẩm sau khi có requirement/job | Bản chốt cũ được giữ; chỉ đổi theo phương án điều chỉnh được duyệt |
 | Phụ kiện mới | Áp dụng routing PRINTED/STOCKED/PURCHASED/FINISHING như mục 7; món bắt buộc được tính vào điều kiện bàn giao đóng gói |
 | Công nghệ mới chưa có rule | Báo cấu hình chưa hỗ trợ; không suy profile hoặc xác nhận tương thích từ tên |
-
-Các sơ đồ bổ sung và truy vết được quản lý riêng ở [bộ OOAD agent dữ liệu động](../ooad/production-agent/README.md). Đây là bộ thiết kế tập trung, chưa thay thế toàn bộ bộ OOAD của dự án.

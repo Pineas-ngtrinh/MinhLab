@@ -1,12 +1,12 @@
 # Staging Ubuntu với web và PostgreSQL trong hai container
 
-Ngày 15/11/2026. Cấu hình đã được chuẩn bị trong source; chưa có triển khai trên VPS. Xem [thiết kế nghiệp vụ](../design/custom-print-lifecycle-and-retention.md) và [báo cáo triển khai](../reviews/custom-print-retention-2026-11-15.md).
+Các bước dưới đây dùng cho máy chủ Ubuntu và Docker Compose. Xem thêm [vòng đời tệp in](../design/custom-print-lifecycle-and-retention.md).
 
 ## 1. Tải bản source
 
 Trên máy phát triển, chạy `npm run deploy:package`. Gói `.local/releases/minhlab-<thời điểm>.tar.gz` có manifest SHA-256 của từng file và checksum của archive. Không chứa credential, `.local`, database cá nhân, node_modules hoặc dataset huấn luyện. Gói gồm working tree hiện tại, vì vậy có cả thay đổi chưa commit; packaging không thay thế các cổng kiểm tra.
 
-Bạn tự thay `user@VPS` bằng kết nối Ubuntu của mình; không cần cung cấp IP/mật khẩu cho agent:
+Thay `user@VPS` bằng tài khoản và máy chủ Ubuntu của bạn.
 
 ```bash
 scp .local/releases/minhlab-<thời-điểm>.tar.gz user@VPS:/srv/minhlab/

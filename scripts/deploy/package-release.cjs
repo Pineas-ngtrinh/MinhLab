@@ -7,9 +7,7 @@ const root=path.resolve(__dirname,'../..');
 const entries=['app','src','public','database/migrations','database/seeds','scripts','deploy','package.json','package-lock.json',
   'next.config.mjs','proxy.ts','tsconfig.json','tailwind.config.js','postcss.config.js','eslint.config.mjs',
   'Dockerfile','.dockerignore','compose.yaml','docs/operations/vps-docker.md','docs/operations/minhlab-click-deployment.md',
-  'docs/design/custom-print-lifecycle-and-retention.md','docs/reviews/custom-print-retention-2026-11-15.md',
-  'docs/reviews/admin-account-roles-2026-11-16.md','docs/reviews/telegram-self-link-2026-11-18.md','docs/reviews/fdm-preview-2026-11-18.md','docs/reviews/preflight-grants-2026-11-18.md',
-  'docs/reviews/admin-role-consolidation-2026-11-19.md'];
+  'docs/design/custom-print-lifecycle-and-retention.md'];
 const files=[];
 function walk(name){
   const base=path.basename(name);

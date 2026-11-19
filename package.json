@@ -22,7 +22,7 @@
     "telegram:webhook:info": "node scripts/telegram-webhook.cjs info",
     "test:production": "node scripts/tests/test-production.cjs",
     "check": "tsc --noEmit && eslint app src proxy.ts && npm run check:architecture",
-    "test:quote": "node --require ./scripts/lib/register-typescript.cjs --test src/lib/quote/test/analyze.test.ts src/lib/quote/test/quote.test.ts src/lib/quote/test/model-v3.test.ts src/lib/quote/test/resource-model.test.ts",
+    "test:quote": "node --require ./scripts/lib/register-typescript.cjs --test src/lib/quote/test/analyze.test.ts src/lib/quote/test/quote.test.ts src/lib/quote/test/reference-model.test.ts src/lib/quote/test/resource-model.test.ts",
     "benchmark:stl": "node --require ./scripts/lib/register-typescript.cjs scripts/quote/benchmark-stl-quote.cjs",
     "test:models": "node scripts/tests/test-scene-customization.cjs",
     "production:check": "node scripts/checks/check-production.cjs",

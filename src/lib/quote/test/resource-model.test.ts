@@ -17,7 +17,7 @@ function close(actual: number, expected: number) {
 
 test('default resource coefficients match the independently exported Python parity fixtures', () => {
   assert.equal(DEFAULT_QUOTE_CONFIG.model.version, 'minhlab-resource-physics-v1');
-  const bytes = readFileSync(join(__dirname, '../config/model_resource_v1.json'));
+  const bytes = readFileSync(join(__dirname, '../config/resource-model.json'));
   assert.equal(createHash('sha256').update(bytes).digest('hex'), fixtures.sourceModelSha256);
 });
 

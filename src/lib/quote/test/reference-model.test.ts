@@ -7,14 +7,14 @@ import { analyzeStl } from '../stl/analyze';
 import { computeQuote } from '../quote';
 import { V3_QUOTE_CONFIG as DEFAULT_QUOTE_CONFIG } from '../config/defaults';
 import type { InfillFraction, Material } from '../types';
-import fixtures from './fixtures/v3-python.json';
+import fixtures from './fixtures/reference-python.json';
 
 function close(actual: number, expected: number, name: string): void {
   assert.ok(Math.abs(actual - expected) <= Math.max(1e-8, Math.abs(expected) * 1e-9), `${name}: ${actual} != ${expected}`);
 }
 
 test('bundled coefficients are an unchanged copy of the Python v3 model', () => {
-  const bytes = readFileSync(join(__dirname, '../config/model_v3.json'));
+  const bytes = readFileSync(join(__dirname, '../config/reference-model.json'));
   assert.equal(createHash('sha256').update(bytes).digest('hex'), fixtures.sourceModelSha256);
 });
 

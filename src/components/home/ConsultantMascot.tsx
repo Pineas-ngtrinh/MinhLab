@@ -12,7 +12,7 @@ const ConsultantCanvas = dynamic(() => import('./ConsultantMascotCanvas'), {
 
 function MascotStill({ loading = false }: { loading?: boolean }) {
   return <div className="relative h-full w-full overflow-hidden">
-    <Image src="/images/minhlab-mascot-free-v2.png" alt={SITE_CONFIG.homeConsultant.fallback}
+    <Image src="/images/minhlab-mascot-free.png" alt={SITE_CONFIG.homeConsultant.fallback}
       fill sizes="(max-width: 767px) 80px, 140px" className="object-cover" style={{ objectPosition: '50% 61%' }} priority />
     {loading && <span role="status" className="absolute bottom-4 inset-x-0 text-center text-xs text-[#A5ADB8]">
       {SITE_CONFIG.homeConsultant.loading}

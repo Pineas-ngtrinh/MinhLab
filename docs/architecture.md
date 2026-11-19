@@ -1,6 +1,6 @@
 # Kiến trúc hiện tại — cập nhật 11/11/2026
 
-Ứng dụng là modular monolith Next.js/PostgreSQL. Các module **orders, catalog, auth, production và print-requests** có ranh giới domain/use case/repository/composition ở mức độ khác nhau; điều đó không đồng nghĩa toàn bộ roadmap hoặc production readiness đã hoàn tất. [Kế hoạch tổng thể](planning/system-design-execution-plan.md) giữ thứ tự M0.1–M8; trạng thái đối chiếu hiện tại ở [ma trận triển khai](reviews/implementation-verification-2026-11-11.md).
+Ứng dụng là modular monolith Next.js/PostgreSQL. Các module **orders, catalog, auth, production và print-requests** có ranh giới domain/use case/repository/composition ở mức độ khác nhau; điều đó không đồng nghĩa toàn bộ roadmap hoặc production readiness đã hoàn tất. Xem [cấu trúc mã nguồn](cau-truc-ma-nguon.md) để tìm các điểm vào theo chức năng.
 
 ## Bố cục thư mục và mức độ áp dụng
 
@@ -23,8 +23,7 @@ src/
   workers/                    Web Worker chạy trong trình duyệt
 database/migrations/          Schema triển khai có checksum
 scripts/                      Migration, worker, kiểm thử và vận hành
-docs/ooad/diagrams/            Sơ đồ hiện hành và mô hình thiết kế
-assets/                        Ảnh nguồn; public/ là tài nguyên được phục vụ
+public/                        Hình ảnh và mô hình 3D
 ```
 
 Ranh giới hoàn chỉnh nhất nằm ở `orders`, `catalog` và `auth`. `production` và `print-requests` cũng tách use case/ports khỏi SQL và ghép adapter qua `server/`; các module này còn cần tiếp tục chuẩn hóa test/observability theo checklist release. Use case chỉ phụ thuộc domain/contracts, các port và lỗi ứng dụng; SQL ở repository, crypto/email/LLM ở integration, cấu hình và adapter thật được ghép trong `server/`. Guard kiểm mọi thư mục `services/<feature>/`, cấm I/O/cấu hình ngầm và import adapter trực tiếp, đồng thời kiểm đường import bắc cầu từ client và chu kỳ runtime. `lib/auth-session.ts` là adapter HTTP/cookie gọi composition phía server. Các facade service cũ không còn caller đã được gỡ; code mới dùng composition và contracts trực tiếp.
@@ -91,22 +90,22 @@ Preview 3D là phần bổ trợ: kích thước STL còn lấy được từ wo
 | `GET /api/orders/[orderNumber]` | Owner CUSTOMER hoặc token bí mật còn hạn; không có quyền trả 404 | Read workflow → orders/items/payments, tracking hash | Owner/token sai/đúng, email không nhận quyền sở hữu |
 | `GET /api/customer/orders` | CUSTOMER | Read repository lọc customer_id, phân trang và summary toàn bộ đơn | Không nhìn đơn người khác; phân trang và summary toàn bộ lịch sử đã có |
 | `POST /api/payments/declare` | Owner hoặc tracking token; đơn còn chờ tiền | Declaration → payment/history/audit/proof/outbox | Token sai, URL proof sai, không downgrade VERIFIED |
-| `GET /api/admin/orders`, `/payments` | ADMIN hoặc STAFF | Read repository, page/filter có giới hạn | Trang ổn định, giới hạn kích thước, lọc phía DB |
-| `POST /api/admin/payments/verify`, `/reject` | ADMIN hoặc STAFF | Workflow + locked repository → orders/payments/history/audit/outbox | Verify đồng thời chỉ một lần; không verify đơn hủy/reject VERIFIED |
-| `PATCH /api/admin/orders` | ADMIN/STAFF/PRINT_OPERATOR; policy giới hạn từng cạnh | Domain policy → locked repository, COD receipt/history/audit cho đơn cũ | Ma trận cạnh, quyền, điều kiện tiền và hoàn tất đơn lịch sử |
+| `GET /api/admin/orders`, `/payments` | ADMIN | Read repository, page/filter có giới hạn | Trang ổn định, giới hạn kích thước, lọc phía DB |
+| `POST /api/admin/payments/verify`, `/reject` | ADMIN | Workflow + locked repository → orders/payments/history/audit/outbox | Verify đồng thời chỉ một lần; không verify đơn hủy/reject VERIFIED |
+| `PATCH /api/admin/orders` | ADMIN, WORKSHOP_OPERATOR, PRINT_OPERATOR theo quyền chuyển trạng thái | Domain policy → locked repository, COD receipt/history/audit cho đơn cũ | Ma trận cạnh, quyền, điều kiện tiền và hoàn tất đơn lịch sử |
 
-Authentication ở HTTP boundary, ownership/tracking ở use case, trạng thái và quyền từng bước ở domain policy. `src/lib/auth-roles.ts` là module thuần dùng chung. ADMIN không bỏ qua cạnh trạng thái hoặc điều kiện tiền; STAFF được bắt đầu sản xuất, giao và hoàn tất theo policy; PRINT_OPERATOR chỉ xác nhận hoàn thiện từ IN_PRODUCTION. Retry cùng trạng thái không lặp hiệu ứng. Các nhánh thanh toán xác nhận đúng tiền chuyển PENDING_PAYMENT → CONFIRMED qua use case đối soát, không qua thao tác PATCH tùy ý.
+Authentication ở HTTP boundary, ownership/tracking ở use case, trạng thái và quyền từng bước ở domain policy. `src/lib/auth-roles.ts` là module thuần dùng chung. Quản trị viên đối soát, xử lý giao hàng và hoàn tất đơn. Quyền chuyển trạng thái trong xưởng được kiểm tra theo từng bước. Retry cùng trạng thái không lặp hiệu ứng. Các nhánh thanh toán xác nhận đúng tiền chuyển PENDING_PAYMENT → CONFIRMED qua use case đối soát, không qua thao tác PATCH tùy ý.
 
 ## Trạng thái workflow sản xuất và custom print
 
-Các enum thanh toán/đơn hàng vẫn tách khỏi phiếu và lệnh xưởng. Migrations `009_manufacturing_workflow.sql` đến `015_file_purge_marker.sql` bổ sung revision metadata, BOM, inventory, kiểm kỹ thuật, plan, holds, job/allocation nhiều đơn, event retry, file riêng tư, quote và acceptance bất biến. Migration `001–008` không bị sửa. Test tích hợp hiện xác minh cài mới, chạy migration lặp, nâng cấp từ `008` có order cũ và quyền runtime; xem [báo cáo tích hợp](ooad/test-results.json).
+Các enum thanh toán/đơn hàng vẫn tách khỏi phiếu và lệnh xưởng. Migrations `009_manufacturing_workflow.sql` đến `015_file_purge_marker.sql` bổ sung revision metadata, BOM, inventory, kiểm kỹ thuật, plan, holds, job/allocation nhiều đơn, event retry, file riêng tư, quote và acceptance bất biến. Migration `001–008` không bị sửa. Test tích hợp hiện xác minh cài mới, chạy migration lặp, nâng cấp từ `008` có order cũ và quyền runtime.
 
 | Luồng | Aggregate / API | Quy tắc đang chạy |
 | --- | --- | --- |
 | Custom request | `print_requests`, `print_request_items`, `file_assets`; `/api/print-requests`, `/api/print-files` | CUSTOMER sở hữu phiếu/file; reviewer nhận việc theo assignment; yêu cầu không file vẫn ở trạng thái cần bổ sung và chưa phát hành quote |
 | Quote / acceptance | `quotes`, `customer_approvals`, `orders`, `payments`; `src/services/orders/index.ts` | Quote có revision/terms/hash/hạn; khách chấp thuận đúng phiên bản thì tạo một đơn đủ số lượng trong cùng transaction, chờ VietQR thủ công |
 | Manufacturing metadata | `manufacturing_revisions`, `production_requirements`, `production_inventory`, `production_checks` | BOM ghim vào đơn; published body bất biến; tồn phải được xác nhận; yêu cầu thiếu dữ liệu vào WAITING_DATA |
-| Planning / batches | `production_plans`, `production_jobs`, `production_supplies`, `production_holds` | Core tính ràng buộc; ADMIN/STAFF duyệt; transaction recheck snapshot và mới tạo job/allocation/hold; shared batch giữ scope từng item |
+| Planning / batches | `production_plans`, `production_jobs`, `production_supplies`, `production_holds` | Core tính ràng buộc; ADMIN duyệt; transaction recheck snapshot và mới tạo job/allocation/hold; shared batch giữ scope từng item |
 | Actual work | `POST /api/workshop/production` | PRINT_OPERATOR ghi bắt đầu thực tế, QC đạt/hỏng và bàn giao đóng gói; chỉ tiến độ commerce tương ứng sau sự kiện thợ, hold chỉ nhả khi đủ scope |
 | AI actor | `production_events`, `production_agent_runs`; `scripts/workers/production-agent.cjs` | Provider chỉ đọc projection metadata đã lọc và đề xuất draft; không có tool duyệt, thanh toán, file, SQL hoặc start máy; cấu hình thiếu thì worker để event chờ |
 
@@ -139,8 +138,6 @@ npm run build
 
 CI `.github/workflows/quality.yml` dùng Node 22 và PostgreSQL 16 tạm, role migration tách runtime. Workflow chạy các lệnh trên; không gọi mail/Telegram thật hoặc production preflight với dữ liệu giả. Test production tự tạo/xóa DB riêng; không ghi vào DB người dùng. Nguồn action: [checkout v4](https://github.com/actions/checkout/tree/v4), [setup-node v4](https://github.com/actions/setup-node/tree/v4). Kiểm tra local không chứng minh job GitHub đã chạy; cần push/PR mới có run trên GitHub.
 
-Sơ đồ nguồn D10/D34/D35 và D38/D40 phản ánh baseline kiến trúc/catalogue và lịch sử migrations `001–008`; chúng chưa mô hình hóa hết schema runtime `009–015`. Bộ production-agent bổ sung mô tả actor và workflow cấp thiết kế, còn ma trận trong [review triển khai](reviews/implementation-verification-2026-11-11.md) nêu phần code đã chạy và khoảng trống OOAD còn lại. Không xem sơ đồ thiết kế là bằng chứng runtime.
-
 ## Thanh toán và hàng đợi chế tác — 24/10/2026
 
 `server/payment-config.ts` chỉ cấp tài khoản khi chủ triển khai bật rõ và cấu hình hợp lệ. Use case checkout nhận destination qua port; migration 007 lưu `payments.receiving_account` bất biến cho khoản chờ mới. API chiếu bốn trường công khai, UI lấy snapshot từ server; không backfill tài khoản chưa xác nhận cho khoản cũ. Thiếu cấu hình trả 503 và mọi yêu cầu tạo đơn COD mới bị từ chối; retry idempotency vẫn phục hồi đơn đã tạo. `/api/payments/options` chỉ trả khả năng dùng VietQR, không đưa cấu hình bí mật vào bundle. Nhân viên đối soát thủ công trước khi xác nhận đã nhận tiền.
@@ -149,4 +146,4 @@ Checkout ghi cảnh báo Telegram mới vào `telegram_outbox` cùng transaction
 
 `GET /api/workshop/orders` tiếp tục dùng read model phân trang và projection riêng: chỉ mã đơn, trạng thái và chi tiết chế tác; không PII/tiền. `/admin/san-xuat` và `/api/workshop/production` bổ sung metadata/BOM, xác nhận tồn, checks, plan approval, job start, QC, packing và custom batches. Chưa có telemetry máy tự động; mọi actual start/QC/bàn giao do người ghi nhận.
 
-Bằng chứng kiểm thử, backup/restore và các điều kiện còn thiếu: [review production](reviews/production-review-2026-10-24.md).
+Các bước sao lưu và khôi phục nằm trong [hướng dẫn chạy trên VPS](operations/vps-docker.md).

@@ -43,7 +43,7 @@ export const HomeFeaturedProducts: React.FC<CatalogData> = ({ products, categori
   return (
     <section id="showroom-san-pham" className="scroll-mt-24 py-12 sm:scroll-mt-28 sm:py-16 lg:py-20 px-4 sm:px-8 border-b border-white/[0.06] bg-transparent">
       <div className="max-w-6xl mx-auto w-full">
-        
+
         {/* ============================================================== */}
         {/* SECTION HEADER — EDITORIAL CATALOGUE TITLE                     */}
         {/* ============================================================== */}

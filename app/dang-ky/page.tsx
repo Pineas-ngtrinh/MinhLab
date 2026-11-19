@@ -89,7 +89,7 @@ export default function DangKyPage() {
   return (
     <div className="min-h-[75vh] w-full flex items-center justify-center px-4 py-10 sm:py-14">
       <div className="w-full max-w-lg space-y-6">
-        
+
         {/* Tiêu đề trang */}
         <div className="text-center space-y-2.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#141A21] border border-[#27313C] text-[10px] sm:text-[11px] font-mono tracking-wider text-[#A5ADB8] uppercase">

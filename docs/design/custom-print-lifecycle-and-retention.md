@@ -2,7 +2,7 @@
 
 Mã tác vụ: CP-LIFECYCLE-2026-11-15. Ngày: 15/11/2026.
 
-Trạng thái: **Đã có source triển khai retention theo yêu cầu tiếp tục của chủ dự án; kiểm chứng DB/API/VPS còn chờ môi trường.** Xem [báo cáo triển khai](../reviews/custom-print-retention-2026-11-15.md). Tài liệu này giữ đặc tả và các khoảng trống ghi nhận trước triển khai ở mục 9 để truy vết; không dùng mục đó như inventory code mới nhất. Nó bổ sung và ưu tiên cho quy tắc vòng đời/lưu file trong [đặc tả custom print](custom-print-review-design.md).
+Trạng thái: **Đã có source triển khai retention theo yêu cầu tiếp tục của chủ dự án; kiểm chứng DB/API/VPS còn chờ môi trường.** Tài liệu này giữ đặc tả và các khoảng trống ghi nhận trước triển khai ở mục 9 để truy vết; không dùng mục đó như inventory code mới nhất. Nó bổ sung và ưu tiên cho quy tắc vòng đời/lưu file trong [đặc tả custom print](custom-print-review-design.md).
 
 ## 1. Phạm vi và quyết định
 
@@ -172,4 +172,4 @@ Không hiển thị `scheduledDeletionAt` khi còn blocker, không hứa một n
 4. Bổ sung UI ngày lưu/xóa, trạng thái file và hành động đóng/điều chỉnh; chưa cần mở uploader slicer/G-code để hoàn tất luồng source model.
 5. Chuẩn bị Compose hai container, scanner, volume, backup/restore, timer; dry-run trên staging rồi mới bật apply. Nghiệm thu các vai trò trước nhận file thật.
 
-Lượt thiết kế ban đầu chỉ thêm tài liệu; lượt tiếp tục đã thêm source, migration 024 và cấu hình deployment/worker. Các tiêu chí trên vẫn là điều kiện nghiệm thu, không phải danh sách test đã đạt; kết quả cụ thể và giới hạn được ghi trong báo cáo triển khai. Download hiện dùng buffer có giới hạn dưới khóa lifecycle thay cho lease stream; cache deadline được tính lại khi đọc/cleanup từ quan hệ hiện hành. Uploader artifact slicer/G-code và sửa model tại xưởng chưa mở; scope hiện thực phục vụ source model khách gửi. Thời hạn backup/chứng từ và đích backup ngoài host vẫn cần quyết định vận hành.
+Lượt thiết kế ban đầu chỉ thêm tài liệu; lượt tiếp tục đã thêm source, migration 024 và cấu hình deployment/worker. Các tiêu chí trên vẫn là điều kiện nghiệm thu, không phải danh sách test đã đạt. Download hiện dùng buffer có giới hạn dưới khóa lifecycle thay cho lease stream; cache deadline được tính lại khi đọc/cleanup từ quan hệ hiện hành. Uploader artifact slicer/G-code và sửa model tại xưởng chưa mở; scope hiện thực phục vụ source model khách gửi. Thời hạn backup/chứng từ và đích backup ngoài host vẫn cần quyết định vận hành.

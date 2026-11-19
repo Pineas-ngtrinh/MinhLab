@@ -78,8 +78,8 @@ export const SITE_CONFIG = {
     mascotAlt: 'Khỉ Kỹ Sư MinhLab với hai bàn tay trống trong xưởng',
     pause: 'Tạm dừng chuyển động linh vật',
     resume: 'Tiếp tục chuyển động linh vật',
-    labImage: '/images/minhlab-lab-resin-v2.png',
-    mascotImage: '/images/minhlab-mascot-free-v2.png',
+    labImage: '/images/minhlab-lab-resin.png',
+    mascotImage: '/images/minhlab-mascot-free.png',
   },
 
   homeConsultant: {

@@ -5,14 +5,14 @@ import { Check, ArrowRight } from 'lucide-react';
 
 export const RestorationStory: React.FC = () => {
   return (
-    <section 
-      id="ve-minhlab" 
+    <section
+      id="ve-minhlab"
       className="py-12 sm:py-16 px-4 sm:px-8 bg-[#0F141A]/75 w-full max-w-full"
       aria-label="Câu chuyện phục dựng tại MinhLab"
     >
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          
+
           {/* Cột Trái: Hình ảnh thực tế chi tiết mô hình phục dựng (5 cột) */}
           <div className="lg:col-span-5 relative">
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#0B0F14] border border-[#27313C] shadow-2xl">
@@ -23,7 +23,7 @@ export const RestorationStory: React.FC = () => {
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover object-center"
               />
-              
+
               {/* Badge kỹ thuật góc dưới */}
               <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#0B0F14]/90 backdrop-blur-md border border-[#27313C] text-xs text-[#F4F1EA] space-y-1.5 shadow-subtle">
                 <div className="flex items-center justify-between font-mono">

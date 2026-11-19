@@ -66,11 +66,10 @@ Snapshot source: `source-before.tar.gz`; diff trước sửa: `working-tree-befo
 - [Next.js support policy](https://nextjs.org/support-policy).
 - [Next.js authentication](https://nextjs.org/docs/app/guides/authentication).
 - [Resend Send Email API](https://resend.com/docs/api-reference/emails/send-email).
-- Kết quả registry tại thời điểm rà soát: `docs/ooad/dependency-audit.json`. Đây là kết quả quét dependency, không phải chứng nhận an toàn cho mọi cấu hình triển khai.
 
 ## Cập nhật rà soát 21/10/2026
 
-Xem [báo cáo code](../reviews/code-audit-2026-10-21.md). Các thao tác duyệt mesh/điều khiển máy chỉ sửa state cục bộ đã được bỏ khỏi UI hoạt động; hai trạm hiện thông báo đúng phạm vi chưa kết nối. Biên lai quản trị dùng liên kết đính kèm thực tế, không hiển thị số tài khoản hoặc mã giao dịch giả. Lỗi không dự kiến trả JSON HTTP 500, không công bố nội dung lỗi nội bộ. Bootstrap không tự nâng quyền danh tính có sẵn.
+Các thao tác duyệt mesh/điều khiển máy chỉ sửa state cục bộ đã được bỏ khỏi UI hoạt động; hai trạm hiện thông báo đúng phạm vi chưa kết nối. Biên lai quản trị dùng liên kết đính kèm thực tế, không hiển thị số tài khoản hoặc mã giao dịch giả. Lỗi không dự kiến trả JSON HTTP 500, không công bố nội dung lỗi nội bộ. Bootstrap không tự nâng quyền danh tính có sẵn.
 
 Preflight local vẫn thiếu mail credentials, URL HTTPS công khai và catalogue được duyệt/xuất bản. Build/test thành công không thay thế ba điều kiện vận hành này.
 
@@ -81,4 +80,4 @@ Preflight local vẫn thiếu mail credentials, URL HTTPS công khai và catalog
 - Tài khoản VietQR cũ trong marketing đã gỡ. Mặc định tắt; chủ triển khai xác nhận ngân hàng rồi cấu hình bốn trường tài khoản cùng cờ bật. Mỗi payment lưu destination snapshot; không tự backfill payment cũ bằng tài khoản chưa xác nhận. Thiếu cấu hình chặn toàn bộ checkout mới; COD chỉ còn cho đơn lịch sử.
 - Backup trước nâng cấp: `.local/production-2026-10-24/database-before.dump`. Restore đã chạy vào DB tạm, hash sản phẩm/biến thể/ảnh/đơn/thanh toán khớp; DB thử đã xóa. Chưa thay thế diễn tập trên host production.
 - CI/.nvmrc dùng Node 22; kiểm tra phiên bản patch và advisory trước phát hành.
-- [Review và bằng chứng](../reviews/production-review-2026-10-24.md) ghi rõ các điều kiện còn thiếu và 3 cảnh báo dependency mức vừa trong công cụ CSS.
+- Review và bằng chứng ghi rõ các điều kiện còn thiếu và 3 cảnh báo dependency mức vừa trong công cụ CSS.

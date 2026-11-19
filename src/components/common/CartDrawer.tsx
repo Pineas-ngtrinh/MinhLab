@@ -34,11 +34,11 @@ export const CartDrawer: React.FC = () => {
   return (
     <ModalDialog title="Giỏ hàng MinhLab" onDismiss={closeCart} testId="cart-drawer" className="!justify-end items-stretch p-0 animate-fadeIn">
       {/* Panel giỏ hàng trượt từ phải sang (Dark Workshop) */}
-      <div 
+      <div
         onWheel={(e) => e.stopPropagation()}
         className="relative z-10 w-full max-w-md bg-[#141A21] border-l border-[#27313C] shadow-2xl flex flex-col h-full text-[#F4F1EA]"
       >
-        
+
         {/* Header Giỏ Hàng */}
         <div className="flex items-center justify-between p-5 border-b border-[#27313C] bg-[#0F141A]">
           <div className="flex items-center gap-2.5">

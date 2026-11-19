@@ -57,8 +57,8 @@ def main():
         'freeShippingAboveProductVnd': pricing['free_shipping_if_product_gt_vnd'], 'rounding': 'half_up_vnd',
     }
     args.output.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(model_path, args.output / 'model_v3.json')
-    (args.output / 'model_v3_metadata.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
+    shutil.copy2(model_path, args.output / 'reference-model.json')
+    (args.output / 'reference-model-metadata.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     (args.output / 'rate_card.json').write_text(json.dumps(rates, indent=2) + '\n')
     print(f'Copied model SHA256 {metadata["sourceModelSha256"]}; no training or final-test evaluation performed.')
 
