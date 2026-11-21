@@ -5,6 +5,9 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: fileURLToPath(new URL('.', import.meta.url)),
   poweredByHeader: false,
+  experimental: {
+    agentUpgrade: 'security',
+  },
   async headers() {
     return [
       { source: '/:path*', headers: [
